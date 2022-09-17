@@ -1,5 +1,6 @@
 // @ts-ignore
 import React, {Suspense, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 
 import {styled, useTheme, Theme, CSSObject} from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
@@ -12,10 +13,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import OutboxIcon from '@mui/icons-material/Outbox';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+import HomeIcon from '@mui/icons-material/Home';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import {Tooltip} from "@mui/material";
 
 const drawerWidth = 200;
@@ -68,16 +70,19 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
 
 export default function Menu() {
     const theme = useTheme();
+    const navigate = useNavigate();
+
     const [open, setOpen] = useState(false);
 
     const handleDrawer = () => {
-        setOpen(!open);
+        setOpen(!open)
     };
 
     const MenuList = [
-        {text: 'Profile', icon: <AccountCircle/>},
-        {text: 'Create', icon: <OutboxIcon/>},
-        {text: 'Market', icon: <AddBusinessIcon/>},
+        {text: 'Home', icon: <HomeIcon/>, to: '/'},
+        {text: 'Market', icon: <ShoppingCartIcon/>, to: 'market'},
+        {text: 'Profile', icon: <AccountCircle/>, to: 'profile'},
+        {text: 'Create', icon: <OutboxIcon/>, to: '/'},
     ];
 
     return (
@@ -91,13 +96,10 @@ export default function Menu() {
             <List>
                 {MenuList.map((item, index) => (
                     <ListItem key={item.text} disablePadding sx={{display: 'block'}}>
-                        <ListItemButton
-                            sx={{
-                                // minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                            }}
-                        >
+                        <ListItemButton sx={{justifyContent: open ? 'initial' : 'center', px: 2.5}}
+                                        onClick={() => {
+                                            navigate(item.to)
+                                        }}>
                             <Tooltip title={item.text} placement="right" arrow>
                                 <ListItemIcon
                                     sx={{
