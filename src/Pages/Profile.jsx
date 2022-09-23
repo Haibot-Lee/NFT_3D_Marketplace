@@ -1,4 +1,3 @@
-// @ts-ignore
 import React, {Suspense, useState} from 'react';
 import {Canvas} from '@react-three/fiber';
 import {OrbitControls} from '@react-three/drei';
@@ -11,7 +10,7 @@ export default function Profile() {
         <Canvas
             camera={{position: [2, 0, 12], fov: 10}}
             style={{
-                background: "white",
+                // background: "white",
                 width: '30vw',
                 height: '70vh',
             }}
