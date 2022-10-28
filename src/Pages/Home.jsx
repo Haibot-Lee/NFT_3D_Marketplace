@@ -1,42 +1,23 @@
 import React, {Suspense, useState} from 'react';
 import {Canvas} from '@react-three/fiber';
 import {OrbitControls} from '@react-three/drei';
-
-import Model from '../Components/Model';
-import ModelF from '../Components/ModelF';
-
 import {Grid} from "@mui/material";
 
+import Model from '../Components/Model';
 
 export default function Home() {
 
     return (
         <Grid container>
-            <Grid item xs={10}>
-                <Canvas
-                    camera={{position: [2, 0, 12], fov: 10}}
-                    style={{
-                        background: "white",
-                        width: '30vw',
-                        height: '70vh',
-                    }}
-                >
-                    <ambientLight intensity={1.25}/>
-                    <ambientLight intensity={0.1}/>
-                    <directionalLight intensity={1}/>
-                    <Suspense fallback={null}>
-                        <ModelF position={[0.025, -0.9, 0]}/>
-                    </Suspense>
-                    <OrbitControls/>
-                </Canvas>
+            <Grid item xs={8}>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={4}>
                 <Canvas
                     camera={{position: [2, 0, 12], fov: 10}}
                     style={{
                         // background: "white",
-                        width: '30vw',
-                        height: '70vh',
+                        width: '33vw',
+                        height: '100vh',
                     }}
                 >
                     <ambientLight intensity={1.25}/>

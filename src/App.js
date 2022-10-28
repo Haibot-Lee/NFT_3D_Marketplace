@@ -10,12 +10,10 @@ import Profile from './Pages/Profile';
 
 export default function App() {
 
-    const [mode, setMode] = useState(localStorage.getItem('themeMode') ? localStorage.getItem('themeMode') : 'dark');
-
     const getDesignTokens = (mode) => ({
         palette: {mode},
     });
-    const darkModeTheme = createTheme(getDesignTokens(mode));
+    const darkModeTheme = createTheme(getDesignTokens('dark'));
 
     return (
         <div className="App">

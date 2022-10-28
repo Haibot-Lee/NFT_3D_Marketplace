@@ -10,9 +10,9 @@ export default function Market() {
         <Canvas
             camera={{position: [2, 0, 12], fov: 10}}
             style={{
-                background: "white",
+                // background: "white",
                 width: '30vw',
-                height: '70vh',
+                height: '100vh',
             }}
         >
             <ambientLight intensity={1.25}/>
