@@ -1,5 +1,4 @@
 import React, {useState, useContext, useRef, useEffect, Suspense} from 'react';
-import {FileUpload} from 'react-ipfs-uploader'
 import {create} from 'ipfs-http-client';
 import * as IPFS from 'ipfs-core'
 
@@ -15,7 +14,7 @@ import {
 } from '@mui/material';
 import Stack from "@mui/material/Stack";
 import Typography from '@mui/material/Typography';
-import {OrbitControls} from "@react-three/drei";
+import {OrbitControls, useGLTF} from "@react-three/drei";
 import {Canvas} from "@react-three/fiber";
 
 import Model from "../Components/Model";
@@ -30,10 +29,11 @@ const ipfs = create({
 })
 
 export default function InputDialog(props) {
-
     const [isLoadinging, setIsLoadinging] = useState(false);
-
     const [file, setFile] = useState(null);
+
+    const group = useRef()
+    const gltf = useGLTF(`/${file ? file.name : 'modelF.glb'}`);
 
     const uploadToIpfs = async () => {
         if (file) {
@@ -47,11 +47,12 @@ export default function InputDialog(props) {
     }
 
     const genPreview = () => {
-        setIsLoadinging(true);
-
-        setIsLoadinging(false);
+        if (file) {
+            setIsLoadinging(true);
+            // setGltf(useGLTF(`/${file.name}`))
+            setIsLoadinging(false);
+        }
     }
-
 
     return (
         <Dialog open={props.open} onClose={props.handleClose}>
@@ -71,7 +72,9 @@ export default function InputDialog(props) {
                             <ambientLight intensity={0.1}/>
                             <directionalLight intensity={1}/>
                             <Suspense fallback={null}>
-                                <Model position={[0.025, -0.9, 0]}/>
+                                <group ref={group} position={[0.025, -0.9, 0]} dispose={null}>
+                                    <primitive object={gltf.scene}/>
+                                </group>
                             </Suspense>
                             <OrbitControls/>
                         </Canvas>
