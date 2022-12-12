@@ -28,6 +28,7 @@ const ipfs = create({
 })
 
 function useUpdateModel(filename) {
+    useGLTF.preload(`/${filename}`)
     const gltf = useGLTF(`/${filename}`);
     return gltf.scene
 }
@@ -72,7 +73,7 @@ export default function InputDialog(props) {
                                 :
                                 <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Preview: </Typography>
                             }
-                            <Suspense fallback={<CircularProgress/>}>
+                            <Suspense fallback={null}>
                                 <Canvas
                                     camera={{position: [2, 0, 12], fov: 10}}
                                     style={{width: '30vw', height: '70vh'}}

@@ -1,64 +1,51 @@
-import React, {Suspense, useState} from 'react';
+import React, {Suspense, useRef, useState} from 'react';
 import {Canvas} from '@react-three/fiber';
-import {OrbitControls} from '@react-three/drei';
+import {OrbitControls, useGLTF} from '@react-three/drei';
 
-import ModelF from '../Components/ModelF';
-import {Button, Grid, TextField} from "@mui/material";
+import {Button, CircularProgress, Grid, TextField} from "@mui/material";
 import Stack from "@mui/material/Stack";
 
+import ModelCavas from '../Components/ModelCavas'
+import Divider from "@mui/material/Divider";
+import {create} from "ipfs-http-client";
+
+const authorization = "Basic " + btoa(process.env.REACT_APP_PROJECT_ID + ":" + process.env.REACT_APP_PROJECT_SECRET);
+const ipfs = create({
+    url: "https://ipfs.infura.io:5001/api/v0",
+    headers: {
+        authorization
+    }
+})
 
 export default function Market() {
     const [InputContent, setInputContent] = useState("");
+    const [modelList, setMmodelList] = useState(['Qmd9nsf562XZYJ4JU6iAXafSML7Z4rHG2vgpB9i1xJgvaC', 'QmZSZ5ooNwbqd8MX42nd6eqG3WzmqxLUb3DdYkjHyLCC4K']);
 
     const getModel = async () => {
-        console.log(InputContent);
-        fetch(`https://ipfs.io/ipfs/${InputContent}`)
-            .then(resp => resp.blob())
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.style.display = "none";
-                a.href = url;
-                a.download = "tmp_model.glb";
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-            })
-            .catch(() => alert("Error to fetch model!"));
+        // setMmodelList(current => [...current, InputContent])
+
     }
 
     return (
-        <Grid container>
-            <Grid item>
-                <Stack>
-                    <TextField
-                        type="text"
-                        value={InputContent}
-                        variant="outlined"
-                        onChange={(e) => setInputContent(e.target.value)}
-                    />
-                </Stack>
+        <Stack spacing={5}>
+            <Stack direction={'row'} spacing={2}>
+                <TextField
+                    type="text"
+                    value={InputContent}
+                    variant="outlined"
+                    onChange={(e) => setInputContent(e.target.value)}
+                />
                 <Button variant="outlined" onClick={() => getModel()}>Submit</Button>
-            </Grid>
-            <Grid item>
-                <Canvas
-                    camera={{position: [2, 0, 12], fov: 10}}
-                    style={{
-                        // background: "white",
-                        width: '30vw',
-                        height: '100vh',
-                    }}
-                >
-                    <ambientLight intensity={1.25}/>
-                    <ambientLight intensity={0.1}/>
-                    <directionalLight intensity={1}/>
-                    <Suspense fallback={null}>
-                        <ModelF position={[0.025, -0.9, 0]}/>
-                    </Suspense>
-                    <OrbitControls/>
-                </Canvas>
-            </Grid>
-
-        </Grid>
+            </Stack>
+            <Stack>
+                <Stack direction={'row'} divider={<Divider orientation="vertical" flexItem/>} spacing={2}>
+                    {modelList.map((token) => (
+                        <Suspense fallback={<CircularProgress/>}>
+                            <ModelCavas key={token} model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>
+                        </Suspense>
+                    ))}
+                </Stack>
+            </Stack>
+        </Stack>
     );
 }
