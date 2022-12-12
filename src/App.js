@@ -7,8 +7,23 @@ import Menu from './Menu.tsx'
 import Home from './Pages/Home';
 import Market from './Pages/Market';
 import Profile from './Pages/Profile';
+import UserContext from './Components/UserContext'
 
 export default function App() {
+    const [userCtx, setUserCtx] = useState({});
+
+    const mergeUserCtx = (ctx) => {
+        setUserCtx(prev => {
+            const curr = {...prev, ...ctx};
+            return curr;
+        });
+    }
+    const clearUserCtx = () => {
+        setUserCtx(prev => {
+            const curr = {};
+            return curr;
+        });
+    }
 
     const getDesignTokens = (mode) => ({
         palette: {mode},
@@ -17,16 +32,18 @@ export default function App() {
 
     return (
         <div className="App">
-            <ThemeProvider theme={darkModeTheme}>
-                <BrowserRouter>
-                    <Menu/>
-                    <Routes>
-                        <Route path="/" element={<Home/>}/>
-                        <Route path="/profile" element={<Profile/>}/>
-                        <Route path="/market" element={<Market/>}/>
-                    </Routes>
-                </BrowserRouter>
-            </ThemeProvider>
+            <UserContext.Provider value={{setContext: mergeUserCtx, clear: clearUserCtx, ...userCtx}}>
+                <ThemeProvider theme={darkModeTheme}>
+                    <BrowserRouter>
+                        <Menu/>
+                        <Routes>
+                            <Route path="/" element={<Home/>}/>
+                            <Route path="/profile" element={<Profile/>}/>
+                            <Route path="/market" element={<Market/>}/>
+                        </Routes>
+                    </BrowserRouter>
+                </ThemeProvider>
+            </UserContext.Provider>
         </div>
     );
 }

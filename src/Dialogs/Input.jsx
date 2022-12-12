@@ -43,6 +43,10 @@ export default function InputDialog(props) {
         }
     }
 
+    async function mintNFT() {
+        console.log(window.contract);
+    }
+
     return (
         <Dialog open={props.open} onClose={props.handleClose}>
             <DialogTitle>
@@ -75,6 +79,7 @@ export default function InputDialog(props) {
             <DialogActions sx={{display: 'flex', justifyContent: 'space-between'}}>
                 <Button variant="outlined" onClick={() => uploadToIpfs()}
                         disabled={!file || isLoadinging}>Upload</Button>
+                <Button variant="outlined" onClick={() => mintNFT()}>Test</Button>
             </DialogActions>
         </Dialog>
     );

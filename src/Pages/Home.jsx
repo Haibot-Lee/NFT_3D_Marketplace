@@ -1,121 +1,460 @@
 import {ethers} from "ethers";
 import Web3Modal from "web3modal";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
+import UserContext from '../Components/UserContext';
+import {useNavigate} from "react-router-dom";
+
+import {Button} from '@mui/material';
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material/styles";
-import Stack from "@mui/material/Stack";
-import {Button} from '@mui/material';
 
 // web3Modal初始化
 const web3Modal = new Web3Modal({
     network: process.env.REACT_APP_MUMBAI_TEST_URL,
-    providerOptions: {}, // 额外设置
+    providerOptions: {},
 });
 
-const contractAddr = process.env.REACT_APP_MARKETPLACE;
 const abi = [
     {
-        inputs: [
+        "inputs": [
             {
-                internalType: "string",
-                name: "_greeting",
-                type: "string",
-            },
+                "internalType": "address",
+                "name": "marketplaceAddress",
+                "type": "address"
+            }
         ],
-        stateMutability: "nonpayable",
-        type: "constructor",
+        "stateMutability": "nonpayable",
+        "type": "constructor"
     },
     {
-        inputs: [],
-        name: "greet",
-        outputs: [
+        "anonymous": false,
+        "inputs": [
             {
-                internalType: "string",
-                name: "",
-                type: "string",
+                "indexed": true,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
             },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "operator",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "bool",
+                "name": "approved",
+                "type": "bool"
+            }
         ],
-        stateMutability: "view",
-        type: "function",
+        "name": "ApprovalForAll",
+        "type": "event"
     },
     {
-        inputs: [
+        "anonymous": false,
+        "inputs": [
             {
-                internalType: "string",
-                name: "_greeting",
-                type: "string",
+                "indexed": true,
+                "internalType": "address",
+                "name": "operator",
+                "type": "address"
             },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256[]",
+                "name": "ids",
+                "type": "uint256[]"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256[]",
+                "name": "values",
+                "type": "uint256[]"
+            }
         ],
-        name: "setGreeting",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "name": "TransferBatch",
+        "type": "event"
     },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "operator",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "TransferSingle",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "value",
+                "type": "string"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            }
+        ],
+        "name": "URI",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address[]",
+                "name": "accounts",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "ids",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "balanceOfBatch",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getNumber",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "operator",
+                "type": "address"
+            }
+        ],
+        "name": "isApprovedForAll",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "uri",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "mint",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "ids",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "amounts",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "bytes",
+                "name": "data",
+                "type": "bytes"
+            }
+        ],
+        "name": "safeBatchTransferFrom",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes",
+                "name": "data",
+                "type": "bytes"
+            }
+        ],
+        "name": "safeTransferFrom",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "setApproval",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "operator",
+                "type": "address"
+            },
+            {
+                "internalType": "bool",
+                "name": "approved",
+                "type": "bool"
+            }
+        ],
+        "name": "setApprovalForAll",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes4",
+                "name": "interfaceId",
+                "type": "bytes4"
+            }
+        ],
+        "name": "supportsInterface",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "uri",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
 ];
 
 export default function Home() {
+    const userCtx = useContext(UserContext);
+    const navigate = useNavigate();
     const theme = useTheme();
 
-    // connect wallet to get address and balance
-    const [address, setAddress] = useState("");
-    const [balance, setBalance] = useState("");
-    const [ens, setEns] = useState("");
-    const [msg, setMsg] = useState("");
-    const [contract, setContract] = useState({});
+    const [address, setAddress] = useState(userCtx.address);
+    const [balance, setBalance] = useState(userCtx.balance);
 
-    // 取前四个后四个（简化）
     const shortenAddr = (addr) => addr.slice(0, 4) + "..." + addr.slice(-4);
 
     async function init() {
-        // 连接上钱包之后instance储存我们钱包相关的连接资讯
+        // // connect wallet
         const instance = await web3Modal.connect();
         const provider = new ethers.providers.Web3Provider(instance);
-        // 签署协议
+        // sign contract
         const signer = provider.getSigner();
-        console.log(signer);
+        console.log("Signer: " + signer);
 
-        // 取到用户的区块域信息
+        // get address
         const addr = await signer.getAddress();
-        console.log(addr);
-        setAddress(addr); // 加到setAddress中
+        console.log("Address: " + addr);
+        setAddress(addr);
 
-        // 取到用户的余额
+        // get balance
         const bal = await provider.getBalance(addr);
-        // 转换解析余额并且加到setBalance中
         setBalance(ethers.utils.formatEther(bal));
-        console.log(ethers.utils.formatEther(bal));
+        console.log("Balance: " + ethers.utils.formatEther(bal));
 
-        // 初始化合约
-        const _contract = new ethers.Contract(contractAddr, abi, signer);
-        setContract(_contract);
-        window.contract = _contract;
+        userCtx.setContext({
+            address: addr,
+            balance: ethers.utils.formatEther(bal)
+        })
 
-        setEns(await provider.lookupAddress(addr));
+        // init contract
+        // market
+        const mktContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE, abi, signer);
+        window.mktContract = mktContract;
 
+        // nft
+        const nftContract = new ethers.Contract(process.env.REACT_APP_NFT, abi, signer);
+        window.nftContract = nftContract;
+
+        // setEns(await provider.lookupAddress(addr));
+        console.log("Finished initialized");
+        navigate('/market');
     }
 
-    async function getMessage() {
-        console.log(contract);
-        // 获取greet
-        const _msg = await contract.greet();
-        setMsg(_msg);
-        console.log(_msg);
+    function logout() {
+        setAddress("");
+        setBalance("");
+        userCtx.setContext({
+            address: "",
+            balance: ""
+        });
+        window.mktContract = null;
+        window.nftContract = null;
     }
 
-    useEffect(() => {
-        init();
-    }, []);
+    // useEffect(() => {
+    //     init();
+    // }, []);
 
     return (
-        <Stack>
-            <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
-                hello {shortenAddr(address)}, {ens}, you have {balance} Ethers.
-            </Typography>
-            <Button variant="contained" onClick={() => {
-                init()
-            }}>
-                Connect wallet
-            </Button>
+        <Stack spacing={2}>
+            {address !== "" ?
+                <>
+                    <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
+                        User Address: {shortenAddr(userCtx.address)}
+                    </Typography>
+                    <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
+                        Balance: {userCtx.balance} MATIC
+                    </Typography>
+                </> : ''}
+
+            <Button variant="contained" disabled={address !== ""} onClick={() => init()}>Connect wallet</Button>
+            <Button disabled={address === ""} onClick={() => logout()}>Log out</Button>
         </Stack>
     );
 }
