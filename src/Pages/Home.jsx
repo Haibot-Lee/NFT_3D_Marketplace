@@ -1,34 +1,122 @@
-import React, {Suspense, useState} from 'react';
-import {Canvas} from '@react-three/fiber';
-import {OrbitControls} from '@react-three/drei';
-import {Grid} from "@mui/material";
+import {ethers} from "ethers";
+import Web3Modal from "web3modal";
+import React, {useState, useEffect} from "react";
+import Typography from "@mui/material/Typography";
+import {useTheme} from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
+import {Button} from '@mui/material';
 
-import Model from '../Components/Model';
+// web3Modal初始化
+const web3Modal = new Web3Modal({
+    network: process.env.REACT_APP_MUMBAI_TEST_URL,
+    providerOptions: {}, // 额外设置
+});
+
+const contractAddr = process.env.REACT_APP_MARKETPLACE;
+const abi = [
+    {
+        inputs: [
+            {
+                internalType: "string",
+                name: "_greeting",
+                type: "string",
+            },
+        ],
+        stateMutability: "nonpayable",
+        type: "constructor",
+    },
+    {
+        inputs: [],
+        name: "greet",
+        outputs: [
+            {
+                internalType: "string",
+                name: "",
+                type: "string",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                internalType: "string",
+                name: "_greeting",
+                type: "string",
+            },
+        ],
+        name: "setGreeting",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+];
 
 export default function Home() {
+    const theme = useTheme();
+
+    // connect wallet to get address and balance
+    const [address, setAddress] = useState("");
+    const [balance, setBalance] = useState("");
+    const [ens, setEns] = useState("");
+    const [msg, setMsg] = useState("");
+    const [contract, setContract] = useState({});
+
+    // 取前四个后四个（简化）
+    const shortenAddr = (addr) => addr.slice(0, 4) + "..." + addr.slice(-4);
+
+    async function init() {
+        // 连接上钱包之后instance储存我们钱包相关的连接资讯
+        const instance = await web3Modal.connect();
+        const provider = new ethers.providers.Web3Provider(instance);
+        // 签署协议
+        const signer = provider.getSigner();
+        console.log(signer);
+
+        // 取到用户的区块域信息
+        const addr = await signer.getAddress();
+        console.log(addr);
+        setAddress(addr); // 加到setAddress中
+
+        // 取到用户的余额
+        const bal = await provider.getBalance(addr);
+        // 转换解析余额并且加到setBalance中
+        setBalance(ethers.utils.formatEther(bal));
+        console.log(ethers.utils.formatEther(bal));
+
+        // 初始化合约
+        const _contract = new ethers.Contract(contractAddr, abi, signer);
+        setContract(_contract);
+        window.contract = _contract;
+
+        setEns(await provider.lookupAddress(addr));
+
+    }
+
+    async function getMessage() {
+        console.log(contract);
+        // 获取greet
+        const _msg = await contract.greet();
+        setMsg(_msg);
+        console.log(_msg);
+    }
+
+    useEffect(() => {
+        init();
+    }, []);
 
     return (
-        <Grid container>
-            <Grid item xs={8}>
-            </Grid>
-            <Grid item xs={4}>
-                <Canvas
-                    camera={{position: [2, 0, 12], fov: 10}}
-                    style={{
-                        // background: "white",
-                        width: '33vw',
-                        height: '100vh',
-                    }}
-                >
-                    <ambientLight intensity={1.25}/>
-                    <ambientLight intensity={0.1}/>
-                    <directionalLight intensity={1}/>
-                    <Suspense fallback={null}>
-                        <Model position={[0.025, -0.9, 0]}/>
-                    </Suspense>
-                    <OrbitControls/>
-                </Canvas>
-            </Grid>
-        </Grid>
+        <Stack>
+            <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
+                hello {shortenAddr(address)}, {ens}, you have {balance} Ethers.
+            </Typography>
+            <Button variant="contained" onClick={() => {
+                init()
+            }}>
+                Connect wallet
+            </Button>
+        </Stack>
     );
 }
+

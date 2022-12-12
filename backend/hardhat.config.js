@@ -21,11 +21,11 @@ module.exports = {
     networks: {
         hardhat: {},
         goerli: {
-            url: process.env.GOERLI_URL,
+            url: process.env.REACT_APP_GOERLI_TEST_URL,
             accounts: [`0x${PRIVATE_KEY}`]
         },
         mumbai: {
-            url: process.env.MUMBAI_URL,
+            url: process.env.REACT_APP_MUMBAI_TEST_URL,
             accounts: [`0x${PRIVATE_KEY}`]
         },
     },
