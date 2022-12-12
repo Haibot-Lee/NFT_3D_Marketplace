@@ -1,6 +1,4 @@
 import React, {Suspense, useRef, useState} from 'react';
-import {Canvas} from '@react-three/fiber';
-import {OrbitControls, useGLTF} from '@react-three/drei';
 
 import {Button, CircularProgress, Grid, TextField} from "@mui/material";
 import Stack from "@mui/material/Stack";
@@ -19,7 +17,7 @@ const ipfs = create({
 
 export default function Market() {
     const [InputContent, setInputContent] = useState("");
-    const [modelList, setMmodelList] = useState(['Qmd9nsf562XZYJ4JU6iAXafSML7Z4rHG2vgpB9i1xJgvaC', 'QmZSZ5ooNwbqd8MX42nd6eqG3WzmqxLUb3DdYkjHyLCC4K']);
+    const [tokenList, setTokenList] = useState(['Qmd9nsf562XZYJ4JU6iAXafSML7Z4rHG2vgpB9i1xJgvaC', 'QmZSZ5ooNwbqd8MX42nd6eqG3WzmqxLUb3DdYkjHyLCC4K']);
 
     const getModel = async () => {
         // setMmodelList(current => [...current, InputContent])
@@ -39,7 +37,7 @@ export default function Market() {
             </Stack>
             <Stack>
                 <Stack direction={'row'} divider={<Divider orientation="vertical" flexItem/>} spacing={2}>
-                    {modelList.map((token) => (
+                    {tokenList.map((token) => (
                         <Suspense fallback={<CircularProgress/>}>
                             <ModelCavas key={token} model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>
                         </Suspense>

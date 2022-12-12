@@ -14,9 +14,8 @@ import {
 } from '@mui/material';
 import Stack from "@mui/material/Stack";
 import Typography from '@mui/material/Typography';
-import {OrbitControls, useGLTF} from "@react-three/drei";
-import {Canvas} from "@react-three/fiber";
 import {useTheme} from "@mui/material/styles";
+import ModelCavas from '../Components/ModelCavas'
 
 
 const authorization = "Basic " + btoa(process.env.REACT_APP_PROJECT_ID + ":" + process.env.REACT_APP_PROJECT_SECRET);
@@ -27,20 +26,11 @@ const ipfs = create({
     }
 })
 
-function useUpdateModel(filename) {
-    useGLTF.preload(`/${filename}`)
-    const gltf = useGLTF(`/${filename}`);
-    return gltf.scene
-}
-
 export default function InputDialog(props) {
     const theme = useTheme();
 
     const [isLoadinging, setIsLoadinging] = useState(false);
     const [file, setFile] = useState(null);
-
-    const group = useRef()
-    const model = useUpdateModel(file ? file.name : 'modelA.glb')
 
     const uploadToIpfs = async () => {
         if (file) {
@@ -73,21 +63,8 @@ export default function InputDialog(props) {
                                 :
                                 <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Preview: </Typography>
                             }
-                            <Suspense fallback={null}>
-                                <Canvas
-                                    camera={{position: [2, 0, 12], fov: 10}}
-                                    style={{width: '30vw', height: '70vh'}}
-                                >
-                                    <ambientLight intensity={1.25}/>
-                                    <ambientLight intensity={0.1}/>
-                                    <directionalLight intensity={1}/>
-                                    <Suspense fallback={null}>
-                                        <group ref={group} position={[0.025, -0.9, 0]} dispose={null}>
-                                            <primitive object={model}/>
-                                        </group>
-                                    </Suspense>
-                                    <OrbitControls/>
-                                </Canvas>
+                            <Suspense fallback={<CircularProgress/>}>
+                                <ModelCavas model={file ? file.name : 'modelA.glb'}/>
                             </Suspense>
                         </> :
                         <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Please select a model</Typography>
