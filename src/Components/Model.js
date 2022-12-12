@@ -3,7 +3,7 @@ import { useGLTF } from '@react-three/drei'
 
 export default function Model(props) {
     const group = useRef()
-    const gltf = useGLTF('/modelF.glb'); // public下的images
+    const gltf = useGLTF('/modelB.glb'); // public下的images
     return (
         <group ref={group} {...props} dispose={null}>
             <primitive object={gltf.scene} />
@@ -11,4 +11,4 @@ export default function Model(props) {
     )
 }
 
-useGLTF.preload('/modelF.glb');
+useGLTF.preload('/modelB.glb');

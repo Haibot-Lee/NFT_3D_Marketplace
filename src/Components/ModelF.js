@@ -6,7 +6,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export default function ModelF(props) {
-  const { nodes, materials } = useGLTF('/modelF.glb')
+  const { nodes, materials } = useGLTF('/modelB.glb')
   return (
     <group {...props} dispose={null}>
       <primitive object={nodes.Hips} />
@@ -24,4 +24,4 @@ export default function ModelF(props) {
   )
 }
 
-useGLTF.preload('/modelF.glb')
+useGLTF.preload('/modelB.glb')
