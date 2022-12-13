@@ -1,7 +1,7 @@
 import React, {Suspense, useRef} from 'react'
 import {OrbitControls, useGLTF} from '@react-three/drei'
 import {Canvas} from "@react-three/fiber";
-import {CircularProgress} from "@mui/material";
+import {Box, CircularProgress} from "@mui/material";
 
 export default function Model(props) {
     const group = useRef()

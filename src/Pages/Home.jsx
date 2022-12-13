@@ -63,9 +63,8 @@ export default function Home() {
         console.log(nftContract);
         window.nftContract = nftContract;
 
-        // setEns(await provider.lookupAddress(addr));
         console.log("Finished initialized");
-        navigate('/market');
+        navigate('/profile');
     }
 
     function logout() {

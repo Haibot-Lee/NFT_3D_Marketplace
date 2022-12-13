@@ -1,7 +1,17 @@
 import React, {Suspense, useContext, useEffect, useState} from 'react';
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import {Button, CircularProgress} from "@mui/material";
+import {
+    Box,
+    Button,
+    CircularProgress, Grid, Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import UserContext from "../Components/UserContext";
 import Divider from "@mui/material/Divider";
@@ -44,15 +54,37 @@ export default function Profile() {
             <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
                 Balance: {userCtx?.balance} MATIC
             </Typography>
-            <Stack>
-                <Stack direction={'row'} divider={<Divider orientation="vertical" flexItem/>} spacing={2}>
-                    {Array.from(tokenList).map((token) => (
+            <Grid container>
+                {Array.from(tokenList).map((token) => (
+                    <Grid item xs={4}>
                         <Suspense fallback={<CircularProgress/>}>
-                            <ModelCavas key={token} model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>
+                            <ModelCavas key={token}
+                                        model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>
                         </Suspense>
-                    ))}
-                </Stack>
-            </Stack>
+                    </Grid>
+                ))}
+            </Grid>
+            {/*<TableContainer component={Paper}>*/}
+            {/*    <Table>*/}
+            {/*        <TableHead>*/}
+            {/*            <TableRow>*/}
+            {/*                <TableCell align="right">My NFTs</TableCell>*/}
+            {/*            </TableRow>*/}
+            {/*        </TableHead>*/}
+            {/*        <TableBody>*/}
+            {/*            <TableRow sx={{overflow: 'hidden'}}>*/}
+            {/*                {Array.from(tokenList).map((token) => (*/}
+            {/*                    <TableCell component="th" scope="row" sx={{overflow: 'hidden'}}>*/}
+            {/*                        <Suspense fallback={<CircularProgress/>}>*/}
+            {/*                            <ModelCavas key={token}*/}
+            {/*                                        model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>*/}
+            {/*                        </Suspense>*/}
+            {/*                    </TableCell>*/}
+            {/*                ))}*/}
+            {/*            </TableRow>*/}
+            {/*        </TableBody>*/}
+            {/*    </Table>*/}
+            {/*</TableContainer>*/}
         </Stack>
     );
 }
