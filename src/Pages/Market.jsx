@@ -17,7 +17,7 @@ const ipfs = create({
 
 export default function Market() {
     const [InputContent, setInputContent] = useState("");
-    const [tokenList, setTokenList] = useState(['Qmd9nsf562XZYJ4JU6iAXafSML7Z4rHG2vgpB9i1xJgvaC', 'QmZSZ5ooNwbqd8MX42nd6eqG3WzmqxLUb3DdYkjHyLCC4K']);
+    const [tokenList, setTokenList] = useState([]);
 
     const getModel = async () => {
         // setMmodelList(current => [...current, InputContent])

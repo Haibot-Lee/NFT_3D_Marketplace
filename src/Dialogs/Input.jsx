@@ -1,6 +1,7 @@
 import React, {useState, useContext, useRef, useEffect, Suspense} from 'react';
 import {create} from 'ipfs-http-client';
 import * as IPFS from 'ipfs-core'
+import {format} from "date-fns";
 
 import {
     Box,
@@ -38,13 +39,17 @@ export default function InputDialog(props) {
             const response = await ipfs.add(file);
             console.log(response);
             const token = response.path
-            console.log(token)
+            console.log(token);
+            await mintNFT(token)
             setIsLoadinging(false);
         }
     }
 
-    async function mintNFT() {
-        console.log(window.contract);
+    async function mintNFT(token) {
+        var date = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        await window.nftContract.mint(token, 1);
+        await window.mktContract.listToken(process.env.REACT_APP_NFT, 2, 1, token, date);
+        console.log("minted");
     }
 
     return (
@@ -79,7 +84,6 @@ export default function InputDialog(props) {
             <DialogActions sx={{display: 'flex', justifyContent: 'space-between'}}>
                 <Button variant="outlined" onClick={() => uploadToIpfs()}
                         disabled={!file || isLoadinging}>Upload</Button>
-                <Button variant="outlined" onClick={() => mintNFT()}>Test</Button>
             </DialogActions>
         </Dialog>
     );
