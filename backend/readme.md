@@ -2,6 +2,7 @@
 NodeJS v16 and above
 
 # prepare env
+    cd backend
     npm install
 
 # compile contracts 
@@ -11,3 +12,7 @@ NodeJS v16 and above
 # deploy contracts
 #### default network is Mumbai
     npx hardhat run scripts/deploy.js --network <network_name>
+
+# add contracts info. to web
+    cp artifacts/contracts/MarketPlace.sol/MarketPlace.json ../src/contracts/MarketPlace.json
+    cp artifacts/contracts/NFT.sol/NFT.json ../src/contracts/NFT.json

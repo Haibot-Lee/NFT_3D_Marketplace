@@ -3,13 +3,16 @@ import Web3Modal from "web3modal";
 import React, {useState, useEffect, useContext} from "react";
 import UserContext from '../Components/UserContext';
 import {useNavigate} from "react-router-dom";
+import NftContract from "../contracts/NFT.json"
+import MarketContract from "../contracts/NFT.json"
 
 import {Button} from '@mui/material';
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material/styles";
 
-// web3Modal初始化
+
+// web3Modal init
 const web3Modal = new Web3Modal({
     network: process.env.REACT_APP_MUMBAI_TEST_URL,
     providerOptions: {},
@@ -414,11 +417,11 @@ export default function Home() {
 
         // init contract
         // market
-        const mktContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE, abi, signer);
+        const mktContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE, MarketContract.abi, signer);
         window.mktContract = mktContract;
 
         // nft
-        const nftContract = new ethers.Contract(process.env.REACT_APP_NFT, abi, signer);
+        const nftContract = new ethers.Contract(process.env.REACT_APP_NFT, NftContract.abi, signer);
         window.nftContract = nftContract;
 
         // setEns(await provider.lookupAddress(addr));
@@ -437,13 +440,18 @@ export default function Home() {
         window.nftContract = null;
     }
 
+    function readJSON(address) {
+        console.log(NftContract.abi);
+
+    }
+
     // useEffect(() => {
     //     init();
     // }, []);
 
     return (
         <Stack spacing={2}>
-            {address !== "" ?
+            {(address && address !== "") ?
                 <>
                     <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
                         User Address: {shortenAddr(userCtx.address)}
@@ -455,6 +463,7 @@ export default function Home() {
 
             <Button variant="contained" disabled={address !== ""} onClick={() => init()}>Connect wallet</Button>
             <Button disabled={address === ""} onClick={() => logout()}>Log out</Button>
+            {/*<Button onClick={() => readJSON('../contracts/NFT.json')}>TEST</Button>*/}
         </Stack>
     );
 }
