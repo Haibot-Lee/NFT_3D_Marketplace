@@ -56,7 +56,7 @@ export default function Profile() {
     async function sellToken(nft) {
         console.log("sell nft: " + nft)
         if (checked) await window.mktContract.publicToAll(nft[0], ethers.utils.parseUnits(price, 18), 1, false, 0) //sell
-        await window.mktContract.publicToAll(nft[0], 0, 1, true, timeString.format("YYYY-MM-DD HH:mm:ss")) //bid
+        await window.mktContract.publicToAll(nft[0], 0, 1, true, timeString.unix()) //bid
         getMyTokens()
     }
 
