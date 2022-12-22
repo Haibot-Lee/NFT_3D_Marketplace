@@ -65,7 +65,7 @@ export default function Home() {
         window.nftContract = nftContract;
 
         console.log("Finished initialized");
-        navigate('/profile');
+        // navigate('/profile');
     }
 
     function logout() {
@@ -77,16 +77,6 @@ export default function Home() {
         });
         window.mktContract = null;
         window.nftContract = null;
-    }
-
-    async function mintNFT(token) {
-        console.log(window.nftContract);
-        console.log(window.mktContract);
-
-        var res = await window.mktContract.getMyTokens(address);
-        console.log(JSON.stringify(res))
-
-        console.log("test end");
     }
 
     useEffect(() => {
@@ -107,8 +97,6 @@ export default function Home() {
 
             <Button variant="contained" disabled={address !== ""} onClick={() => init()}>Connect wallet</Button>
             <Button disabled={address === ""} onClick={() => logout()}>Log out</Button>
-            <Button variant="outlined"
-                    onClick={() => mintNFT()}>Test</Button>
         </Stack>
     );
 }
