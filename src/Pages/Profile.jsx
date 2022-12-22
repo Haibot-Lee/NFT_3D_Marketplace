@@ -40,51 +40,50 @@ export default function Profile() {
     }
 
     useEffect(() => {
-        if (!userCtx.address || userCtx.address == "") navigate('/');
+        if (!userCtx.address || userCtx.address === "") navigate('/');
         else getMyTokens()
     }, [])
 
     return (
         <Stack spacing={2}>
             <Button variant="outlined"
-                    onClick={() => getMyTokens()}>Test</Button>
+                    onClick={() => getMyTokens()}>Refresh My Models</Button>
             <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
                 User Address: {shortenAddr(userCtx?.address)}
             </Typography>
             <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
                 Balance: {userCtx?.balance} MATIC
             </Typography>
-            <Grid container>
-                {Array.from(tokenList).map((token) => (
-                    <Grid item xs={4}>
-                        <Suspense fallback={<CircularProgress/>}>
-                            <ModelCavas key={token}
-                                        model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>
-                        </Suspense>
-                    </Grid>
-                ))}
-            </Grid>
-            {/*<TableContainer component={Paper}>*/}
-            {/*    <Table>*/}
-            {/*        <TableHead>*/}
-            {/*            <TableRow>*/}
-            {/*                <TableCell align="right">My NFTs</TableCell>*/}
-            {/*            </TableRow>*/}
-            {/*        </TableHead>*/}
-            {/*        <TableBody>*/}
-            {/*            <TableRow sx={{overflow: 'hidden'}}>*/}
-            {/*                {Array.from(tokenList).map((token) => (*/}
-            {/*                    <TableCell component="th" scope="row" sx={{overflow: 'hidden'}}>*/}
-            {/*                        <Suspense fallback={<CircularProgress/>}>*/}
-            {/*                            <ModelCavas key={token}*/}
-            {/*                                        model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>*/}
-            {/*                        </Suspense>*/}
-            {/*                    </TableCell>*/}
-            {/*                ))}*/}
-            {/*            </TableRow>*/}
-            {/*        </TableBody>*/}
-            {/*    </Table>*/}
-            {/*</TableContainer>*/}
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="right">My NFTs</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow sx={{overflow: 'hidden'}}>
+                            {Array.from(tokenList).map((token) => (
+                                <TableCell component="th" scope="row" sx={{overflow: 'hidden'}}>
+                                    <Suspense fallback={<CircularProgress/>}>
+                                        <ModelCavas key={token}
+                                                    model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>
+                                    </Suspense>
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                        <TableRow sx={{overflow: 'hidden'}}>
+                            {Array.from(tokenList).map((token) => (
+                                <TableCell component="th" scope="row" sx={{overflow: 'hidden'}}>
+                                    <Button variant="contained" onClick={() => console.log(token)}>
+                                        Add to Market
+                                    </Button>
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Stack>
     );
 }

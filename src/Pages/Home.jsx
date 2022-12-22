@@ -49,7 +49,8 @@ export default function Home() {
 
         userCtx.setContext({
             address: addr,
-            balance: ethers.utils.formatEther(bal)
+            balance: ethers.utils.formatEther(bal),
+            // signer: signer
         })
 
         // init contract
@@ -88,9 +89,9 @@ export default function Home() {
         console.log("test end");
     }
 
-    // useEffect(() => {
-    //     init();
-    // }, []);
+    useEffect(() => {
+        init();
+    }, []);
 
     return (
         <Stack spacing={2}>
