@@ -50,6 +50,8 @@ export default function InputDialog(props) {
         await window.nftContract.mint(token, 1);
         await window.mktContract.listToken(process.env.REACT_APP_NFT, 2, 1, token, date);
         console.log("minted");
+        props.handleClose();
+        alert("NFT created successfully!");
     }
 
     return (

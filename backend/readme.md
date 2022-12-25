@@ -14,5 +14,6 @@ NodeJS v16 and above
     npx hardhat run scripts/deploy.js --network <network_name>
 
 # add contracts info. to web
+    mkdir ../src/contracts
     cp artifacts/contracts/MarketPlace.sol/MarketPlace.json ../src/contracts/MarketPlace.json
     cp artifacts/contracts/NFT.sol/NFT.json ../src/contracts/NFT.json
