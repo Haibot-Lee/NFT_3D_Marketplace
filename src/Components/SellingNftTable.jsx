@@ -14,7 +14,7 @@ import {
 import ModelCavas from "./ModelCavas";
 import IconButton from "@mui/material/IconButton";
 import {useTheme} from "@mui/material/styles";
-import {BigNumber} from "ethers";
+import {BigNumber, ethers} from "ethers";
 import Typography from "@mui/material/Typography";
 
 function MoreVertIcon() {
@@ -72,10 +72,10 @@ export default function SellingNftTable(props) {
                             {Array.from(props.sellingNfts).map((nft) => (
                                 <TableCell sx={{overflow: 'hidden'}} align={"center"}>
                                     <Typography color={"text.primary"}>
-                                        {"Price: " + Number(nft[4]._hex) + " MATIC"}
+                                        {"Price: " + ethers.utils.formatUnits(nft[4], 'ether') + " MATIC"}
                                     </Typography>
                                     <Button variant="contained" onClick={() => console.log(nft)}>
-                                        Buy
+                                        {nft[7] ? "Bid" : "Buy"}
                                     </Button>
                                 </TableCell>
                             ))}

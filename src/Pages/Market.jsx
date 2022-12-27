@@ -23,7 +23,7 @@ export default function Market() {
     async function getMarketTokens() {
         setSellingNfts([]);
         var res = await window.mktContract.getSellingTokens(userCtx.address);
-        console.log(JSON.stringify(res))
+        console.log("selling Tokens" + JSON.stringify(res))
         setSellingNfts(res)
         // for (const item of res) {
         //     console.log(JSON.stringify(item));

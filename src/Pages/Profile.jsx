@@ -49,14 +49,15 @@ export default function Profile() {
     async function getMyTokens() {
         setMyNftList([]);
         var res = await window.mktContract.getMyTokens(userCtx.address);
-        console.log(JSON.stringify(res))
+        console.log("My Token" + JSON.stringify(res))
         setMyNftList(res);
     }
 
     async function sellToken(nft) {
         console.log("sell nft: " + nft)
-        if (checked) await window.mktContract.publicToAll(nft[0], ethers.utils.parseUnits(price, 'ether'), 1, false, 0) //sell
-        await window.mktContract.publicToAll(nft[0], 0, 1, true, timeString.unix()) //bid
+        if (checked) await window.mktContract.publicToAll(Number(nft[0]), ethers.utils.parseUnits(price, 'ether'), 1, false, 0) //sell
+        await window.mktContract.publicToAll(Number(nft[0]), 0, 1, true, timeString.unix()) //bid
+        alert("Publish successfully!")
         getMyTokens()
     }
 
@@ -128,7 +129,7 @@ export default function Profile() {
                 <DialogTitle>Public to NFT Marketplace</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Public your NFT model to the Marketplace
+                        Publish your NFT model to the Marketplace
                     </DialogContentText>
                     <Divider/>
                     <Stack spacing={1} sx={{mt: 1}}>
@@ -156,7 +157,7 @@ export default function Profile() {
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => sellToken(open)}>Public</Button>
+                    <Button onClick={() => sellToken(open)}>Publish</Button>
                 </DialogActions>
             </Dialog>
         </>
