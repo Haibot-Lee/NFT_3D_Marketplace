@@ -116,31 +116,23 @@ export default function Profile() {
                                 getSellingTokens();
                             }}>Refresh My Models</Button>
                 </Stack>
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableBody>
-                            <TableRow sx={{overflow: 'hidden'}}>
-                                {Array.from(myNftList).map((nft) => (
-                                    <TableCell align={"center"} >
-                                        <Card component={Paper}>
-                                            <CardActionArea>
-                                                <Suspense fallback={<CircularProgress/>}>
-                                                    <ModelCavas key={nft[nft.length - 1]}
-                                                                model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft[nft.length - 1]}`}/>
-                                                </Suspense>
-                                            </CardActionArea>
-                                            <CardActions sx={{display: "flex", justifyContent: "center"}}>
-                                                <Button variant="contained" size="small" onClick={() => setOpen(nft)}>
-                                                    Public
-                                                </Button>
-                                            </CardActions>
-                                        </Card>
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <Stack direction={"row"} component={Paper} spacing={1}>
+                    {Array.from(myNftList).map((nft) => (
+                        <Card component={Paper}>
+                            <CardActionArea>
+                                <Suspense fallback={<CircularProgress/>}>
+                                    <ModelCavas key={nft[nft.length - 1]}
+                                                model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft[nft.length - 1]}`}/>
+                                </Suspense>
+                            </CardActionArea>
+                            <CardActions sx={{display: "flex", justifyContent: "center"}}>
+                                <Button variant="contained" size="small" onClick={() => setOpen(nft)}>
+                                    Public
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    ))}
+                </Stack>
                 <SellingNftTable sellingNfts={sellingNfts}/>
             </Stack>
             <Dialog open={open} onClose={handleCloseDialog}>

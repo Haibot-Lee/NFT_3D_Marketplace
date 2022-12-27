@@ -18,6 +18,7 @@ import {BigNumber, ethers} from "ethers";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import {format} from "date-fns";
 
 function MoreVertIcon() {
     return null;
@@ -27,7 +28,13 @@ export default function SellingNftTable(props) {
     const theme = useTheme();
 
     async function buyNft(nft) {
-        console.log(nft)
+        var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        await window.mktContract.buy(Number(nft[0]), time, 1);
+        alert("Buy Successfully!")
+    }
+
+    async function makeABid(nft) {
+        console.log(nft);
     }
 
     return (
@@ -50,8 +57,10 @@ export default function SellingNftTable(props) {
                                             {nft[7] ? "" : "Price: " + ethers.utils.formatUnits(nft[4], 'ether') + " MATIC"}
                                         </Typography>
                                     </CardContent>
-                                    <CardActions sx={{display: "flex", justifyContent:"center"}}>
-                                        <Button variant="contained" onClick={() => buyNft(nft)}>
+                                    <CardActions sx={{display: "flex", justifyContent: "center"}}>
+                                        <Button variant="contained" onClick={() => {
+                                            nft[7] ? makeABid(nft) : buyNft(nft)
+                                        }}>
                                             {nft[7] ? "Bid" : "Buy"}
                                         </Button>
                                     </CardActions>

@@ -76,7 +76,7 @@ export default function InputDialog(props) {
                                 <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Preview: </Typography>
                             }
                             <Suspense fallback={<CircularProgress/>}>
-                                <ModelCavas model={file ? file.name : 'modelA.glb'}/>
+                                <ModelCavas model={file ? file.name : 'modelA.glb'} height={"70vh"}/>
                             </Suspense>
                         </> :
                         <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Please select a model</Typography>
