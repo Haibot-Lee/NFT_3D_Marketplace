@@ -34,6 +34,7 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {BigNumber, ethers} from "ethers";
+import SellingNftTable from "../Components/SellingNftTable";
 
 
 export default function Profile() {
@@ -42,6 +43,7 @@ export default function Profile() {
     const navigate = useNavigate();
 
     const [myNftList, setMyNftList] = useState([]);
+    const [sellingNfts, setSellingNfts] = useState([]);
     const shortenAddr = (addr) => {
         if (addr) return addr.slice(0, 4) + "..." + addr.slice(-4);
     }
@@ -51,6 +53,13 @@ export default function Profile() {
         var res = await window.mktContract.getMyTokens(userCtx.address);
         console.log("My Token" + JSON.stringify(res))
         setMyNftList(res);
+    }
+
+    async function getSellingTokens() {
+        setSellingNfts([]);
+        var res = await window.mktContract.getSellingTokens(userCtx.address);
+        console.log("selling Tokens" + JSON.stringify(res))
+        setSellingNfts(res)
     }
 
     async function sellToken(nft) {
@@ -63,7 +72,10 @@ export default function Profile() {
 
     useEffect(() => {
         if (!userCtx.address || userCtx.address === "") navigate('/');
-        else getMyTokens()
+        else {
+            getMyTokens();
+            getSellingTokens();
+        }
     }, [])
 
     const [open, setOpen] = useState(null);
@@ -87,7 +99,10 @@ export default function Profile() {
         <>
             <Stack spacing={2}>
                 <Button variant="outlined"
-                        onClick={() => getMyTokens()}>Refresh My Models</Button>
+                        onClick={() => {
+                            getMyTokens();
+                            getSellingTokens();
+                        }}>Refresh My Models</Button>
                 <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
                     User Address: {shortenAddr(userCtx?.address)}
                 </Typography>
@@ -124,6 +139,7 @@ export default function Profile() {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <SellingNftTable sellingNfts={sellingNfts}/>
             </Stack>
             <Dialog open={open} onClose={handleCloseDialog}>
                 <DialogTitle>Public to NFT Marketplace</DialogTitle>

@@ -6,6 +6,7 @@ import {create} from "ipfs-http-client";
 import UserContext from "../Components/UserContext";
 import {useNavigate} from "react-router-dom";
 import SellingNftTable from "../Components/SellingNftTable"
+import Typography from "@mui/material/Typography";
 
 const authorization = "Basic " + btoa(process.env.REACT_APP_PROJECT_ID + ":" + process.env.REACT_APP_PROJECT_SECRET);
 const ipfs = create({
@@ -16,19 +17,15 @@ const ipfs = create({
 })
 
 export default function Market() {
-    const [sellingNfts, setSellingNfts] = useState([]);
+    const [allNfts, setAllNfts] = useState([]);
     const userCtx = useContext(UserContext);
     const navigate = useNavigate();
 
     async function getMarketTokens() {
-        setSellingNfts([]);
-        var res = await window.mktContract.getSellingTokens(userCtx.address);
+        setAllNfts([]);
+        var res = await window.mktContract.getAllTokens();
         console.log("selling Tokens" + JSON.stringify(res))
-        setSellingNfts(res)
-        // for (const item of res) {
-        //     console.log(JSON.stringify(item));
-        //     setTokenList(current => new Set([...current, item[item.length - 1]]))
-        // }
+        setAllNfts(res)
     }
 
     useEffect(() => {
@@ -38,7 +35,8 @@ export default function Market() {
 
     return (
         <Stack spacing={5}>
-            <SellingNftTable sellingNfts={sellingNfts}/>
+            <Typography variant={"h5"} color={"text.primary"}>Selling Models</Typography>
+            <SellingNftTable sellingNfts={allNfts}/>
         </Stack>
     );
 }
