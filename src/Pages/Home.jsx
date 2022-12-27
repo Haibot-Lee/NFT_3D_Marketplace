@@ -10,14 +10,8 @@ import {Button} from '@mui/material';
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material/styles";
-import {format} from "date-fns";
+import web3Modal from "../Components/Web3Config"
 
-
-// web3Modal init
-const web3Modal = new Web3Modal({
-    network: process.env.REACT_APP_MUMBAI_TEST_URL,
-    providerOptions: {},
-});
 
 export default function Home() {
     const userCtx = useContext(UserContext);
@@ -50,7 +44,6 @@ export default function Home() {
         userCtx.setContext({
             address: addr,
             balance: ethers.utils.formatEther(bal),
-            // signer: signer
         })
 
         // init contract
@@ -65,7 +58,6 @@ export default function Home() {
         window.nftContract = nftContract;
 
         console.log("Finished initialized");
-        // navigate('/profile');
     }
 
     function logout() {

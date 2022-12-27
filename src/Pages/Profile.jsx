@@ -28,8 +28,9 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {BigNumber, ethers} from "ethers";
 import SellingNftTable from "../Components/SellingNftTable";
 import MyNftTable from "../Components/MyNftTable";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import web3Modal from "../Components/Web3Config";
+import MarketContract from "../contracts/MarketPlace.json";
+import NftContract from "../contracts/NFT.json";
 
 
 export default function Profile() {
@@ -37,22 +38,25 @@ export default function Profile() {
     const userCtx = useContext(UserContext);
     const navigate = useNavigate();
 
+    const [address, setAddress] = useState("");
+    const [balance, setBalance] = useState(0);
+
     const [myNftList, setMyNftList] = useState([]);
     const [sellingNfts, setSellingNfts] = useState([]);
     const shortenAddr = (addr) => {
-        if (addr) return addr.slice(0, 4) + "..." + addr.slice(-4);
+        if (addr && addr !== "") return addr.slice(0, 4) + "..." + addr.slice(-4);
     }
 
     async function getMyTokens() {
         setMyNftList([]);
-        var res = await window.mktContract.getMyTokens(userCtx.address);
+        var res = await window.mktContract.getMyTokens(address);
         console.log("My Token" + JSON.stringify(res))
         setMyNftList(res);
     }
 
     async function getSellingTokens() {
         setSellingNfts([]);
-        var res = await window.mktContract.getSellingTokens(userCtx.address);
+        var res = await window.mktContract.getSellingTokens(address);
         console.log("selling Tokens" + JSON.stringify(res))
         setSellingNfts(res)
     }
@@ -62,10 +66,50 @@ export default function Profile() {
         getSellingTokens();
     }
 
+    async function init() {
+        // // connect wallet
+        const instance = await web3Modal.connect();
+        const provider = new ethers.providers.Web3Provider(instance);
+        // sign contract
+        const signer = provider.getSigner();
+        console.log("Signer: " + signer);
+
+        // get address
+        const addr = await signer.getAddress();
+        console.log("Address: " + addr);
+        setAddress(addr);
+
+        // get balance
+        const bal = await provider.getBalance(addr);
+        setBalance(ethers.utils.formatEther(bal));
+        console.log("Balance: " + ethers.utils.formatEther(bal));
+
+        userCtx.setContext({
+            address: addr,
+            balance: ethers.utils.formatEther(bal),
+        })
+
+        // init contract
+        // market
+        const mktContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE, MarketContract.abi, signer);
+        console.log(mktContract);
+        window.mktContract = mktContract;
+
+        // nft
+        const nftContract = new ethers.Contract(process.env.REACT_APP_NFT, NftContract.abi, signer);
+        console.log(nftContract);
+        window.nftContract = nftContract;
+
+        console.log("Finished initialized");
+    }
+
     useEffect(() => {
-        if (!userCtx.address || userCtx.address === "") navigate('/');
-        else update();
+        init();
     }, [])
+
+    useEffect(() => {
+        update();
+    }, [address])
 
     async function sellToken(nft) {
         console.log("sell nft: " + nft)
@@ -98,15 +142,15 @@ export default function Profile() {
                 <Stack direction={"row"}>
                     <Stack>
                         <Typography variant="h6" sx={{mt: 0}} color={theme.palette.text.primary} align="left">
-                            <strong>Wallet Address: </strong> {shortenAddr(userCtx?.address)}
+                            <strong>Wallet Address: </strong> {shortenAddr(address)}
                         </Typography>
                         <Typography variant="h6" sx={{mt: 0}} color={theme.palette.text.primary} align={"left"}>
-                            <strong>Balance: </strong> {userCtx?.balance} MATIC
+                            <strong>Balance: </strong> {balance} MATIC
                         </Typography>
                     </Stack>
                     <Button variant="outlined"
                             size="small"
-                            onClick={() => update()}>Refresh My Models</Button>
+                            onClick={() => init()}>Refresh My Models</Button>
                 </Stack>
                 <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
                     Private Model:
