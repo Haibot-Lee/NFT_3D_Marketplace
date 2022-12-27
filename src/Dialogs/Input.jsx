@@ -51,12 +51,18 @@ export default function InputDialog(props) {
         var tokenId = await window.nftContract.getNumber();
         await window.mktContract.listToken(process.env.REACT_APP_NFT, Number(tokenId), 1, token, date);
         console.log("minted");
-        props.handleClose();
+        closeDialog();
         alert("NFT created successfully!");
     }
 
+    const closeDialog = () => {
+        setFile(null);
+        setIsLoadinging(false);
+        props.handleClose();
+    }
+
     return (
-        <Dialog open={props.open} onClose={props.handleClose}>
+        <Dialog open={props.open} onClose={closeDialog}>
             <DialogTitle>
                 <Typography variant="h5" fontWeight="bold" sx={{mt: 0}}>Upload your model</Typography>
             </DialogTitle>

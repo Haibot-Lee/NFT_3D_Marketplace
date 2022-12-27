@@ -1,7 +1,4 @@
 import React, {Suspense, useContext, useEffect, useState} from 'react';
-import {format} from "date-fns";
-
-import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import {
     Box,
@@ -16,7 +13,6 @@ import {
     Paper,
     TextField
 } from "@mui/material";
-import {useTheme} from "@mui/material/styles";
 import UserContext from "../Components/UserContext";
 import Divider from "@mui/material/Divider";
 import ModelCavas from "../Components/ModelCavas";
@@ -26,53 +22,19 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {BigNumber, ethers} from "ethers";
-import SellingNftTable from "../Components/SellingNftTable";
-import MyNftTable from "../Components/MyNftTable";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 
 
-export default function Profile() {
-    const theme = useTheme();
+export default function MyNftTable(props) {
     const userCtx = useContext(UserContext);
     const navigate = useNavigate();
-
-    const [myNftList, setMyNftList] = useState([]);
-    const [sellingNfts, setSellingNfts] = useState([]);
-    const shortenAddr = (addr) => {
-        if (addr) return addr.slice(0, 4) + "..." + addr.slice(-4);
-    }
-
-    async function getMyTokens() {
-        setMyNftList([]);
-        var res = await window.mktContract.getMyTokens(userCtx.address);
-        console.log("My Token" + JSON.stringify(res))
-        setMyNftList(res);
-    }
-
-    async function getSellingTokens() {
-        setSellingNfts([]);
-        var res = await window.mktContract.getSellingTokens(userCtx.address);
-        console.log("selling Tokens" + JSON.stringify(res))
-        setSellingNfts(res)
-    }
-
-    function update() {
-        getMyTokens();
-        getSellingTokens();
-    }
-
-    useEffect(() => {
-        if (!userCtx.address || userCtx.address === "") navigate('/');
-        else update();
-    }, [])
 
     async function sellToken(nft) {
         console.log("sell nft: " + nft)
         if (checked) await window.mktContract.publicToAll(Number(nft[0]), ethers.utils.parseUnits(price, 'ether'), 1, false, 0) //sell
         await window.mktContract.publicToAll(Number(nft[0]), 0, 1, true, timeString.unix()) //bid
-        alert("Publish successfully!")
-        getMyTokens()
+        alert("Publish successfully!");
+        handleCloseDialog();
     }
 
     const [open, setOpen] = useState(null);
@@ -94,29 +56,22 @@ export default function Profile() {
 
     return (
         <>
-            <Stack spacing={2}>
-                <Stack direction={"row"}>
-                    <Stack>
-                        <Typography variant="h6" sx={{mt: 0}} color={theme.palette.text.primary} align="left">
-                            <strong>Wallet Address: </strong> {shortenAddr(userCtx?.address)}
-                        </Typography>
-                        <Typography variant="h6" sx={{mt: 0}} color={theme.palette.text.primary} align={"left"}>
-                            <strong>Balance: </strong> {userCtx?.balance} MATIC
-                        </Typography>
-                    </Stack>
-                    <Button variant="outlined"
-                            size="small"
-                            onClick={() => update()}>Refresh My Models</Button>
-                </Stack>
-                <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
-                    Private Model:
-                </Typography>
-                <MyNftTable myNftList={myNftList}/>
-                <Divider/>
-                <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
-                    Public Model:
-                </Typography>
-                <SellingNftTable sellingNfts={sellingNfts}/>
+            <Stack direction={"row"} component={Paper} spacing={1}>
+                {Array.from(props.myNftList).map((nft) => (
+                    <Card component={Paper}>
+                        <CardActionArea>
+                            <Suspense fallback={<CircularProgress/>}>
+                                <ModelCavas key={nft[nft.length - 1]}
+                                            model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft[nft.length - 1]}`}/>
+                            </Suspense>
+                        </CardActionArea>
+                        <CardActions sx={{display: "flex", justifyContent: "center"}}>
+                            <Button variant="contained" size="small" onClick={() => setOpen(nft)}>
+                                Public
+                            </Button>
+                        </CardActions>
+                    </Card>
+                ))}
             </Stack>
             <Dialog open={open} onClose={handleCloseDialog}>
                 <DialogTitle>Public to NFT Marketplace</DialogTitle>
