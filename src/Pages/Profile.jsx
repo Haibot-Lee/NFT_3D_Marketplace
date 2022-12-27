@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import {
     Box,
-    Button, Checkbox,
+    Button, CardActionArea, CardActions, Checkbox,
     CircularProgress,
     Dialog,
     DialogActions,
@@ -35,6 +35,8 @@ import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {BigNumber, ethers} from "ethers";
 import SellingNftTable from "../Components/SellingNftTable";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 
 
 export default function Profile() {
@@ -98,41 +100,41 @@ export default function Profile() {
     return (
         <>
             <Stack spacing={2}>
-                <Button variant="outlined"
-                        onClick={() => {
-                            getMyTokens();
-                            getSellingTokens();
-                        }}>Refresh My Models</Button>
-                <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
-                    User Address: {shortenAddr(userCtx?.address)}
-                </Typography>
-                <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
-                    Balance: {userCtx?.balance} MATIC
-                </Typography>
+                <Stack direction={"row"}>
+                    <Stack>
+                        <Typography variant="h6" sx={{mt: 0}} color={theme.palette.text.primary} align="left">
+                            <strong>Wallet Address: </strong> {shortenAddr(userCtx?.address)}
+                        </Typography>
+                        <Typography variant="h6" sx={{mt: 0}} color={theme.palette.text.primary} align={"left"}>
+                            <strong>Balance: </strong> {userCtx?.balance} MATIC
+                        </Typography>
+                    </Stack>
+                    <Button variant="outlined"
+                            size="small"
+                            onClick={() => {
+                                getMyTokens();
+                                getSellingTokens();
+                            }}>Refresh My Models</Button>
+                </Stack>
                 <TableContainer component={Paper}>
                     <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="right">My NFTs</TableCell>
-                            </TableRow>
-                        </TableHead>
                         <TableBody>
                             <TableRow sx={{overflow: 'hidden'}}>
                                 {Array.from(myNftList).map((nft) => (
-                                    <TableCell component="th" scope="row" sx={{overflow: 'hidden'}}>
-                                        <Suspense fallback={<CircularProgress/>}>
-                                            <ModelCavas key={nft[nft.length - 1]}
-                                                        model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft[nft.length - 1]}`}/>
-                                        </Suspense>
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow sx={{overflow: 'hidden'}}>
-                                {Array.from(myNftList).map((nft) => (
-                                    <TableCell sx={{overflow: 'hidden'}} align={"center"}>
-                                        <Button variant="contained" onClick={() => setOpen(nft)}>
-                                            Public
-                                        </Button>
+                                    <TableCell align={"center"} >
+                                        <Card component={Paper}>
+                                            <CardActionArea>
+                                                <Suspense fallback={<CircularProgress/>}>
+                                                    <ModelCavas key={nft[nft.length - 1]}
+                                                                model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft[nft.length - 1]}`}/>
+                                                </Suspense>
+                                            </CardActionArea>
+                                            <CardActions sx={{display: "flex", justifyContent: "center"}}>
+                                                <Button variant="contained" size="small" onClick={() => setOpen(nft)}>
+                                                    Public
+                                                </Button>
+                                            </CardActions>
+                                        </Card>
                                     </TableCell>
                                 ))}
                             </TableRow>
