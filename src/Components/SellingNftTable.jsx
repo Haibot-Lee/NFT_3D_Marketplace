@@ -39,7 +39,7 @@ export default function SellingNftTable(props) {
                     </CardActionArea>
                     <CardContent>
                         <Typography color={"text.primary"}>
-                            {nft[7] ? "Bidding Model" : "Price: " + ethers.utils.formatUnits(nft[4], 'ether') + " MATIC"}
+                            {(nft[7] ? "Highest bid: " : "Price: ") + ethers.utils.formatUnits(nft[4], 'ether') + " MATIC"}
                         </Typography>
                     </CardContent>
                     <CardActions sx={{display: "flex", justifyContent: "center"}}>

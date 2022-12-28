@@ -50,20 +50,25 @@ export default function SellingNftTable(props) {
         alert("Buy Successfully!")
     }
 
-//TODO: 以下有bug
     async function makeABid(nft) {
         var bidInfo = await window.mktContract.getAuction(Number(nft[0]));
+        console.log(bidInfo)
 
+        if (Number(bidInfo.biddingTime) < Math.floor((new Date()).valueOf() / 1000)) {
+            alert("Over time!")
+            return
+        }
         if (userCtx?.balance < bidPrice) {
             alert("Not enough balance!")
             return
         }
-        if (bidPrice < ethers.utils.formatUnits(nft[4], 'ether')) {
+        if (bidPrice <= ethers.utils.formatUnits(nft[4], 'ether')) {
             alert("Your price should higher than the highest bid price currently!")
             return
         }
+
         var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        await window.mktContract.buy(Number(nft[0]), Date.now(), time, ethers.utils.parseUnits(bidPrice, 'ether'));
+        await window.mktContract.bid(Number(nft[0]), Math.floor((new Date()).valueOf() / 1000), time, ethers.utils.parseUnits(bidPrice, 'ether'));
         alert("Bid Successfully!")
     }
 

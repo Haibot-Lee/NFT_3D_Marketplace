@@ -109,7 +109,8 @@ export default function Profile() {
 
     useEffect(() => {
         update();
-    }, [address])
+        console.log("Update token list")
+    }, [address, userCtx])
 
     async function sellToken(nft) {
         console.log("sell nft: " + nft)
