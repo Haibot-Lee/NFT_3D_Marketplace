@@ -46,7 +46,7 @@ export default function SellingNftTable(props) {
             return
         }
         var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        await window.mktContract.buy(Number(nft[0]), time, 1);
+        await window.mktContract.buy(Number(nft[0]), time, 1, {value: nft[4]});
         alert("Buy Successfully!")
     }
 

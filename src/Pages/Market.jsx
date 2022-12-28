@@ -10,6 +10,7 @@ import web3Modal from "../Components/Web3Config";
 import {ethers} from "ethers";
 import MarketContract from "../contracts/MarketPlace.json";
 import NftContract from "../contracts/NFT.json";
+import {Button} from "@mui/material";
 
 export default function Market() {
     const [allNfts, setAllNfts] = useState([]);
@@ -72,6 +73,10 @@ export default function Market() {
 
     return (
         <Stack spacing={5}>
+            <Stack direction={"row"}>
+                <Button variant="outlined" size="small"
+                        onClick={() => init()}>Refresh Market</Button>
+            </Stack>
             <Typography variant={"h5"} color={"text.primary"}>Selling Models</Typography>
             <AllNftTable sellingNfts={allNfts}/>
         </Stack>

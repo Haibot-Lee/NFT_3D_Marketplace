@@ -79,11 +79,8 @@ contract MarketPlace {
         uint256 counter = 0;
         for (uint256 i = 0; i < itemCount; i++) {
             if (trades[i + 1].amount > 0) {
-
                 res[counter] = trades[i + 1];
                 counter++;
-
-
             }
         }
 

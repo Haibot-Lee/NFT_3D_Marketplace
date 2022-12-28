@@ -4,6 +4,7 @@ import {ThemeProvider, useTheme, createTheme} from '@mui/material/styles';
 
 import './App.css';
 import Menu from './Menu.tsx'
+import Navbar from './Navbar'
 import Home from './Pages/Home';
 import Market from './Pages/Market';
 import Profile from './Pages/Profile';
@@ -50,6 +51,7 @@ export default function App() {
             <UserContext.Provider value={{setContext: mergeUserCtx, clear: clearUserCtx, ...userCtx}}>
                 <ThemeProvider theme={darkModeTheme}>
                     <BrowserRouter>
+                        <Navbar/>
                         <Menu/>
                         <Routes>
                             <Route path="/" element={<Home/>}/>

@@ -114,8 +114,8 @@ export default function Profile() {
 
     async function sellToken(nft) {
         console.log("sell nft: " + nft)
-        if (checked) await window.mktContract.publicToAll(Number(nft[0]), ethers.utils.parseUnits(price, 'ether'), 1, false, 0) //sell
-        await window.mktContract.publicToAll(Number(nft[0]), 0, 1, true, timeString.unix()) //bid
+        if (checked) await window.mktContract.publicToAll(Number(nft[0]), ethers.utils.parseUnits(price, 'ether'), 1, false, 0, {sender: userCtx.address}) //sell
+        await window.mktContract.publicToAll(Number(nft[0]), 0, 1, true, timeString.unix(), {sender: userCtx.address}) //bid
         alert("Publish successfully!")
         getMyTokens()
     }
@@ -141,14 +141,6 @@ export default function Profile() {
         <>
             <Stack spacing={2}>
                 <Stack direction={"row"}>
-                    <Stack>
-                        <Typography variant="h6" sx={{mt: 0}} color={theme.palette.text.primary} align="left">
-                            <strong>Wallet Address: </strong> {shortenAddr(address)}
-                        </Typography>
-                        <Typography variant="h6" sx={{mt: 0}} color={theme.palette.text.primary} align={"left"}>
-                            <strong>Balance: </strong> {balance} MATIC
-                        </Typography>
-                    </Stack>
                     <Button variant="outlined"
                             size="small"
                             onClick={() => init()}>Refresh My Models</Button>
