@@ -376,12 +376,13 @@ contract MarketPlace {
 
     }
 
+//    TODO: bug here!
     function auctionEnd(uint256 _tradeId, string memory _time) public payable {
         Auction memory auction = auctions[_tradeId];
         Trade memory trade = trades[_tradeId];
-        //require(block.timestamp >= auction.biddingTime, "auction not end");
+//        require(block.timestamp >= auction.biddingTime, "auction not end");
+//        require(msg.sender == auction.highestBidder, "correct highestBidder");
         require(msg.value == auction.highestBid, "Not correct price");
-        require(msg.sender == auction.highestBidder, "correct highestBidder");
 
 
         IERC1155(trade.token).safeTransferFrom(address(this), auction.highestBidder, trade._tokenId, 1, "");
@@ -392,7 +393,8 @@ contract MarketPlace {
         _recordId : recordId,
         _tokenId : trade._tokenId,
         seller : trade.poster,
-        buyer : msg.sender,
+//        buyer : msg.sender,
+        buyer : auction.highestBidder,
         price : trade.price,
         amount : 1,
         time : _time,

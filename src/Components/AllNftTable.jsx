@@ -47,6 +47,7 @@ export default function SellingNftTable(props) {
         }
         var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
         await window.mktContract.buy(Number(nft[0]), time, 1, {value: nft[4]});
+        handleCloseDialog();
         alert("Buy Successfully!")
     }
 
@@ -69,6 +70,7 @@ export default function SellingNftTable(props) {
 
         var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
         await window.mktContract.bid(Number(nft[0]), Math.floor((new Date()).valueOf() / 1000), time, ethers.utils.parseUnits(bidPrice, 'ether'));
+        handleCloseDialog();
         alert("Bid Successfully!")
     }
 
