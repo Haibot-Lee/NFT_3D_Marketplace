@@ -3,12 +3,13 @@ import {BrowserRouter, Route, Routes, Navigate, useLocation} from "react-router-
 import {ThemeProvider, useTheme, createTheme} from '@mui/material/styles';
 
 import './App.css';
-import Menu from './Menu.tsx'
-import Navbar from './Navbar'
+import Menu from './Menus/Menu.tsx'
+import Navbar from './Menus/Navbar'
 import Home from './Pages/Home';
 import Market from './Pages/Market';
 import Profile from './Pages/Profile';
 import UserContext from './Components/UserContext'
+import Toolbar from "@mui/material/Toolbar";
 
 const useWillMount = (fn) => {
     const willMount = useRef(true);
@@ -53,6 +54,7 @@ export default function App() {
                     <BrowserRouter>
                         <Navbar/>
                         <Menu/>
+                        <Toolbar/>
                         <Routes>
                             <Route path="/" element={<Home/>}/>
                             <Route path="/profile" element={<Profile/>}/>

@@ -3,7 +3,10 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import {useContext} from "react";
-import UserContext from "./Components/UserContext";
+import UserContext from "../Components/UserContext";
+import RefreshIcon from '@mui/icons-material/Refresh';
+import {Box, Tooltip} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 
 export default function ResponsiveAppBar() {
     const userCtx = useContext(UserContext);
@@ -15,6 +18,7 @@ export default function ResponsiveAppBar() {
     return (
         <AppBar position="fixed">
             <Toolbar variant="dense" sx={{justifyContent: "center"}}>
+                <Box sx={{flexGrow: 1}}/>
                 <Typography
                     variant="h6"
                     noWrap
@@ -41,6 +45,13 @@ export default function ResponsiveAppBar() {
                     }}>
                     /Balance: {userCtx.balance} MATIC
                 </Typography>
+                <Box sx={{flexGrow: 1}}/>
+
+                <Tooltip title="Refresh">
+                    <IconButton onClick={() => console.log("Refresh")}>
+                        <RefreshIcon/>
+                    </IconButton>
+                </Tooltip>
             </Toolbar>
         </AppBar>
     );
