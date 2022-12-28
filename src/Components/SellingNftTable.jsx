@@ -40,19 +40,19 @@ export default function SellingNftTable(props) {
     async function endAuction(nft) {
         //TODO: bug here!
         console.log(nft);
-        var auctionInfo=await window.mktContract.getAuction(nft[4]);
+        var auctionInfo=await window.mktContract.getAuction(nft["_tradeId"]);
         console.log(auctionInfo);
 
-        // var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        // if (ethers.utils.formatUnits(nft[4], 'ether') == 0) {
-        //     console.log("Refund");
-        //     await window.mktContract.refund(nft[4], time);
-        //     alert("Auction ended");
-        // } else {
-        //     console.log("Get bid");
-        //     await window.mktContract.auctionEnd(nft[4], time, {value: nft[4]});
-        //     alert("Auction ended with" + ethers.utils.formatUnits(nft[4], 'ether') + "MATIC");
-        // }
+        var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        if (ethers.utils.formatUnits(nft[4], 'ether') == 0) {
+            console.log("Refund");
+            await window.mktContract.refund(nft["_tradeId"], time);
+            alert("Auction ended");
+        } else {
+            console.log("Get bid");
+            await window.mktContract.auctionEnd(nft["_tradeId"], time, {sender:,value: nft[4]});
+            alert("Auction ended with" + ethers.utils.formatUnits(nft[4], 'ether') + "MATIC");
+        }
     }
 
     return (

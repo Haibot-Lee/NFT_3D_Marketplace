@@ -43,9 +43,6 @@ export default function Profile() {
 
     const [myNftList, setMyNftList] = useState([]);
     const [sellingNfts, setSellingNfts] = useState([]);
-    const shortenAddr = (addr) => {
-        if (addr && addr !== "") return addr.slice(0, 4) + "..." + addr.slice(-4);
-    }
 
     async function getMyTokens() {
         setMyNftList([]);
