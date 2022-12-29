@@ -52,10 +52,10 @@ export default function SellingNftTable(props) {
     }
 
     async function makeABid(nft) {
-        var bidInfo = await window.mktContract.getAuction(Number(nft[0]));
+        var bidInfo = await window.mktContract.getAuction(nft["_tradeId"]);
         console.log(bidInfo)
 
-        if (Number(bidInfo.biddingTime) < Math.floor((new Date()).valueOf() / 1000)) {
+        if (Number(bidInfo.biddingTime) < Math.floor((Date.now()) / 1000)) {
             alert("Over time!")
             return
         }
@@ -74,33 +74,53 @@ export default function SellingNftTable(props) {
         alert("Bid Successfully!")
     }
 
+    async function getBiddingItem(nft) {
+        var bidInfo = await window.mktContract.getAuction(nft["_tradeId"]);
+        console.log(bidInfo);
+
+        var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        console.log("Get bidding item");
+        await window.mktContract.auctionEnd(nft["_tradeId"], time, {value: nft[4]});
+        alert("Auction ended with" + ethers.utils.formatUnits(nft[4], 'ether') + "MATIC. Please check in your profile!");
+    }
+
     return (
         <>
             <TableContainer component={Paper}>
                 <Table>
                     <TableBody>
                         <TableRow sx={{overflow: 'hidden'}}>
-                            {Array.from(props.sellingNfts).map((nft) => (
+                            {Array.from(props.sellingNfts).map((item) => (
                                 <TableCell sx={{overflow: 'hidden'}} align={"center"}>
                                     <Card component={Paper}>
                                         <CardActionArea>
                                             <Suspense fallback={<CircularProgress/>}>
-                                                <ModelCavas key={nft[nft.length - 2]}
+                                                <ModelCavas key={item.nft[6]}
                                                             height={'60vh'}
-                                                            model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft[nft.length - 2]}`}/>
+                                                            model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${item.nft[6]}`}/>
                                             </Suspense>
                                         </CardActionArea>
                                         <CardContent>
                                             <Typography color={"text.primary"}>
-                                                {(nft[7] ? "Highest bid: " : "Price: ") + ethers.utils.formatUnits(nft[4], 'ether') + " MATIC"}
+                                                {(item.nft["auction"] ? "Highest bid: " : "Price: ") + ethers.utils.formatUnits(item.nft[4], 'ether') + " MATIC"}
+                                            </Typography>
+                                            <Typography color={"text.primary"}>
+                                                {item.nft["auction"] ? "Auction end at: " + new Date(Number(item.auction["biddingTime"] * 1000)).toLocaleString() : ""}
                                             </Typography>
                                         </CardContent>
                                         <CardActions sx={{display: "flex", justifyContent: "center"}}>
-                                            <Button variant="contained" onClick={() => {
-                                                nft[7] ? setOpen(nft) : buyNft(nft)
-                                            }}>
-                                                {nft[7] ? "Bid" : "Buy"}
+                                            <Button variant="contained"
+                                                    disabled={item.nft["auction"] && Date.now() > Number(item.auction["biddingTime"]) * 1000}
+                                                    onClick={() => {
+                                                        item.nft["auction"] ? setOpen(item.nft) : buyNft(item.nft)
+                                                    }}>
+                                                {item.nft["auction"] ? "Bid" : "Buy"}
                                             </Button>
+                                            {item.nft["auction"] && Date.now() > Number(item.auction["biddingTime"]) * 1000 && item.auction["highestBidder"] === userCtx.address ?
+                                                <Button variant="contained" onClick={() => getBiddingItem(item.nft)}>
+                                                    pay for your bid
+                                                </Button> : ""
+                                            }
                                         </CardActions>
                                     </Card>
                                 </TableCell>

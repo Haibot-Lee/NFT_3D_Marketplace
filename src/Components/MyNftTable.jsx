@@ -74,7 +74,7 @@ export default function MyNftTable(props) {
                 ))}
             </Stack>
             <Dialog open={open} onClose={handleCloseDialog}>
-                <DialogTitle>Public to NFT Marketplace</DialogTitle>
+                <DialogTitle>Publish to NFT Marketplace</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Publish your NFT model to the Marketplace

@@ -38,20 +38,10 @@ export default function SellingNftTable(props) {
     }
 
     async function endAuction(nft) {
-        //TODO: bug here!
-        console.log(nft);
-        var auctionInfo = await window.mktContract.getAuction(nft["_tradeId"]);
-
+        console.log("Auction end and Refund!");
         var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        if (ethers.utils.formatUnits(nft[4], 'ether') == 0) {
-            console.log("Refund");
-            await window.mktContract.refund(nft["_tradeId"], time);
-            alert("Auction ended");
-        } else {
-            console.log("Get bid");
-            await window.mktContract.auctionEnd(nft["_tradeId"], time, {value: nft[4]});
-            alert("Auction ended with" + ethers.utils.formatUnits(nft[4], 'ether') + "MATIC");
-        }
+        await window.mktContract.refund(nft["_tradeId"], time);
+        alert("Auction ended");
     }
 
     return (
@@ -76,7 +66,7 @@ export default function SellingNftTable(props) {
                                     Change Price
                                 </Button> :
                                 <Button variant="contained" size={"small"} onClick={() => endAuction(nft)}>
-                                    Auction End
+                                    End Auction
                                 </Button>}
 
                         </CardActions>

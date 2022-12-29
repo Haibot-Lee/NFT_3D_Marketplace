@@ -376,12 +376,11 @@ contract MarketPlace {
 
     }
 
-//    TODO: bug here!
     function auctionEnd(uint256 _tradeId, string memory _time) public payable {
         Auction memory auction = auctions[_tradeId];
         Trade memory trade = trades[_tradeId];
 //        require(block.timestamp >= auction.biddingTime, "auction not end");
-//        require(msg.sender == auction.highestBidder, "correct highestBidder");
+        require(msg.sender == auction.highestBidder, "correct highestBidder");
         require(msg.value == auction.highestBid, "Not correct price");
 
 

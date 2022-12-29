@@ -59,8 +59,12 @@ export default function Market() {
 
     async function getMarketTokens() {
         setAllNfts([]);
-        var res = await window.mktContract.getAllTokens();
-        console.log("selling Tokens" + JSON.stringify(res))
+        var allTokens = await window.mktContract.getAllTokens();
+        var res = []
+        for (var i = 0; i < allTokens.length; i++) {
+            var auctionInfo = await window.mktContract.getAuction(allTokens[i]["_tradeId"]);
+            res.push({nft: allTokens[i], auction: auctionInfo})
+        }
         setAllNfts(res)
     }
 
