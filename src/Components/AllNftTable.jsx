@@ -77,11 +77,14 @@ export default function SellingNftTable(props) {
     async function getBiddingItem(nft) {
         var bidInfo = await window.mktContract.getAuction(nft["_tradeId"]);
         console.log(bidInfo);
-
-        var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        console.log("Get bidding item");
-        await window.mktContract.auctionEnd(nft["_tradeId"], time, {value: nft[4]});
-        alert("Auction ended with" + ethers.utils.formatUnits(nft[4], 'ether') + "MATIC. Please check in your profile!");
+        if (userCtx.address == bidInfo["highestBidder"]) {
+            var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+            console.log("Get bidding item");
+            await window.mktContract.auctionEnd(nft["_tradeId"], time, {value: nft[4]});
+            alert("Auction ended with" + ethers.utils.formatUnits(nft[4], 'ether') + "MATIC. Please check in your profile!");
+        } else {
+            alert("You are not the highest bidder, please change to the correct account or refresh to update account")
+        }
     }
 
     return (
