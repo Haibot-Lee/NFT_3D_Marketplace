@@ -71,9 +71,9 @@ export default function Home() {
         window.nftContract = null;
     }
 
-    useEffect(() => {
-        init();
-    }, []);
+    // useEffect(() => {
+    //     init();
+    // }, []);
 
     return (
         <Stack spacing={2}>
