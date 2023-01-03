@@ -2,7 +2,7 @@ cp .env env.tmp
 npm install
 npx hardhat compile
 echo `npx hardhat run scripts/deploy.js` >> env.tmp
-cp env.tmp ../.env
+mv env.tmp ../.env
 
 mkdir ../src/contracts
 cp artifacts/contracts/MarketPlace.sol/MarketPlace.json ../src/contracts/MarketPlace.json
