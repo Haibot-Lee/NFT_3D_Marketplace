@@ -87,7 +87,9 @@ export default function Home() {
                     </Typography>
                 </> : ''}
 
-            <Button variant="contained" disabled={address !== ""} onClick={() => init()}>Connect wallet</Button>
+            <Button variant="contained" disabled={address && address !== ""} onClick={() => init()}>
+                Connect wallet
+            </Button>
             <Button disabled={address === ""} onClick={() => logout()}>Log out</Button>
         </Stack>
     );
