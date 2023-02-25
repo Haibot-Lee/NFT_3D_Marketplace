@@ -14,9 +14,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.17'
-      - run: |
-          npm install
-          CI=false npm run build
+      - run:
+          name: install && build
+          command: |
+            npm install
+            CI=false npm run build
       - name: upload files
         uses: actions/upload-artifact@v2
         with:
