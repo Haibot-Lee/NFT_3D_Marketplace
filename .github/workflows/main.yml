@@ -1,7 +1,4 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: NFT marketplace
+name: First GitHub Actions Demo
 on:
   push:
     branches:
@@ -17,7 +14,15 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.17'
-      - run: npm install && npm run build
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+      - run: yarn install && yarn build
+      - name: upload files
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-pages
+          path: build
+          retention-days: 1
   Deploy:
     needs: Build
     runs-on: ubuntu-latest
