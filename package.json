@@ -38,12 +38,12 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ],
-    "ignore": [
-      "node_modules",
-      "build/*"
     ]
   },
+  "eslintIgnore": [
+    "node_modules",
+    "build/*"
+  ],
   "browserslist": {
     "production": [
       ">0.2%",
