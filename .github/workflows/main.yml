@@ -1,23 +1,37 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Build and Deploy
-on: [push]
+name: NFT marketplace
+on:
+  push:
+    branches:
+      - master
+
 jobs:
-  build-and-deploy:
+  Build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2 
-
-      - name: Install and Build 🔧 
-        run: |
-          npm install
-          npm run build
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: actions/setup-node@v2
+        uses: actions/setup-node@v2
         with:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: market_prod
-          FOLDER: build
+          node-version: '16.17'
+      - run: npm install && npm build
+  Deploy:
+    needs: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: download build files
+        uses: actions/download-artifact@v2
+        with:
+          name: build-pages
+          path: build
+      - name: deploy
+        uses: JamesIves/github-pages-deploy-action@v4.2.3
+        with:
+          branch: gh-pages
+          folder: build
+          token: "${{ secrets.ACCESS_TOKEN }}"
