@@ -38,6 +38,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "ignore": [
+      "node_modules",
+      "build/*"
     ]
   },
   "browserslist": {
@@ -51,6 +55,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "homepage": "https://Haibot-Lee.github.io/nft_market"
+  }
 }
