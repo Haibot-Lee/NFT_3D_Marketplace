@@ -1,4 +1,3 @@
-// @ts-ignore
 import React, {Suspense, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 
@@ -22,7 +21,7 @@ import InputDialog from "./Input";
 
 const drawerWidth = 200;
 
-const openedMixin = (theme: Theme): CSSObject => ({
+const openedMixin = (theme) => ({
     width: drawerWidth,
     transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
@@ -31,7 +30,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
     overflowX: 'hidden',
 });
 
-const closedMixin = (theme: Theme): CSSObject => ({
+const closedMixin = (theme) => ({
     transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,

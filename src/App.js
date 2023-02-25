@@ -3,7 +3,7 @@ import {BrowserRouter, Route, Routes, Navigate, useLocation} from "react-router-
 import {ThemeProvider, useTheme, createTheme} from '@mui/material/styles';
 
 import './App.css';
-import Menu from './Menus/Menu.tsx'
+import Menu from './Menus/Menu'
 import Navbar from './Menus/Navbar'
 import Home from './Pages/Home';
 import Market from './Pages/Market';
