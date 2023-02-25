@@ -31,32 +31,36 @@ export default function InputDialog(props) {
     const theme = useTheme();
 
     const [isLoadinging, setIsLoadinging] = useState(false);
-    const [file, setFile] = useState(null);
+    const [token, setToken] = useState(null);
 
-    const uploadToIpfs = async () => {
-        if (file) {
+    const uploadToIpfs = async (file) => {
+        setIsLoadinging(true);
+        const response = await ipfs.add(file);
+        console.log(response);
+        const model_token = response.path
+        console.log(model_token);
+        setToken(model_token)
+        setIsLoadinging(false);
+    }
+
+    async function mintNFT() {
+        if (token) {
             setIsLoadinging(true);
-            const response = await ipfs.add(file);
-            console.log(response);
-            const token = response.path
-            console.log(token);
-            await mintNFT(token)
+            var date = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+            await window.nftContract.mint(token, 1);
+            var tokenId = await window.nftContract.getNumber();
+            await window.mktContract.listToken(process.env.REACT_APP_NFT, Number(tokenId), 1, token, date);
+            console.log("minted");
+            closeDialog();
+            alert("NFT created successfully!");
             setIsLoadinging(false);
+        } else {
+            alert("No model selected!")
         }
     }
 
-    async function mintNFT(token) {
-        var date = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        await window.nftContract.mint(token, 1);
-        var tokenId = await window.nftContract.getNumber();
-        await window.mktContract.listToken(process.env.REACT_APP_NFT, Number(tokenId), 1, token, date);
-        console.log("minted");
-        closeDialog();
-        alert("NFT created successfully!");
-    }
-
     const closeDialog = () => {
-        setFile(null);
+        setToken(null);
         setIsLoadinging(false);
         props.handleClose();
     }
@@ -69,30 +73,29 @@ export default function InputDialog(props) {
             <DialogContent>
                 <Stack spacing={1}>
                     <form>
-                        <input type="file" onChange={(e) => setFile(e.target.files[0])}/>
+                        <input type="file" onChange={(e) => uploadToIpfs(e.target.files[0])}/>
                     </form>
-                    {file ?
-                        <>
-                            {isLoadinging ?
-                                <Stack direction='row' spacing={2}>
-                                    <CircularProgress size={25} color='warning'/>
-                                    <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Uploading...</Typography>
-                                </Stack>
-                                :
-                                <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Preview: </Typography>
-                            }
-                            <Suspense fallback={<CircularProgress/>}>
-                                <ModelCavas model={file ? file.name : 'modelA.glb'} height={"70vh"}/>
-                            </Suspense>
-                        </> :
-                        <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Please select a model</Typography>
+                    {isLoadinging ?
+                        <Stack direction='row' spacing={2}>
+                            <CircularProgress size={25} color='warning'/>
+                            <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Uploading...</Typography>
+                        </Stack>
+                        :
+                        <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Preview: {token ? '' : 'Please select a model!'}</Typography>
+                    }
+                    {token ?
+                        <Suspense fallback={<CircularProgress/>}>
+                            <ModelCavas
+                                model={token ? `${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}` : 'modelA.glb'}
+                                height={"70vh"}/>
+                        </Suspense> : ''
                     }
                 </Stack>
 
             </DialogContent>
             <DialogActions sx={{display: 'flex', justifyContent: 'space-between'}}>
-                <Button variant="outlined" onClick={() => uploadToIpfs()}
-                        disabled={!file || isLoadinging}>Upload</Button>
+                <Button variant="outlined" onClick={() => mintNFT()}
+                        disabled={!token || isLoadinging}>Upload</Button>
             </DialogActions>
         </Dialog>
     );
