@@ -59,10 +59,10 @@ export default function MyNftTable(props) {
             <Stack direction={"row"} component={Paper} spacing={1}>
                 {Array.from(props.myNftList).map((nft) => (
                     <Card component={Paper}>
-                        <CardActionArea onClick={() => navigate(`/detail/${nft[nft.length - 1]}`)}>
+                        <CardActionArea onClick={() => navigate(`/detail/${nft['uri']}`)}>
                             <Suspense fallback={<CircularProgress/>}>
-                                <ModelCavas key={nft[nft.length - 1]}
-                                            model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft[nft.length - 1]}`}/>
+                                <ModelCavas key={nft['uri']}
+                                            model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft['uri']}`}/>
                             </Suspense>
                         </CardActionArea>
                         <CardActions sx={{display: "flex", justifyContent: "center"}}>

@@ -29,6 +29,10 @@
   color: #61dafb;
 }
 
+.a-enter-vr{
+  position: fixed !important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
