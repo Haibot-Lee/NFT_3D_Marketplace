@@ -9,7 +9,7 @@ export default function Model(props) {
     return (
         <Canvas
             camera={{position: [2, 0, 12], fov: 10}}
-            style={{height: props.height ? props.height : '30vh'}}
+            style={{height: props.height ? props.height : '30vh', width: props.width ? props.width : 'auto'}}
         >
             <ambientLight intensity={1.25}/>
             <ambientLight intensity={0.1}/>

@@ -8,6 +8,7 @@ import Navbar from './Menus/Navbar'
 import Home from './Pages/Home';
 import Market from './Pages/Market';
 import Profile from './Pages/Profile';
+import Detail from './Pages/Detail';
 import UserContext from './Components/UserContext'
 import Toolbar from "@mui/material/Toolbar";
 
@@ -59,6 +60,7 @@ export default function App() {
                             <Route path="/" element={<Home/>}/>
                             <Route path="/profile" element={<Profile/>}/>
                             <Route path="/market" element={<Market/>}/>
+                            <Route path="/detail/:token" element={<Detail/>}/>
                         </Routes>
                     </BrowserRouter>
                 </ThemeProvider>

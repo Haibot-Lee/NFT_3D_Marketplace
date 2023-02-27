@@ -43,12 +43,12 @@ export default function ResponsiveAppBar() {
                         ml: 2,
                         fontFamily: 'monospace'
                     }}>
-                    /Balance: {userCtx.balance} MATIC
+                    Balance: {userCtx.balance} MATIC
                 </Typography>
                 <Box sx={{flexGrow: 1}}/>
 
                 <Tooltip title="Refresh">
-                    <IconButton onClick={() => console.log("Refresh")}>
+                    <IconButton onClick={() => window.location.reload()}>
                         <RefreshIcon/>
                     </IconButton>
                 </Tooltip>

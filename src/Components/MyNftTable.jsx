@@ -1,4 +1,4 @@
-import React, {Suspense, useContext, useEffect, useState} from 'react';
+import React, {Suspense, useContext, useState} from 'react';
 import Stack from "@mui/material/Stack";
 import {
     Box,
@@ -59,7 +59,7 @@ export default function MyNftTable(props) {
             <Stack direction={"row"} component={Paper} spacing={1}>
                 {Array.from(props.myNftList).map((nft) => (
                     <Card component={Paper}>
-                        <CardActionArea>
+                        <CardActionArea onClick={() => navigate(`/detail/${nft[nft.length - 1]}`)}>
                             <Suspense fallback={<CircularProgress/>}>
                                 <ModelCavas key={nft[nft.length - 1]}
                                             model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft[nft.length - 1]}`}/>

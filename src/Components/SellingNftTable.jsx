@@ -1,13 +1,7 @@
-import React, {Suspense, useRef, useState} from 'react';
+import React, {Suspense, useState} from 'react';
 import {
     CircularProgress,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableRow,
-    Box, DialogTitle, DialogContent, TextField, DialogActions, Dialog, Alert
+    Paper, DialogTitle, DialogContent, TextField, DialogActions, Dialog
 } from "@mui/material";
 import ModelCavas from "./ModelCavas";
 import {useTheme} from "@mui/material/styles";
@@ -79,7 +73,7 @@ export default function SellingNftTable(props) {
                     <TextField
                         autoFocus required fullWidth
                         margin="dense"
-                        label="Price"
+                        label="Price(MATIC)"
                         type="number"
                         variant="outlined"
                         val={price}
