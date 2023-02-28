@@ -81,13 +81,14 @@ export default function InputDialog(props) {
                             <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Uploading...</Typography>
                         </Stack>
                         :
-                        <Typography variant="h6" fontWeight="bold" sx={{mt: 0}}>Preview: {token ? '' : 'Please select a model!'}</Typography>
+                        <Typography variant="h6" fontWeight="bold"
+                                    sx={{mt: 0}}>Preview: {token ? '' : 'Please select a model!'}</Typography>
                     }
                     {token ?
                         <Suspense fallback={<CircularProgress/>}>
                             <ModelCavas
                                 model={token ? `${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}` : 'modelA.glb'}
-                                height={"70vh"}/>
+                                height={"70vh"} width={'30vw'}/>
                         </Suspense> : ''
                     }
                 </Stack>

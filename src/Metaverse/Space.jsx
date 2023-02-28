@@ -23,6 +23,13 @@ export default function Space(props) {
     const userCtx = useContext(UserContext);
     const [myNftList, setMyNftList] = useState([]);
 
+
+    async function getMyTokens(address) {
+        var res = await window.mktContract.getMyTokens(address);
+        setMyNftList(res);
+        console.log("My Token" + JSON.stringify(res))
+    }
+
     async function init() {
         // // connect wallet
         const instance = await web3Modal.connect();
@@ -57,9 +64,7 @@ export default function Space(props) {
 
         console.log("Finished initialized");
 
-        var res = await window.mktContract.getMyTokens(addr);
-        setMyNftList(res);
-        console.log("My Token" + JSON.stringify(res))
+        getMyTokens(addr);
     }
 
     useEffect(() => {
@@ -85,8 +90,9 @@ export default function Space(props) {
             {posList.map((pos, idx) => (
                 <Model token={myNftList[idx] ? myNftList[idx]['uri'] : null} x={pos.x} y={pos.y} z={pos.z} ry={pos.ry}/>
             ))}
+
             <a-camera position="0 2 20">
-                {/*<a-cursor/>*/}
+                <a-cursor/>
             </a-camera>
         </a-scene>
     );
