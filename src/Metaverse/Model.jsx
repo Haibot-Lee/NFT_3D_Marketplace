@@ -44,11 +44,8 @@ function Model({token, x, y, z, scale, ry}) {
 
     const theme = useTheme();
     const [open, setOpen] = useState(false);
-
     const handleClickOpen = () => setOpen(true);
-
     const handleClose = () => setOpen(false);
-
     const handleCollide = () => console.log('collided!');
 
     const changeModel = (newToken) => {
@@ -57,6 +54,8 @@ function Model({token, x, y, z, scale, ry}) {
             const entity = document.getElementById(`box-${x}-${y}-${z}`);
             entity.object3D.clear();
             entity.object3D.add(d.scene);
+            entity.setAttribute('position', `${x} ${y + 0.4} ${z}`);
+            console("pos changed!!!!!!!!!!")
         })
     }
 
@@ -65,7 +64,7 @@ function Model({token, x, y, z, scale, ry}) {
             <a-entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.3} ${z}`} scale={'0.5 0.5 0.5'}/>
             {token ?
                 <Entity id={token}
-                        position={`${x} ${y + 0.3} ${z}`} scale={`${scale} ${scale} ${scale}`}
+                        position={`${x} ${y + 0.4} ${z}`} scale={`${scale} ${scale} ${scale}`}
                         rotation={`0 ${ry} 0`}/> :
                 <Entity id={`box-${x}-${y}-${z}`}
                         events={{click: handleClickOpen, collided: [handleCollide]}}
