@@ -1,4 +1,4 @@
-// contributed by LU Si
+// LU Si for the original contribution
 
 pragma solidity ^0.8.0;
 
@@ -161,11 +161,7 @@ contract MarketPlace {
 
     }
 
-    function getMyTokens(address sender)
-    public
-    view
-    returns (TradeItem[] memory)
-    {
+    function getMyTokens(address sender) public view returns (TradeItem[] memory){
         uint256 totalItemCount = itemId;
         uint itemCount = 0;
 
@@ -321,7 +317,7 @@ contract MarketPlace {
         Trade memory trade = trades[_tradeId];
 
         require(_amount <= trade.amount, "Not enough supply");
-        //require(trade.poster != msg.sender, "Seller not to be buyer");
+//        require(trade.poster != msg.sender, "Seller not to be buyer");
 
         recordId += 1;
         history[recordId] = History({
@@ -343,7 +339,6 @@ contract MarketPlace {
         if (trades[_tradeId].amount == 0) {
             trades[_tradeId].poster = address(0);
         }
-
 
     }
 
@@ -379,7 +374,7 @@ contract MarketPlace {
     function auctionEnd(uint256 _tradeId, string memory _time) public payable {
         Auction memory auction = auctions[_tradeId];
         Trade memory trade = trades[_tradeId];
-//        require(block.timestamp >= auction.biddingTime, "auction not end");
+        //        require(block.timestamp >= auction.biddingTime, "auction not end");
         require(msg.sender == auction.highestBidder, "correct highestBidder");
         require(msg.value == auction.highestBid, "Not correct price");
 
@@ -392,7 +387,7 @@ contract MarketPlace {
         _recordId : recordId,
         _tokenId : trade._tokenId,
         seller : trade.poster,
-//        buyer : msg.sender,
+        //        buyer : msg.sender,
         buyer : auction.highestBidder,
         price : trade.price,
         amount : 1,
