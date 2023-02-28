@@ -45,26 +45,32 @@ function Model({token, x, y, z, scale, ry}) {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+    const handleClickOpen = () => setOpen(true);
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const handleClose = () => setOpen(false);
 
-    const handleCollide = () => {
-        console.log('collided!');
+    const handleCollide = () => console.log('collided!');
+
+    const changeModel = (newToken) => {
+        //TODO: with add model bug
+        loader.load(`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${newToken}`, (d) => {
+            const entity = document.getElementById(`box-${x}-${y}-${z}`);
+            entity.object3D.clear();
+            entity.object3D.add(d.scene);
+        })
     }
 
     return (
         <>
             <a-entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.3} ${z}`} scale={'0.5 0.5 0.5'}/>
             {token ?
-                <a-entity id={`${token}`} position={`${x} ${y + 0.3} ${z}`} scale={`${scale} ${scale} ${scale}`}
-                          rotation={`0 ${ry} 0`}/> :
-                <Entity events={{click: handleClickOpen, collided: [handleCollide]}}
-                        geometry={{primitive: 'box'}} material={{color: 'red'}} position={{x: x, y: y + 1, z: z}}/>
+                <Entity id={token}
+                        position={`${x} ${y + 0.3} ${z}`} scale={`${scale} ${scale} ${scale}`}
+                        rotation={`0 ${ry} 0`}/> :
+                <Entity id={`box-${x}-${y}-${z}`}
+                        events={{click: handleClickOpen, collided: [handleCollide]}}
+                        geometry={{primitive: 'box'}} material={{color: 'orange'}}
+                        position={{x: x, y: y + 1, z: z}} scale={`${scale} ${scale} ${scale}`} rotation={`0 ${ry} 0`}/>
             }
 
             <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
@@ -82,15 +88,14 @@ function Model({token, x, y, z, scale, ry}) {
                                     color={theme.palette.text.primary} align={"left"}>
                             Your Models
                         </Typography>
-                        <Button autoFocus color="inherit" variant="outlined" onClick={handleClose}>
-                            change model
-                        </Button>
+                        {/*<Button autoFocus color="inherit" variant="outlined" onClick={handleClose}>*/}
+                        {/*    change model*/}
+                        {/*</Button>*/}
                     </Toolbar>
                 </AppBar>
 
-                <ChangeModelTable/>
+                <ChangeModelTable changeModel={changeModel} onClose={handleClose}/>
             </Dialog>
-
 
         </>
     )

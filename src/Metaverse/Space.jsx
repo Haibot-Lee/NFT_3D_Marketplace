@@ -15,9 +15,9 @@ const posList = [
     {x: -21, y: 0, z: -3.7, ry: 90},
     {x: -21, y: 0, z: -9.8, ry: 90},
     {x: -21, y: 0, z: -15.2, ry: 90},
-    {x: 20, y: 0, z: -3.7, ry: 180},
-    {x: 20, y: 0, z: -9.8, ry: 180},
-    {x: 20, y: 0, z: -15.2, ry: 180},
+    {x: 20, y: 0, z: -3.7, ry: -90},
+    {x: 20, y: 0, z: -9.8, ry: -90},
+    {x: 20, y: 0, z: -15.2, ry: -90},
 ]
 export default function Space(props) {
     const userCtx = useContext(UserContext);

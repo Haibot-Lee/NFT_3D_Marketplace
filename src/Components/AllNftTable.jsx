@@ -28,10 +28,12 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import {format} from "date-fns";
 import UserContext from "./UserContext";
+import {useNavigate} from "react-router-dom";
 
 export default function SellingNftTable(props) {
     const theme = useTheme();
     const userCtx = useContext(UserContext);
+    const navigate = useNavigate();
 
     const [open, setOpen] = useState(null);
     const [bidPrice, setBidPrice] = useState(0);
@@ -96,11 +98,11 @@ export default function SellingNftTable(props) {
                             {Array.from(props.sellingNfts).map((item) => (
                                 <TableCell sx={{overflow: 'hidden'}} align={"center"}>
                                     <Card component={Paper}>
-                                        <CardActionArea>
+                                        <CardActionArea onClick={() => navigate(`/detail/${item.nft['uri']}`)}>
                                             <Suspense fallback={<CircularProgress/>}>
                                                 <ModelCavas key={item.nft[6]}
                                                             height={'60vh'}
-                                                            model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${item.nft[6]}`}/>
+                                                            model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${item.nft['uri']}`}/>
                                             </Suspense>
                                         </CardActionArea>
                                         <CardContent>

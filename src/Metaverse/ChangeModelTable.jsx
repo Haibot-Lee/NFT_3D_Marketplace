@@ -19,7 +19,6 @@ export default function MyNftTable(props) {
     const navigate = useNavigate();
 
     const [myNftList, setMyNftList] = useState([]);
-    const [open, setOpen] = useState(null);
 
     async function getMyTokens() {
         var res = await window.mktContract.getMyTokens(userCtx.address);
@@ -30,6 +29,11 @@ export default function MyNftTable(props) {
     useEffect(() => {
         getMyTokens();
     }, [])
+
+    function handleChangeModle(token) {
+        props.changeModel(token);
+        props.onClose();
+    }
 
     return (
         <Stack direction={"row"} component={Paper} spacing={2} sx={{p: 1}}>
@@ -43,7 +47,7 @@ export default function MyNftTable(props) {
                         </Suspense>
                     </CardActionArea>
                     <CardActions sx={{display: "flex", justifyContent: "center"}}>
-                        <Button variant="contained" size="small" onClick={() => setOpen(nft)}>
+                        <Button variant="contained" size="small" onClick={() => handleChangeModle(nft['uri'])}>
                             change to this
                         </Button>
                     </CardActions>
