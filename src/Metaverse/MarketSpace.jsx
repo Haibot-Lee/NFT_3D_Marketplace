@@ -4,7 +4,7 @@ import sky from './assets/bg.jpeg'
 import gallery from './assets/gallery.glb'
 import 'aframe';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader'
-import MyModel from './MyModel'
+import MarketModel from './MarketModel'
 import UserContext from "../Components/UserContext";
 import web3Modal from "../Components/Web3Config";
 import {ethers} from "ethers";
@@ -12,12 +12,15 @@ import MarketContract from "../contracts/MarketPlace.json";
 import NftContract from "../contracts/NFT.json";
 
 const posList = [
-    {x: -21, y: 0, z: -3.7, ry: 90},
-    {x: -21, y: 0, z: -9.8, ry: 90},
-    {x: -21, y: 0, z: -15.2, ry: 90},
-    {x: 20, y: 0, z: -3.7, ry: -90},
-    {x: 20, y: 0, z: -9.8, ry: -90},
-    {x: 20, y: 0, z: -15.2, ry: -90},
+    // {x: -8, y: 0, z: -17, ry: 0},
+    {x: 0, y: 0, z: -10, ry: 0},
+    {x: 10, y: 0, z: 0, ry: -90},
+    {x: 0, y: 0, z: 10, ry: 180},
+    {x: -10, y: 0, z: 0, ry: 90},
+    {x: 0, y: 0, z: -18, ry: 0},
+    {x: 18, y: 0, z: 0, ry: -90},
+    {x: 0, y: 0, z: 18, ry: 180},
+    {x: -18, y: 0, z: 0, ry: 90},
 ]
 export default function MarketSpace(props) {
     const userCtx = useContext(UserContext);
@@ -90,13 +93,14 @@ export default function MarketSpace(props) {
             <a-sky color="#FFFFFF"
                    material={"src: #sky"}
                    rotation="0 0 0"/>
-            <a-entity id="gallery" position="0 0 0" rotation="0 90 0" scale="2.5 2.5 2.5"></a-entity>
+            <a-entity id="gallery" position="0 0 0" scale="2.5 2.5 2.5"></a-entity>
 
             {posList.map((pos, idx) => (
-                <MyModel token={allNfts[idx] ? allNfts[idx].nft['uri'] : null} x={pos.x} y={pos.y} z={pos.z} ry={pos.ry}/>
+                <MarketModel token={allNfts[idx] ? allNfts[idx].nft['uri'] : null} x={pos.x} y={pos.y} z={pos.z}
+                             ry={pos.ry}/>
             ))}
 
-            <a-camera>
+            <a-camera position="0 2 -2">
                 <a-cursor/>
             </a-camera>
         </a-scene>

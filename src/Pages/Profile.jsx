@@ -1,27 +1,22 @@
-import React, {Suspense, useContext, useEffect, useState} from 'react';
-import {format} from "date-fns";
+import React, {useContext, useEffect, useState} from 'react';
 
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import {
-    Box,
-    Button, CardActionArea, CardActions, Checkbox,
-    CircularProgress,
+    Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
     FormControlLabel,
-    Paper,
     TextField
 } from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import UserContext from "../Components/UserContext";
 import Divider from "@mui/material/Divider";
-import ModelCavas from "../Components/ModelCavas";
-import {useNavigate} from "react-router-dom";
-import dayjs, {Dayjs} from 'dayjs';
+import dayjs from 'dayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
@@ -36,7 +31,6 @@ import NftContract from "../contracts/NFT.json";
 export default function Profile() {
     const theme = useTheme();
     const userCtx = useContext(UserContext);
-    const navigate = useNavigate();
 
     const [address, setAddress] = useState("");
     const [balance, setBalance] = useState(0);

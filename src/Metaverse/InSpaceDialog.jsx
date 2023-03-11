@@ -8,6 +8,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import {TransitionProps} from '@mui/material/transitions';
 import {useTheme} from "@mui/material/styles";
+import Market from "../Pages/Market";
+import Profile from "../Pages/Profile";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -21,27 +23,28 @@ const Transition = React.forwardRef(function Transition(
 export default function InSpaceDialog(props) {
 
     const theme = useTheme();
-    const [open, setOpen] = useState(false);
-    const handleClose = () => setOpen(false);
 
     return (
-        <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+        <Dialog fullScreen open={props.open} onClose={props.handleClose} TransitionComponent={Transition}>
             <AppBar sx={{position: 'relative'}}>
                 <Toolbar>
                     <IconButton
                         edge="start"
                         color="inherit"
-                        onClick={handleClose}
+                        onClick={props.handleClose}
                         aria-label="close"
                     >
                         <CloseIcon/>
                     </IconButton>
                     <Typography sx={{ml: 2, flex: 1}} variant="h5" fontWeight={"bold"}
                                 color={theme.palette.text.primary} align={"left"}>
-                        Your Models
+                        {props.page}
                     </Typography>
                 </Toolbar>
             </AppBar>
+
+            {props.page === 'Market' ? <Market/> : ''}
+            {props.page === 'Profile' ? <Profile/> : ''}
         </Dialog>
     )
 }

@@ -79,7 +79,7 @@ export default function AllNftTable(props) {
     async function getBiddingItem(nft) {
         var bidInfo = await window.mktContract.getAuction(nft["_tradeId"]);
         console.log(bidInfo);
-        if (userCtx.address == bidInfo["highestBidder"]) {
+        if (userCtx.address === bidInfo["highestBidder"]) {
             var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
             console.log("Get bidding item");
             await window.mktContract.auctionEnd(nft["_tradeId"], time, {value: nft[4]});

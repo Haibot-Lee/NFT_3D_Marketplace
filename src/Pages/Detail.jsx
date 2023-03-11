@@ -18,8 +18,8 @@ import {ethers} from "ethers";
 const columns = [
     {id: '_recordId', label: 'RecordId', format: (value) => Number(value)},
     {id: '_tokenId', label: 'TokenId', format: (value) => Number(value)},
-    {id: 'seller', label: 'Seller'},
-    {id: 'buyer', label: 'Buyer'},
+    {id: 'seller', label: 'Seller', format: (addr) => addr.slice(0, 4) + "..." + addr.slice(-4)},
+    {id: 'buyer', label: 'Buyer', format: (addr) => addr.slice(0, 4) + "..." + addr.slice(-4)},
     {id: 'price', label: 'Price(MATIC)', format: (value) => ethers.utils.formatUnits(value, 'ether')},
     {id: 'time', label: 'Time'},
     {id: 'des', label: 'Description'},

@@ -23,7 +23,6 @@ export default function Space(props) {
     const userCtx = useContext(UserContext);
     const [myNftList, setMyNftList] = useState([]);
 
-
     async function getMyTokens(address) {
         var res = await window.mktContract.getMyTokens(address);
         setMyNftList(res);
