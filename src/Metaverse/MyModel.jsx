@@ -26,7 +26,7 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function Model({token, x, y, z, scale, ry}) {
+function MyModel({token, x, y, z, scale, ry}) {
     scale = scale ? scale : 1.5
 
     const loader = new GLTFLoader();
@@ -100,10 +100,10 @@ function Model({token, x, y, z, scale, ry}) {
     )
 }
 
-Model.Prototypes = {
+MyModel.Prototypes = {
     x: Prototypes.number,
     y: Prototypes.number,
     z: Prototypes.number
 }
 
-export default Model;
+export default MyModel;

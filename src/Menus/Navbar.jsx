@@ -7,9 +7,14 @@ import UserContext from "../Components/UserContext";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {Box, Tooltip} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
+import {useNavigate, useLocation} from "react-router-dom";
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 export default function ResponsiveAppBar() {
     const userCtx = useContext(UserContext);
+    const navigate = useNavigate();
+    let location = useLocation();
 
     const shortenAddr = (addr) => {
         if (addr && addr !== "") return addr.slice(0, 4) + "..." + addr.slice(-4);
@@ -47,11 +52,23 @@ export default function ResponsiveAppBar() {
                 </Typography>
                 <Box sx={{flexGrow: 1}}/>
 
-                <Tooltip title="Refresh">
-                    <IconButton onClick={() => window.location.reload()}>
-                        <RefreshIcon/>
-                    </IconButton>
-                </Tooltip>
+                {
+                    location.pathname === '/mkt-space' ?
+                        <Tooltip title="Market">
+                            <IconButton onClick={() => navigate('market')}>
+                                <ShoppingCartIcon/>
+                            </IconButton>
+                        </Tooltip> : ''
+                }
+                {
+                    location.pathname === '/space' ?
+                        <Tooltip title="Profile">
+                            <IconButton onClick={() => navigate('profile')}>
+                                <AccountCircle/>
+                            </IconButton>
+                        </Tooltip> : ''
+                }
+
             </Toolbar>
         </AppBar>
     );

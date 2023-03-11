@@ -4,7 +4,7 @@ import sky from './assets/bg.jpeg'
 import gallery from './assets/gallery.glb'
 import 'aframe';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader'
-import Model from './Model'
+import MyModel from './MyModel'
 import UserContext from "../Components/UserContext";
 import web3Modal from "../Components/Web3Config";
 import {ethers} from "ethers";
@@ -21,13 +21,18 @@ const posList = [
 ]
 export default function MarketSpace(props) {
     const userCtx = useContext(UserContext);
-    const [myNftList, setMyNftList] = useState([]);
+    const [allNfts, setAllNfts] = useState([]);
 
 
-    async function getMyTokens(address) {
-        var res = await window.mktContract.getMyTokens(address);
-        setMyNftList(res);
-        console.log("My Token" + JSON.stringify(res))
+    async function getMarketTokens() {
+        setAllNfts([]);
+        var allTokens = await window.mktContract.getAllTokens();
+        var res = []
+        for (var i = 0; i < allTokens.length; i++) {
+            var auctionInfo = await window.mktContract.getAuction(allTokens[i]["_tradeId"]);
+            res.push({nft: allTokens[i], auction: auctionInfo})
+        }
+        setAllNfts(res)
     }
 
     async function init() {
@@ -64,7 +69,7 @@ export default function MarketSpace(props) {
 
         console.log("Finished initialized");
 
-        getMyTokens(addr);
+        getMarketTokens();
     }
 
     useEffect(() => {
@@ -88,7 +93,7 @@ export default function MarketSpace(props) {
             <a-entity id="gallery" position="0 0 0" rotation="0 90 0" scale="2.5 2.5 2.5"></a-entity>
 
             {posList.map((pos, idx) => (
-                <Model token={myNftList[idx] ? myNftList[idx]['uri'] : null} x={pos.x} y={pos.y} z={pos.z} ry={pos.ry}/>
+                <MyModel token={allNfts[idx] ? allNfts[idx].nft['uri'] : null} x={pos.x} y={pos.y} z={pos.z} ry={pos.ry}/>
             ))}
 
             <a-camera>

@@ -4,7 +4,7 @@ import sky from './assets/bg.jpeg'
 import gallery from './assets/space.glb'
 import 'aframe';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader'
-import Model from './Model'
+import MyModel from './MyModel'
 import UserContext from "../Components/UserContext";
 import web3Modal from "../Components/Web3Config";
 import {ethers} from "ethers";
@@ -88,7 +88,7 @@ export default function Space(props) {
             <a-entity id="gallery" position="0 0 0" rotation="0 90 0"></a-entity>
 
             {posList.map((pos, idx) => (
-                <Model token={myNftList[idx] ? myNftList[idx]['uri'] : null} x={pos.x} y={pos.y} z={pos.z} ry={pos.ry}/>
+                <MyModel token={myNftList[idx] ? myNftList[idx]['uri'] : null} x={pos.x} y={pos.y} z={pos.z} ry={pos.ry}/>
             ))}
 
             <a-camera position="0 2 20">

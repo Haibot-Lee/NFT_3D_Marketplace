@@ -30,7 +30,7 @@ import {format} from "date-fns";
 import UserContext from "./UserContext";
 import {useNavigate} from "react-router-dom";
 
-export default function SellingNftTable(props) {
+export default function AllNftTable(props) {
     const theme = useTheme();
     const userCtx = useContext(UserContext);
     const navigate = useNavigate();
