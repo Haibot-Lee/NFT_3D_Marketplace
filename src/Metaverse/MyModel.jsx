@@ -61,7 +61,7 @@ function MyModel({token, x, y, z, scale, ry}) {
 
     return (
         <>
-            <a-entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.3} ${z}`} scale={'0.5 0.5 0.5'}/>
+            <a-entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.3} ${z}`} scale={'0.3 0.5 0.3'}/>
             {token ?
                 <Entity id={token}
                         position={`${x} ${y + 0.4} ${z}`} scale={`${scale} ${scale} ${scale}`}

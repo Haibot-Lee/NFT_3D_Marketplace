@@ -2,7 +2,7 @@ import 'aframe';
 import {Entity, Scene} from 'aframe-react';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader'
 import Prototypes from 'prop-types'
-import platform from './assets/platform.glb'
+import platform from './assets/platform2.glb'
 
 import React, {useContext, useState} from 'react';
 import Button from '@mui/material/Button';
@@ -61,7 +61,7 @@ function MarketModel({token, x, y, z, scale, ry}) {
 
     return (
         <>
-            <a-entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.1} ${z}`} scale={'0.5 0.5 0.5'}/>
+            <a-entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.1} ${z}`}/>
 
             {token ?
                 <Entity id={token}
