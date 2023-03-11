@@ -69,7 +69,7 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
 
 const MenuList = [
     {text: 'Your Space', icon: <HomeIcon/>, to: 'space'},
-    {text: 'Market', icon: <ShoppingCartIcon/>, to: 'market'},
+    {text: 'Market', icon: <ShoppingCartIcon/>, to: 'mkt-space'},
     {text: 'Profile', icon: <AccountCircle/>, to: 'profile'},
 ];
 

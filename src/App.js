@@ -10,6 +10,7 @@ import Market from './Pages/Market';
 import Profile from './Pages/Profile';
 import Detail from './Pages/Detail';
 import Space from './Metaverse/Space';
+import MktSpace from './Metaverse/MarketSpace';
 import UserContext from './Components/UserContext'
 import Toolbar from "@mui/material/Toolbar";
 
@@ -63,6 +64,7 @@ export default function App() {
                             <Route path="/market" element={<Market/>}/>
                             <Route path="/detail/:token" element={<Detail/>}/>
                             <Route path="/space" element={<Space/>}/>
+                            <Route path="/mkt-space" element={<MktSpace/>}/>
                         </Routes>
                     </BrowserRouter>
                 </ThemeProvider>
