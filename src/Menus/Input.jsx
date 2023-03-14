@@ -10,8 +10,7 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
-    TextField
+    DialogTitle
 } from '@mui/material';
 import Stack from "@mui/material/Stack";
 import Typography from '@mui/material/Typography';
@@ -87,7 +86,7 @@ export default function InputDialog(props) {
                     {token ?
                         <Suspense fallback={<CircularProgress/>}>
                             <ModelCavas
-                                model={token ? `${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}` : 'modelA.glb'}
+                                model={token ? `${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}` : ''}
                                 height={"70vh"} width={'30vw'}/>
                         </Suspense> : ''
                     }
