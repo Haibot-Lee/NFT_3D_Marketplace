@@ -31,10 +31,29 @@ export default function MyNftTable(props) {
 
     async function sellToken(nft) {
         console.log("sell nft: " + nft)
-        if (checked) await window.mktContract.publicToAll(Number(nft[0]), ethers.utils.parseUnits(price, 'ether'), false, 0) //sell
-        await window.mktContract.publicToAll(Number(nft[0]), 0, true, timeString.unix()) //bid
-        alert("Publish successfully!");
-        handleCloseDialog();
+        if (checked) {//sell
+            await window.mktContract.publicToAll(Number(nft[0]), ethers.utils.parseUnits(price, 'ether'), false, 0)
+                .then(() => {
+                    alert("Sell this NFT successfully!");
+                    handleCloseDialog();
+                })
+                .catch((error) => {
+                    handleCloseDialog();
+                    alert(error.reason)
+                });
+
+        } else {//bid
+            await window.mktContract.publicToAll(Number(nft[0]), 0, true, timeString.unix())
+                .then(() => {
+                    alert("Auction this NFT successfully!");
+                    handleCloseDialog();
+                })
+                .catch((error) => {
+                    handleCloseDialog();
+                    alert(error.reason)
+                });
+        }
+
     }
 
     const [open, setOpen] = useState(null);

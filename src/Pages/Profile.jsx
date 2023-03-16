@@ -32,22 +32,19 @@ export default function Profile() {
     const theme = useTheme();
     const userCtx = useContext(UserContext);
 
-    const [address, setAddress] = useState("");
-    const [balance, setBalance] = useState(0);
-
     const [myNftList, setMyNftList] = useState([]);
     const [sellingNfts, setSellingNfts] = useState([]);
 
     async function getMyTokens() {
         setMyNftList([]);
-        var res = await window.mktContract.getMyTokens(address);
+        var res = await window.mktContract.getMyTokens(userCtx.address);
         console.log("My Token" + JSON.stringify(res))
         setMyNftList(res);
     }
 
     async function getSellingTokens() {
         setSellingNfts([]);
-        var res = await window.mktContract.getSellingTokens(address);
+        var res = await window.mktContract.getSellingTokens(userCtx.address);
         console.log("selling Tokens" + JSON.stringify(res))
         setSellingNfts(res)
     }
@@ -57,51 +54,10 @@ export default function Profile() {
         getSellingTokens();
     }
 
-    async function init() {
-        // // connect wallet
-        const instance = await web3Modal.connect();
-        const provider = new ethers.providers.Web3Provider(instance);
-        // sign contract
-        const signer = provider.getSigner();
-        console.log("Signer: " + signer);
-
-        // get address
-        const addr = await signer.getAddress();
-        console.log("Address: " + addr);
-        setAddress(addr);
-
-        // get balance
-        const bal = await provider.getBalance(addr);
-        setBalance(ethers.utils.formatEther(bal));
-        console.log("Balance: " + ethers.utils.formatEther(bal));
-
-        userCtx.setContext({
-            address: addr,
-            balance: ethers.utils.formatEther(bal),
-        })
-
-        // init contract
-        // market
-        const mktContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE, MarketContract.abi, signer);
-        console.log(mktContract);
-        window.mktContract = mktContract;
-
-        // nft
-        const nftContract = new ethers.Contract(process.env.REACT_APP_NFT, NftContract.abi, signer);
-        console.log(nftContract);
-        window.nftContract = nftContract;
-
-        console.log("Finished initialized");
-    }
-
-    useEffect(() => {
-        init();
-    }, [])
-
     useEffect(() => {
         update();
-        console.log("Update token list")
-    }, [address, userCtx])
+        console.log("Update Profile Token");
+    }, [userCtx])
 
     async function sellToken(nft) {
         console.log("sell nft: " + nft)
@@ -130,17 +86,11 @@ export default function Profile() {
 
     return (
         <>
-            <Stack spacing={2}>
-                <Stack direction={"row"}>
-                    <Button variant="outlined"
-                            size="small"
-                            onClick={() => init()}>Refresh My Models</Button>
-                </Stack>
+            <Stack spacing={2} sx={{pt:2}}>
                 <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
                     Private Model:
                 </Typography>
                 <MyNftTable myNftList={myNftList}/>
-                <Divider/>
                 <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
                     Public Model:
                 </Typography>

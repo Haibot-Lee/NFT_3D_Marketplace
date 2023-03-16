@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Dialog from '@mui/material/Dialog';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,6 +10,13 @@ import {TransitionProps} from '@mui/material/transitions';
 import {useTheme} from "@mui/material/styles";
 import Market from "../Pages/Market";
 import Profile from "../Pages/Profile";
+import web3Modal from "../Components/Web3Config";
+import {ethers} from "ethers";
+import MarketContract from "../contracts/MarketPlace.json";
+import NftContract from "../contracts/NFT.json";
+import UserContext from "../Components/UserContext";
+import {useNavigate} from "react-router-dom";
+import {Button} from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -21,8 +28,48 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export default function InSpaceDialog(props) {
+    const userCtx = useContext(UserContext);
 
     const theme = useTheme();
+
+    async function init() {
+        // // connect wallet
+        const instance = await web3Modal.connect();
+        const provider = new ethers.providers.Web3Provider(instance);
+        // sign contract
+        const signer = provider.getSigner();
+        console.log("Signer: " + signer);
+
+        // get address
+        const addr = await signer.getAddress();
+        console.log("Address: " + addr);
+
+        // get balance
+        const bal = await provider.getBalance(addr);
+        console.log("Balance: " + ethers.utils.formatEther(bal));
+
+        userCtx.setContext({
+            address: addr,
+            balance: ethers.utils.formatEther(bal),
+        })
+
+        // init contract
+        // market
+        const mktContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE, MarketContract.abi, signer);
+        console.log(mktContract);
+        window.mktContract = mktContract;
+
+        // nft
+        const nftContract = new ethers.Contract(process.env.REACT_APP_NFT, NftContract.abi, signer);
+        console.log(nftContract);
+        window.nftContract = nftContract;
+
+        console.log("Finished initialized");
+    }
+
+    useEffect(() => {
+        init();
+    }, [])
 
     return (
         <Dialog fullScreen open={props.open} onClose={props.handleClose} TransitionComponent={Transition}>
@@ -40,6 +87,9 @@ export default function InSpaceDialog(props) {
                                 color={theme.palette.text.primary} align={"left"}>
                         {props.page}
                     </Typography>
+                    <Button autoFocus color="primary" variant="outlined" onClick={() => init()}>
+                        Refresh
+                    </Button>
                 </Toolbar>
             </AppBar>
 

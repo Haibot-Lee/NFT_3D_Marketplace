@@ -1,60 +1,102 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {Suspense, useContext, useEffect, useState} from 'react';
 
 import Stack from "@mui/material/Stack";
 
 import UserContext from "../Components/UserContext";
 import {useNavigate} from "react-router-dom";
-import AllNftTable from "../Components/AllNftTable"
 import Typography from "@mui/material/Typography";
 import web3Modal from "../Components/Web3Config";
 import {ethers} from "ethers";
 import MarketContract from "../contracts/MarketPlace.json";
 import NftContract from "../contracts/NFT.json";
-import {Button} from "@mui/material";
+import {
+    Button,
+    CardActionArea, CardActions, Chip,
+    CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableRow, TextField
+} from "@mui/material";
+import Card from "@mui/material/Card";
+import ModelCavas from "../Components/ModelCavas";
+import CardContent from "@mui/material/CardContent";
+import {useTheme} from "@mui/material/styles";
+import {format} from "date-fns";
 
 export default function Market() {
     const [allNfts, setAllNfts] = useState([]);
     const userCtx = useContext(UserContext);
+    const theme = useTheme();
     const navigate = useNavigate();
 
-    const [address, setAddress] = useState("");
-    const [balance, setBalance] = useState(0);
+    const [open, setOpen] = useState(null);
+    const [bidPrice, setBidPrice] = useState(0);
+    const handleCloseDialog = () => {
+        setOpen(null);
+        setBidPrice(0);
+    }
 
-    async function init() {
-        // // connect wallet
-        const instance = await web3Modal.connect();
-        const provider = new ethers.providers.Web3Provider(instance);
-        // sign contract
-        const signer = provider.getSigner();
-        console.log("Signer: " + signer);
+    async function buyNft(nft) {
+        if (userCtx?.balance < ethers.utils.formatUnits(nft[4], 'ether')) {
+            alert("Not enough balance!")
+            return
+        }
+        var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        await window.mktContract.buy(Number(nft[0]), time, {value: nft[4]})
+            .then(() => {
+                handleCloseDialog();
+                alert("Buy Successfully!")
+            })
+            .catch((error) => {
+                handleCloseDialog();
+                alert(error.reason)
+            });
 
-        // get address
-        const addr = await signer.getAddress();
-        console.log("Address: " + addr);
-        setAddress(addr);
+    }
 
-        // get balance
-        const bal = await provider.getBalance(addr);
-        setBalance(ethers.utils.formatEther(bal));
-        console.log("Balance: " + ethers.utils.formatEther(bal));
+    async function makeABid(nft) {
+        var bidInfo = await window.mktContract.getAuction(nft["_tradeId"]);
+        console.log(bidInfo)
 
-        userCtx.setContext({
-            address: addr,
-            balance: ethers.utils.formatEther(bal),
-        })
+        if (Number(bidInfo.biddingTime) < Math.floor((Date.now()) / 1000)) {
+            alert("Over time!")
+            return
+        }
+        if (userCtx?.balance < bidPrice) {
+            alert("Not enough balance!")
+            return
+        }
+        if (bidPrice <= ethers.utils.formatUnits(nft[4], 'ether')) {
+            alert("Your price should higher than the highest bid price currently!")
+            return
+        }
 
-        // init contract
-        // market
-        const mktContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE, MarketContract.abi, signer);
-        console.log(mktContract);
-        window.mktContract = mktContract;
+        var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        await window.mktContract.bid(Number(nft[0]), Math.floor((new Date()).valueOf() / 1000), time, ethers.utils.parseUnits(bidPrice, 'ether'))
+            .then(() => {
+                handleCloseDialog();
+                alert("Bid Successfully!")
+            })
+            .catch((error) => {
+                handleCloseDialog();
+                alert(error.reason)
+            });
+    }
 
-        // nft
-        const nftContract = new ethers.Contract(process.env.REACT_APP_NFT, NftContract.abi, signer);
-        console.log(nftContract);
-        window.nftContract = nftContract;
-
-        console.log("Finished initialized");
+    async function getBiddingItem(nft) {
+        var bidInfo = await window.mktContract.getAuction(nft["_tradeId"]);
+        console.log(bidInfo);
+        if (userCtx.address === bidInfo["highestBidder"]) {
+            var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+            console.log("Get bidding item");
+            await window.mktContract.auctionEnd(nft["_tradeId"], time, {value: nft[4]});
+            alert("Auction ended with" + ethers.utils.formatUnits(nft[4], 'ether') + "MATIC. Please check in your profile!");
+        } else {
+            alert("You are not the highest bidder, please change to the correct account or refresh to update account")
+        }
     }
 
     async function getMarketTokens() {
@@ -69,20 +111,74 @@ export default function Market() {
     }
 
     useEffect(() => {
-        init();
-    }, [])
-    useEffect(() => {
-        getMarketTokens()
-    }, [address, userCtx])
+        getMarketTokens();
+        console.log("Update Market Token");
+    }, [userCtx])
 
     return (
-        <Stack spacing={5}>
-            <Stack direction={"row"}>
-                <Button variant="outlined" size="small"
-                        onClick={() => init()}>Refresh Market</Button>
-            </Stack>
-            <Typography variant={"h5"} color={"text.primary"}>Selling Models</Typography>
-            <AllNftTable sellingNfts={allNfts}/>
-        </Stack>
+        <>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableBody>
+                        <TableRow sx={{overflow: 'hidden'}}>
+                            {Array.from(allNfts).map((item) => (
+                                <TableCell sx={{overflow: 'hidden'}} align={"center"}>
+                                    <Card component={Paper}>
+                                        <CardActionArea onClick={() => navigate(`/detail/${item.nft['uri']}`)}>
+                                            <Suspense fallback={<CircularProgress/>}>
+                                                <ModelCavas key={item.nft[6]}
+                                                            height={'70vh'}
+                                                            model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${item.nft['uri']}`}/>
+                                            </Suspense>
+                                        </CardActionArea>
+                                        <CardContent>
+                                            <Chip size="small" color="warning"
+                                                  label={(item.nft["auction"] ? "For auction | End at: " + new Date(Number(item.auction["biddingTime"] * 1000)).toLocaleString() : "For sell")}/>
+                                            <Typography color={"text.primary"} sx={{pt:1}}>
+                                                <strong>
+                                                    {(item.nft["auction"] ? "Highest bid: " : "Price: ")}
+                                                </strong>
+                                                {ethers.utils.formatUnits(item.nft[4], 'ether') + " MATIC"}
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions sx={{display: "flex", justifyContent: "center"}}>
+                                            <Button variant="contained"
+                                                    disabled={item.nft["auction"] && Date.now() > Number(item.auction["biddingTime"]) * 1000}
+                                                    onClick={() => {
+                                                        item.nft["auction"] ? setOpen(item.nft) : buyNft(item.nft)
+                                                    }}>
+                                                {item.nft["auction"] ? "Bid" : "Buy"}
+                                            </Button>
+                                            {item.nft["auction"] && Date.now() > Number(item.auction["biddingTime"]) * 1000 && item.auction["highestBidder"] === userCtx.address ?
+                                                <Button variant="contained" onClick={() => getBiddingItem(item.nft)}>
+                                                    pay for your bid
+                                                </Button> : ""
+                                            }
+                                        </CardActions>
+                                    </Card>
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Dialog open={open} onClose={handleCloseDialog}>
+                <DialogTitle>Make a bid</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus required fullWidth
+                        margin="dense"
+                        label="Bidding Price"
+                        type="number"
+                        variant="outlined"
+                        val={bidPrice}
+                        onChange={(e) => setBidPrice(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="outlined" onClick={() => makeABid(open)}>Confirm</Button>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 }
