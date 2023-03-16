@@ -5,17 +5,10 @@ import Prototypes from 'prop-types'
 import platform from './assets/platform2.glb'
 
 import React, {useContext, useState} from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import {TransitionProps} from '@mui/material/transitions';
-import ChangeModelTable from "./ChangeModelTable";
 import {useTheme} from "@mui/material/styles";
+import {ethers} from "ethers";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -27,8 +20,9 @@ const Transition = React.forwardRef(function Transition(
 });
 
 function MarketModel({nftItem, x, y, z, scale, ry}) {
-    var token = nftItem?.nft['uri']
     scale = scale ? scale : 1.5
+
+    var token = nftItem?.nft['uri'];
 
     const loader = new GLTFLoader();
     loader.load(platform, (d) => {
@@ -49,48 +43,35 @@ function MarketModel({nftItem, x, y, z, scale, ry}) {
     const handleClose = () => setOpen(false);
     const handleCollide = () => console.log('collided!');
 
-    const changeModel = (newToken) => {
-        //TODO: with add model bug
-        loader.load(`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${newToken}`, (d) => {
-            const entity = document.getElementById(`box-${x}-${y}-${z}`);
-            entity.object3D.clear();
-            entity.object3D.add(d.scene);
-            entity.setAttribute('position', `${x} ${y + 0.4} ${z}`);
-            console("pos changed!!!!!!!!!!")
-        })
-    }
-
     return (
         <>
             <a-entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.1} ${z}`}/>
 
             {token ?
-                <Entity id={token}
-                        events={{click: handleClickOpen, collided: [handleCollide]}}
-                        position={`${x} ${y + 0.2} ${z}`} scale={`${scale} ${scale} ${scale}`}
-                        rotation={`0 ${ry} 0`}/> : ''
+                <>
+                    <Entity id={token}
+                            events={{click: handleClickOpen, collided: [handleCollide]}}
+                            position={`${x} ${y + 0.2} ${z}`}
+                            scale={`${scale} ${scale} ${scale}`}
+                            rotation={`0 ${ry} 0`}/>
+                    <Entity events={{click: handleClickOpen, collided: [handleCollide]}}
+                            primitive={'a-cylinder'} color={"orange"}
+                            position={{x: x, y: y - 0.2, z: z}} scale={'1.1 0.5 1.1'}/>
+                    <Entity text={{
+                        value: (nftItem.nft["auction"] ?
+                            "For auction | End at: " + new Date(Number(nftItem.auction["biddingTime"] * 1000)).toLocaleString() +
+                            "\n\nHighest bid: " + ethers.utils.formatUnits(nftItem.nft[4], 'ether') + " MATIC"
+                            :
+                            "For sell\n\n" +
+                            "Price: " + ethers.utils.formatUnits(nftItem.nft[4], 'ether') + " MATIC"),
+                        color: 'red',
+                        align: 'center'
+                    }}
+                            position={`${x - Math.sin((ry) * Math.PI / 180) * 1.6 - Math.cos((ry) * Math.PI / 180)} ${y + 4.5} ${z + Math.sin((ry) * Math.PI / 180) * 1.2 - Math.cos((ry) * Math.PI / 180) * 1.6}`}
+                            scale={`${scale * 3} ${scale * 3} ${scale * 3}`}
+                            rotation={`0 ${ry + 5} 0`}/>
+                </> : ''
             }
-
-            <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-                <AppBar sx={{position: 'relative'}}>
-                    <Toolbar>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            onClick={handleClose}
-                            aria-label="close"
-                        >
-                            <CloseIcon/>
-                        </IconButton>
-                        <Typography sx={{ml: 2, flex: 1}} variant="h5" fontWeight={"bold"}
-                                    color={theme.palette.text.primary} align={"left"}>
-                            Your Models
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-
-                <ChangeModelTable changeModel={changeModel} onClose={handleClose}/>
-            </Dialog>
 
         </>
     )

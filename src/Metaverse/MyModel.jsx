@@ -65,11 +65,10 @@ function MyModel({token, x, y, z, scale, ry}) {
 
     return (
         <>
-            <Entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.3} ${z}`} scale={'0.3 0.5 0.3'}
-                    events={{click: handleClickOpen, collided: [handleCollide]}}/>
+            <Entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.3} ${z}`} scale={'0.3 0.5 0.3'}/>
             <Entity events={{click: handleClickOpen, collided: [handleCollide]}}
                     primitive={'a-cylinder'} color={"orange"}
-                    position={{x: x, y: y, z: z}} scale={'0.8 0.5 0.8'} rotation={`0 ${ry} 0`}/>
+                    position={{x: x, y: y, z: z}} scale={'0.8 0.5 0.8'}/>
             <Entity id={`${token}-${x}-${y}-${z}`}
                     position={`${x} ${y + 0.4} ${z}`} scale={`${scale} ${scale} ${scale}`}
                     rotation={`0 ${ry} 0`}/>
