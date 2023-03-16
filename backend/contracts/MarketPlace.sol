@@ -216,14 +216,13 @@ contract MarketPlace {
         return itemId;
     }
 
-    function listToken(address token, uint256 _tokenId, uint256 amount, string memory uri, string memory time) public returns (uint256){
-
+    function listToken(address token, uint256 _tokenId, string memory uri, string memory time) public returns (uint256){
         itemId += 1;
 
         TradeItems[itemId] = TradeItem({
         _itemId : itemId,
         _tokenId : _tokenId,
-        initialSupply : amount,
+        initialSupply : 1,
         publicSupply : 0,
         token : token,
         creator : msg.sender,
@@ -238,14 +237,13 @@ contract MarketPlace {
         seller : msg.sender,
         buyer : address(0),
         price : 0,
-        amount : amount,
+        amount : 1,
         time : time,
         des : "created"
         });
 
 
         return itemId;
-
     }
 
     function getHistory(uint256 id) public view returns (History[] memory){
@@ -276,11 +274,10 @@ contract MarketPlace {
         return trades[id];
     }
 
-    function publicToAll(uint256 _itemId, uint256 _price, uint256 amount, bool _auction, uint256 _bidTime) public {
+    function publicToAll(uint256 _itemId, uint256 _price, bool _auction, uint256 _bidTime) public {
         TradeItem memory token = TradeItems[_itemId];
         uint256 balance = IERC1155(TradeItems[_itemId].token).balanceOf(msg.sender, _itemId);
-        require(amount <= balance, "Not enough supply");
-
+        require(balance >= 1, "Not enough supply");
 
         tradeId += 1;
         trades[tradeId] = Trade({
@@ -289,7 +286,7 @@ contract MarketPlace {
         poster : msg.sender,
         token : token.token,
         price : _price,
-        amount : amount,
+        amount : 1,
         uri : token.uri,
         auction : _auction
         });
@@ -307,17 +304,15 @@ contract MarketPlace {
 
         }
 
-        IERC1155(token.token).safeTransferFrom(msg.sender, address(this), token._tokenId, amount, "");
-
+        IERC1155(token.token).safeTransferFrom(msg.sender, address(this), token._tokenId, 1, "");
     }
 
 
-    function buy(uint256 _tradeId, string memory time, uint256 _amount) public payable {
-
+    function buy(uint256 _tradeId, string memory time) public payable {
         Trade memory trade = trades[_tradeId];
 
-        require(_amount <= trade.amount, "Not enough supply");
-//        require(trade.poster != msg.sender, "Seller not to be buyer");
+        require(trade.amount >= 1, "Not enough supply");
+        require(trade.poster != msg.sender, "Seller not to be buyer");
 
         recordId += 1;
         history[recordId] = History({
@@ -326,13 +321,13 @@ contract MarketPlace {
         seller : trade.poster,
         buyer : msg.sender,
         price : trade.price,
-        amount : _amount,
+        amount : 1,
         time : time,
         des : "transaction"
         });
 
-        IERC1155(trade.token).safeTransferFrom(address(this), msg.sender, trade._tokenId, _amount, "");
-        trades[_tradeId].amount = trades[_tradeId].amount - _amount;
+        IERC1155(trade.token).safeTransferFrom(address(this), msg.sender, trade._tokenId, 1, "");
+        trades[_tradeId].amount = trades[_tradeId].amount - 1;
 
         payable(trade.poster).transfer(msg.value);
 

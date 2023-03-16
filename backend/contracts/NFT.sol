@@ -21,9 +21,9 @@ contract NFT is ERC1155 {
         _tokenURIs[tokenId] = _tokenURI;
     }
 
-    function mint(string memory uri, uint256 amount) public {
+    function mint(string memory uri) public {
         uint256 newId = _tokenIds.current();
-        _mint(msg.sender, newId, amount, "");
+        _mint(msg.sender, newId, 1, "");
         _setTokenURI(newId, uri);
         _tokenIds.increment();
         setApprovalForAll(contractAddress, true);
