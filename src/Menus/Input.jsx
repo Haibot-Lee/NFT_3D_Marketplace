@@ -46,9 +46,9 @@ export default function InputDialog(props) {
         if (token) {
             setIsLoadinging(true);
             var date = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-            await window.nftContract.mint(token, 1);
+            await window.nftContract.mint(token);
             var tokenId = await window.nftContract.getNumber();
-            await window.mktContract.listToken(process.env.REACT_APP_NFT, Number(tokenId), 1, token, date);
+            await window.mktContract.listToken(process.env.REACT_APP_NFT, Number(tokenId), token, date);
             console.log("minted");
             closeDialog();
             alert("NFT created successfully!");
