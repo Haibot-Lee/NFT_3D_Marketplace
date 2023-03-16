@@ -71,13 +71,15 @@ export default function MarketSpace(props) {
         window.nftContract = nftContract;
 
         console.log("Finished initialized");
-
-        getMarketTokens();
     }
 
     useEffect(() => {
         init();
     }, [])
+    useEffect(() => {
+        getMarketTokens();
+        console.log("Update Market Space");
+    }, [userCtx])
 
     const loader = new GLTFLoader();
     loader.load(gallery, (d) => {

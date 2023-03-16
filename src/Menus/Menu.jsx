@@ -113,7 +113,7 @@ export default function Menu() {
                                     onClick={() => {
                                         setOpenInput(true)
                                     }}>
-                        <Tooltip title="Create" placement="right" arrow>
+                        <Tooltip title="Create NFT" placement="right" arrow>
                             <ListItemIcon
                                 sx={{
                                     minWidth: 0,

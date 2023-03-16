@@ -62,13 +62,16 @@ export default function Space(props) {
         window.nftContract = nftContract;
 
         console.log("Finished initialized");
-
-        getMyTokens(addr);
     }
 
     useEffect(() => {
         init();
     }, [])
+
+    useEffect(() => {
+        getMyTokens(userCtx.address);
+        console.log("Update My Space");
+    }, [userCtx])
 
     const loader = new GLTFLoader();
     loader.load(gallery, (d) => {
@@ -87,7 +90,8 @@ export default function Space(props) {
             <a-entity id="gallery" position="0 0 0" rotation="0 90 0"></a-entity>
 
             {posList.map((pos, idx) => (
-                <MyModel token={myNftList[idx] ? myNftList[idx]['uri'] : null} x={pos.x} y={pos.y} z={pos.z} ry={pos.ry}/>
+                <MyModel token={myNftList[idx] ? myNftList[idx]['uri'] : null} x={pos.x} y={pos.y} z={pos.z}
+                         ry={pos.ry}/>
             ))}
 
             <a-camera position="0 2 20">

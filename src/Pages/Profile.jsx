@@ -86,11 +86,11 @@ export default function Profile() {
 
     return (
         <>
-            <Stack spacing={2} sx={{pt:2}}>
+            <Stack spacing={2} sx={{pt: 2}}>
                 <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
                     Private Model:
                 </Typography>
-                <MyNftTable myNftList={myNftList}/>
+                {myNftList.length === 0 ? <Divider/> : <MyNftTable myNftList={myNftList}/>}
                 <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
                     Public Model:
                 </Typography>

@@ -10,6 +10,11 @@ import {useLocation} from "react-router-dom";
 import InSpaceDialog from "../Metaverse/InSpaceDialog";
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import RefreshIcon from '@mui/icons-material/Refresh';
+import web3Modal from "../Components/Web3Config";
+import {ethers} from "ethers";
+import MarketContract from "../contracts/MarketPlace.json";
+import NftContract from "../contracts/NFT.json";
 
 
 export default function ResponsiveAppBar() {
@@ -26,6 +31,41 @@ export default function ResponsiveAppBar() {
 
     const shortenAddr = (addr) => {
         if (addr && addr !== "") return addr.slice(0, 4) + "..." + addr.slice(-4);
+    }
+
+    async function init() {
+        // // connect wallet
+        const instance = await web3Modal.connect();
+        const provider = new ethers.providers.Web3Provider(instance);
+        // sign contract
+        const signer = provider.getSigner();
+        console.log("Signer: " + signer);
+
+        // get address
+        const addr = await signer.getAddress();
+        console.log("Address: " + addr);
+
+        // get balance
+        const bal = await provider.getBalance(addr);
+        console.log("Balance: " + ethers.utils.formatEther(bal));
+
+        userCtx.setContext({
+            address: addr,
+            balance: ethers.utils.formatEther(bal),
+        })
+
+        // init contract
+        // market
+        const mktContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE, MarketContract.abi, signer);
+        console.log(mktContract);
+        window.mktContract = mktContract;
+
+        // nft
+        const nftContract = new ethers.Contract(process.env.REACT_APP_NFT, NftContract.abi, signer);
+        console.log(nftContract);
+        window.nftContract = nftContract;
+
+        console.log("Finished initialized");
     }
 
     return (
@@ -77,6 +117,13 @@ export default function ResponsiveAppBar() {
                                 </IconButton>
                             </Tooltip> : ''
                     }
+
+                    <Tooltip title="Refresh">
+                        <IconButton onClick={() => init()}>
+                            <RefreshIcon/>
+                        </IconButton>
+                    </Tooltip>
+
                 </Toolbar>
             </AppBar>
             <InSpaceDialog open={open} handleClose={handleClose} page={page}/>

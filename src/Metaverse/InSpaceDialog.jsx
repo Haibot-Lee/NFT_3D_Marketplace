@@ -79,7 +79,6 @@ export default function InSpaceDialog(props) {
                         edge="start"
                         color="inherit"
                         onClick={props.handleClose}
-                        aria-label="close"
                     >
                         <CloseIcon/>
                     </IconButton>
