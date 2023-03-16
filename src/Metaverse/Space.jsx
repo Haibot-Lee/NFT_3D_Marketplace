@@ -90,7 +90,7 @@ export default function Space(props) {
             <a-entity id="gallery" position="0 0 0" rotation="0 90 0"></a-entity>
 
             {posList.map((pos, idx) => (
-                <MyModel token={myNftList[idx] ? myNftList[idx]['uri'] : null} x={pos.x} y={pos.y} z={pos.z}
+                <MyModel token={myNftList[idx] ? myNftList[idx]['uri'] : ''} x={pos.x} y={pos.y} z={pos.z}
                          ry={pos.ry}/>
             ))}
 

@@ -78,6 +78,7 @@ export default function MarketSpace(props) {
     }, [])
     useEffect(() => {
         getMarketTokens();
+
         console.log("Update Market Space");
     }, [userCtx])
 
@@ -98,7 +99,7 @@ export default function MarketSpace(props) {
             <a-entity id="gallery" position="0 0 0" scale="2.5 2.5 2.5"></a-entity>
 
             {posList.map((pos, idx) => (
-                <MarketModel token={allNfts[idx] ? allNfts[idx].nft['uri'] : null} x={pos.x} y={pos.y} z={pos.z}
+                <MarketModel nftItem={allNfts[idx]} x={pos.x} y={pos.y} z={pos.z}
                              ry={pos.ry}/>
             ))}
 

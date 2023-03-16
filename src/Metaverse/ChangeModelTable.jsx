@@ -10,13 +10,11 @@ import {
 import UserContext from "../Components/UserContext";
 import Divider from "@mui/material/Divider";
 import ModelCavas from "../Components/ModelCavas";
-import {useNavigate} from "react-router-dom";
 import Card from "@mui/material/Card";
 
 
 export default function MyNftTable(props) {
     const userCtx = useContext(UserContext);
-    const navigate = useNavigate();
 
     const [myNftList, setMyNftList] = useState([]);
 
@@ -30,11 +28,6 @@ export default function MyNftTable(props) {
         getMyTokens();
     }, [])
 
-    function handleChangeModle(token) {
-        props.changeModel(token);
-        props.onClose();
-    }
-
     return (
         <Stack direction={"row"} component={Paper} spacing={2} sx={{p: 1}}>
             {Array.from(myNftList).map((nft) => (
@@ -47,7 +40,7 @@ export default function MyNftTable(props) {
                         </Suspense>
                     </CardActionArea>
                     <CardActions sx={{display: "flex", justifyContent: "center"}}>
-                        <Button variant="contained" size="small" onClick={() => handleChangeModle(nft['uri'])}>
+                        <Button variant="contained" size="small" onClick={() => props.changeModel(nft['uri'])}>
                             change to this
                         </Button>
                     </CardActions>

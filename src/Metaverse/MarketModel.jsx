@@ -26,7 +26,8 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function MarketModel({token, x, y, z, scale, ry}) {
+function MarketModel({nftItem, x, y, z, scale, ry}) {
+    var token = nftItem?.nft['uri']
     scale = scale ? scale : 1.5
 
     const loader = new GLTFLoader();
