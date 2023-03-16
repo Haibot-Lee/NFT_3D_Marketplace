@@ -48,9 +48,16 @@ export default function AllNftTable(props) {
             return
         }
         var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        await window.mktContract.buy(Number(nft[0]), time, {value: nft[4]});
-        handleCloseDialog();
-        alert("Buy Successfully!")
+        await window.mktContract.buy(Number(nft[0]), time, {value: nft[4]})
+            .then(() => {
+                handleCloseDialog();
+                alert("Buy Successfully!")
+            })
+            .catch((error) => {
+                handleCloseDialog();
+                alert(error.reason)
+            });
+
     }
 
     async function makeABid(nft) {
