@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
 import {BrowserRouter, Route, Routes, Navigate, useLocation} from "react-router-dom";
-import {ThemeProvider, useTheme, createTheme} from '@mui/material/styles';
+import {ThemeProvider, createTheme} from '@mui/material/styles';
 
 import './App.css';
 import Menu from './Menus/Menu'
@@ -11,7 +11,8 @@ import Profile from './Pages/Profile';
 import Detail from './Pages/Detail';
 import Space from './Metaverse/Space';
 import MktSpace from './Metaverse/MarketSpace';
-import UserContext from './Components/UserContext'
+import UserContext from './Components/UserContext';
+import DetailContext from './Components/DetailContext'
 import Toolbar from "@mui/material/Toolbar";
 
 const useWillMount = (fn) => {
@@ -24,6 +25,7 @@ const useWillMount = (fn) => {
 
 export default function App() {
     const [userCtx, setUserCtx] = useState({});
+    const [detailCtx, setDetailCtx] = useState({});
 
     const mergeUserCtx = (ctx) => {
         setUserCtx(prev => {
@@ -40,9 +42,26 @@ export default function App() {
         });
     }
 
+    const mergeDetailCtx = (ctx) => {
+        setDetailCtx(prev => {
+            const curr = {...prev, ...ctx};
+            localStorage.setItem('detailCtx', JSON.stringify(curr));
+            return curr;
+        });
+    }
+    const clearDetailCtx = () => {
+        setDetailCtx(prev => {
+            const curr = {};
+            localStorage.setItem('detailCtx', JSON.stringify(curr));
+            return curr;
+        });
+    }
+
     useWillMount(() => {
         const ctx = JSON.parse(localStorage.getItem('userCtx'));
         if (ctx != null) setUserCtx(ctx);
+        const detailCtx = JSON.parse(localStorage.getItem('detailCtx'));
+        if (detailCtx != null) setDetailCtx(detailCtx);
     }, [])
 
     const getDesignTokens = (mode) => ({
@@ -53,21 +72,23 @@ export default function App() {
     return (
         <div className="App">
             <UserContext.Provider value={{setContext: mergeUserCtx, clear: clearUserCtx, ...userCtx}}>
-                <ThemeProvider theme={darkModeTheme}>
-                    <BrowserRouter>
-                        <Navbar/>
-                        <Menu/>
-                        <Toolbar/>
-                        <Routes>
-                            <Route path="/" element={<Home/>}/>
-                            <Route path="/profile" element={<Profile/>}/>
-                            <Route path="/market" element={<Market/>}/>
-                            <Route path="/space" element={<Space/>}/>
-                            <Route path="/mkt-space" element={<MktSpace/>}/>
-                            <Route path="/detail" element={<Detail/>}/>
-                        </Routes>
-                    </BrowserRouter>
-                </ThemeProvider>
+                <DetailContext.Provider value={{setContext: mergeDetailCtx, clear: clearDetailCtx, ...detailCtx}}>
+                    <ThemeProvider theme={darkModeTheme}>
+                        <BrowserRouter>
+                            <Navbar/>
+                            <Menu/>
+                            <Toolbar/>
+                            <Routes>
+                                <Route path="/" element={<Home/>}/>
+                                <Route path="/profile" element={<Profile/>}/>
+                                <Route path="/market" element={<Market/>}/>
+                                <Route path="/space" element={<Space/>}/>
+                                <Route path="/mkt-space" element={<MktSpace/>}/>
+                                <Route path="/detail" element={<Detail/>}/>
+                            </Routes>
+                        </BrowserRouter>
+                    </ThemeProvider>
+                </DetailContext.Provider>
             </UserContext.Provider>
         </div>
     );

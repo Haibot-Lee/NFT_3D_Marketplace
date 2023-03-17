@@ -1,14 +1,11 @@
 import React, {Suspense, useContext, useEffect, useState} from 'react';
 import Stack from "@mui/material/Stack";
 import {
-    Box,
-    Button, CardActionArea, CardActions, Checkbox,
+    Button, CardActionArea, CardActions,
     CircularProgress,
-    Paper,
-    TextField
+    Paper
 } from "@mui/material";
 import UserContext from "../Components/UserContext";
-import Divider from "@mui/material/Divider";
 import ModelCavas from "../Components/ModelCavas";
 import Card from "@mui/material/Card";
 
