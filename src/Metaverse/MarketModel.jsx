@@ -4,20 +4,11 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader'
 import Prototypes from 'prop-types'
 import platform from './assets/platform2.glb'
 
-import React, {useContext, useState} from 'react';
-import Slide from '@mui/material/Slide';
-import {TransitionProps} from '@mui/material/transitions';
-import {useTheme} from "@mui/material/styles";
+import React, {useContext, useEffect, useState} from 'react';
 import {ethers} from "ethers";
-
-const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-        children: React.ReactElement;
-    },
-    ref: React.Ref<unknown>,
-) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
+import {format} from "date-fns";
+import UserContext from "../Components/UserContext";
 
 function MarketModel({nftItem, x, y, z, scale, ry}) {
     scale = scale ? scale : 1.5
@@ -30,18 +21,68 @@ function MarketModel({nftItem, x, y, z, scale, ry}) {
         entity.object3D.add(d.scene);
     })
 
-    if (token) {
-        loader.load(`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`, (d) => {
-            const entity = document.getElementById(token);
-            entity.object3D.add(d.scene);
-        })
-    }
-
-    const theme = useTheme();
+    const userCtx = useContext(UserContext);
     const [open, setOpen] = useState(false);
+    const [bidPrice, setBidPrice] = useState(0);
     const handleClickOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const handleCollide = () => console.log('collided!');
+
+    useEffect(() => {
+        if (token) {
+            loader.load(`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`, (d) => {
+                const entity = document.getElementById(token);
+                entity.object3D.add(d.scene);
+            })
+        }
+    }, [token])
+
+    async function buyNft(nft) {
+        if (userCtx?.balance < ethers.utils.formatUnits(nft[4], 'ether')) {
+            alert("Not enough balance!")
+            return
+        }
+        var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        await window.mktContract.buy(Number(nft[0]), time, {value: nft[4]})
+            .then(() => {
+                handleClose();
+                alert("Buy Successfully!")
+            })
+            .catch((error) => {
+                handleClose();
+                alert(error.reason)
+            });
+
+    }
+
+    async function makeABid(nft) {
+        var bidInfo = await window.mktContract.getAuction(nft["_tradeId"]);
+        console.log(bidInfo)
+
+        if (Number(bidInfo.biddingTime) < Math.floor((Date.now()) / 1000)) {
+            alert("Over time!")
+            return
+        }
+        if (userCtx?.balance < bidPrice) {
+            alert("Not enough balance!")
+            return
+        }
+        if (bidPrice <= ethers.utils.formatUnits(nft[4], 'ether')) {
+            alert("Your price should higher than the highest bid price currently!")
+            return
+        }
+
+        var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        await window.mktContract.bid(Number(nft[0]), Math.floor((new Date()).valueOf() / 1000), time, ethers.utils.parseUnits(bidPrice, 'ether'))
+            .then(() => {
+                handleClose();
+                alert("Bid Successfully!")
+            })
+            .catch((error) => {
+                handleClose();
+                alert(error.reason)
+            });
+    }
 
     return (
         <>
@@ -72,6 +113,30 @@ function MarketModel({nftItem, x, y, z, scale, ry}) {
                             rotation={`0 ${ry + 5} 0`}/>
                 </> : ''
             }
+
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>
+                    {nftItem?.nft["auction"] ? "Make a bid" : "Buy this NFT?"}
+                </DialogTitle>
+                {nftItem?.nft["auction"] ?
+                    <DialogContent>
+                        <TextField
+                            autoFocus required fullWidth
+                            margin="dense"
+                            label="Bidding Price"
+                            type="number"
+                            variant="outlined"
+                            val={bidPrice}
+                            onChange={(e) => setBidPrice(e.target.value)}
+                        />
+                    </DialogContent> : ""}
+                <DialogActions>
+                    <Button variant="outlined" color={"error"} onClick={handleClose}>Cancel</Button>
+                    <Button variant="outlined" onClick={() => {
+                        nftItem?.nft["auction"] ? makeABid(nftItem.nft) : buyNft(nftItem.nft)
+                    }}>Confirm</Button>
+                </DialogActions>
+            </Dialog>
 
         </>
     )
