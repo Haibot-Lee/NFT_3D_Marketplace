@@ -25,21 +25,23 @@ const columns = [
     {id: 'des', label: 'Description'},
 ];
 
-const rows = [];
-
 export default function Detail(props) {
     let params = useParams();
     const userCtx = useContext(UserContext);
+    const [token, setToken] = React.useState(userCtx?.token);
 
     async function getHistory() {
-        const history = await window.mktContract.getHistory(1);
-        setRows(history);
-        console.log(JSON.stringify(history));
+        if (userCtx?.tokenId) {
+            const history = await window.mktContract.getHistory(userCtx?.tokenId);
+            setRows(history);
+            console.log(JSON.stringify(history));
+        }
     }
 
     useEffect(() => {
         getHistory();
-    }, []);
+        setToken(userCtx?.token);
+    }, [userCtx]);
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -57,12 +59,15 @@ export default function Detail(props) {
     return (
         <Grid container sx={{pl: 1, pr: 1}}>
             <Grid item xs={6}>
-                <Suspense fallback={<CircularProgress/>}>
-                    <ModelCavas key={props.token}
-                                height={'90vh'}
-                                width={'50vw'}
-                                model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${params.token}`}/>
-                </Suspense>
+                {token ?
+                    <Suspense fallback={<CircularProgress/>}>
+                        <ModelCavas key={props.token}
+                                    height={'90vh'}
+                                    width={'50vw'}
+                                    model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>
+                    </Suspense> : ''
+                }
+
             </Grid>
             <Grid item xs={6}>
                 <Paper sx={{overflow: 'hidden'}}>

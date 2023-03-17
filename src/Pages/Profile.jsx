@@ -23,12 +23,9 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {BigNumber, ethers} from "ethers";
 import SellingNftTable from "../Components/SellingNftTable";
 import MyNftTable from "../Components/MyNftTable";
-import web3Modal from "../Components/Web3Config";
-import MarketContract from "../contracts/MarketPlace.json";
-import NftContract from "../contracts/NFT.json";
 
 
-export default function Profile() {
+export default function Profile(props) {
     const theme = useTheme();
     const userCtx = useContext(UserContext);
 
@@ -38,14 +35,12 @@ export default function Profile() {
     async function getMyTokens() {
         setMyNftList([]);
         var res = await window.mktContract.getMyTokens(userCtx.address);
-        console.log("My Token" + JSON.stringify(res))
         setMyNftList(res);
     }
 
     async function getSellingTokens() {
         setSellingNfts([]);
         var res = await window.mktContract.getSellingTokens(userCtx.address);
-        console.log("selling Tokens" + JSON.stringify(res))
         setSellingNfts(res)
     }
 
@@ -90,11 +85,11 @@ export default function Profile() {
                 <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
                     Private Model:
                 </Typography>
-                {myNftList.length === 0 ? <Divider/> : <MyNftTable myNftList={myNftList}/>}
+                {myNftList.length === 0 ? <Divider/> : <MyNftTable myNftList={myNftList} handleClose={props.handleClose}/>}
                 <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
                     Public Model:
                 </Typography>
-                <SellingNftTable sellingNfts={sellingNfts}/>
+                <SellingNftTable sellingNfts={sellingNfts} handleClose={props.handleClose}/>
             </Stack>
             <Dialog open={open} onClose={handleCloseDialog}>
                 <DialogTitle>Public to NFT Marketplace</DialogTitle>

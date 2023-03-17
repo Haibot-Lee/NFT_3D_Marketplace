@@ -1,7 +1,7 @@
-import React, {Suspense, useState} from 'react';
+import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 
-import {styled, useTheme, Theme, CSSObject} from '@mui/material/styles';
+import {styled, useTheme} from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
@@ -15,7 +15,7 @@ import ListItemText from '@mui/material/ListItemText';
 import OutboxIcon from '@mui/icons-material/Outbox';
 import HomeIcon from '@mui/icons-material/Home';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import {Button, Tooltip} from "@mui/material";
+import {Tooltip} from "@mui/material";
 import InputDialog from "./Input";
 
 const drawerWidth = 200;

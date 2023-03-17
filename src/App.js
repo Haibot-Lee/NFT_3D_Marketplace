@@ -62,9 +62,9 @@ export default function App() {
                             <Route path="/" element={<Home/>}/>
                             <Route path="/profile" element={<Profile/>}/>
                             <Route path="/market" element={<Market/>}/>
-                            <Route path="/detail/:token" element={<Detail/>}/>
                             <Route path="/space" element={<Space/>}/>
                             <Route path="/mkt-space" element={<MktSpace/>}/>
+                            <Route path="/detail" element={<Detail/>}/>
                         </Routes>
                     </BrowserRouter>
                 </ThemeProvider>

@@ -92,8 +92,8 @@ export default function InSpaceDialog(props) {
                 </Toolbar>
             </AppBar>
 
-            {props.page === 'Market' ? <Market/> : ''}
-            {props.page === 'Profile' ? <Profile/> : ''}
+            {props.page === 'Market' ? <Market handleClose={props.handleClose}/> : ''}
+            {props.page === 'Profile' ? <Profile handleClose={props.handleClose}/> : ''}
         </Dialog>
     )
 }

@@ -1,10 +1,9 @@
-import React, {Suspense, useState} from 'react';
+import React, {Suspense, useContext, useState} from 'react';
 import {
     CircularProgress,
     Paper, DialogTitle, DialogContent, TextField, DialogActions, Dialog
 } from "@mui/material";
 import ModelCavas from "./ModelCavas";
-import {useTheme} from "@mui/material/styles";
 import {BigNumber, ethers} from "ethers";
 import Typography from "@mui/material/Typography";
 import Card from '@mui/material/Card';
@@ -13,11 +12,21 @@ import {Button, CardActionArea, CardActions} from '@mui/material';
 import Stack from "@mui/material/Stack";
 import {format} from "date-fns";
 import {useNavigate} from "react-router-dom";
+import UserContext from "./UserContext";
 
 
 export default function SellingNftTable(props) {
-    const theme = useTheme();
     const navigate = useNavigate();
+    const userCtx = useContext(UserContext);
+
+    const navDetail = (nft) => {
+        userCtx.setContext({
+            token: nft['uri'],
+            tokenId: nft['_tokenId']
+        });
+        props.handleClose();
+        navigate('/detail');
+    }
 
     const [open, setOpen] = useState(null);
     const [price, setPrice] = useState(0);
@@ -45,7 +54,7 @@ export default function SellingNftTable(props) {
             <Stack direction={"row"} spacing={1} component={Paper}>
                 {Array.from(props.sellingNfts).map((nft) => (
                     <Card component={Paper}>
-                        <CardActionArea onClick={() => navigate(`/detail/${nft['uri']}`)}>
+                        <CardActionArea onClick={() => navDetail(nft)}>
                             <Suspense fallback={<CircularProgress/>}>
                                 <ModelCavas key={nft['uri']}
                                             model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft['uri']}`}/>

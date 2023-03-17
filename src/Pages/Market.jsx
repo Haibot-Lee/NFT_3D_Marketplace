@@ -1,14 +1,8 @@
 import React, {Suspense, useContext, useEffect, useState} from 'react';
-
-import Stack from "@mui/material/Stack";
-
 import UserContext from "../Components/UserContext";
 import {useNavigate} from "react-router-dom";
 import Typography from "@mui/material/Typography";
-import web3Modal from "../Components/Web3Config";
 import {ethers} from "ethers";
-import MarketContract from "../contracts/MarketPlace.json";
-import NftContract from "../contracts/NFT.json";
 import {
     Button,
     CardActionArea, CardActions, Chip,
@@ -23,14 +17,21 @@ import {
 import Card from "@mui/material/Card";
 import ModelCavas from "../Components/ModelCavas";
 import CardContent from "@mui/material/CardContent";
-import {useTheme} from "@mui/material/styles";
 import {format} from "date-fns";
 
-export default function Market() {
+export default function Market(props) {
     const [allNfts, setAllNfts] = useState([]);
     const userCtx = useContext(UserContext);
-    const theme = useTheme();
     const navigate = useNavigate();
+
+    const navDetail = (nft) => {
+        userCtx.setContext({
+            token: nft['uri'],
+            tokenId: nft['_tokenId']
+        });
+        props.handleClose();
+        navigate('/detail');
+    }
 
     const [open, setOpen] = useState(null);
     const [bidPrice, setBidPrice] = useState(0);
@@ -124,7 +125,7 @@ export default function Market() {
                             {Array.from(allNfts).map((item) => (
                                 <TableCell sx={{overflow: 'hidden'}} align={"center"}>
                                     <Card component={Paper}>
-                                        <CardActionArea onClick={() => navigate(`/detail/${item.nft['uri']}`)}>
+                                        <CardActionArea onClick={() => navDetail(item.nft)}>
                                             <Suspense fallback={<CircularProgress/>}>
                                                 <ModelCavas key={item.nft[6]}
                                                             height={'70vh'}
@@ -134,7 +135,7 @@ export default function Market() {
                                         <CardContent>
                                             <Chip size="small" color="warning"
                                                   label={(item.nft["auction"] ? "For auction | End at: " + new Date(Number(item.auction["biddingTime"] * 1000)).toLocaleString() : "For sell")}/>
-                                            <Typography color={"text.primary"} sx={{pt:1}}>
+                                            <Typography color={"text.primary"} sx={{pt: 1}}>
                                                 <strong>
                                                     {(item.nft["auction"] ? "Highest bid: " : "Price: ")}
                                                 </strong>

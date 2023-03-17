@@ -29,6 +29,15 @@ export default function MyNftTable(props) {
     const userCtx = useContext(UserContext);
     const navigate = useNavigate();
 
+    const navDetail = (nft) => {
+        userCtx.setContext({
+            token: nft['uri'],
+            tokenId: nft['_tokenId']
+        });
+        props.handleClose();
+        navigate('/detail');
+    }
+
     async function sellToken(nft) {
         console.log("sell nft: " + nft)
         if (checked) {//sell
@@ -78,7 +87,7 @@ export default function MyNftTable(props) {
             <Stack direction={"row"} component={Paper} spacing={1}>
                 {Array.from(props.myNftList).map((nft) => (
                     <Card component={Paper}>
-                        <CardActionArea onClick={() => navigate(`/detail/${nft['uri']}`)}>
+                        <CardActionArea onClick={() => navDetail(nft)}>
                             <Suspense fallback={<CircularProgress/>}>
                                 <ModelCavas key={nft['uri']}
                                             model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft['uri']}`}/>
