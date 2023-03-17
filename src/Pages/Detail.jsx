@@ -1,10 +1,7 @@
 import React, {Suspense, useContext, useEffect} from 'react';
-import {useParams} from "react-router-dom";
 
 import {CircularProgress, Grid} from "@mui/material";
 import ModelCavas from "../Components/ModelCavas"
-import UserContext from "../Components/UserContext";
-
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,6 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {ethers} from "ethers";
+import DetailContext from "../Components/DetailContext";
 
 const columns = [
     {id: '_recordId', label: 'RecordId', format: (value) => Number(value)},
@@ -26,13 +24,12 @@ const columns = [
 ];
 
 export default function Detail(props) {
-    let params = useParams();
-    const userCtx = useContext(UserContext);
-    const [token, setToken] = React.useState(userCtx?.token);
+    const detailCtx = useContext(DetailContext);
+    const [token, setToken] = React.useState(detailCtx?.token);
 
     async function getHistory() {
-        if (userCtx?.tokenId) {
-            const history = await window.mktContract.getHistory(userCtx?.tokenId);
+        if (detailCtx?.tokenId) {
+            const history = await window.mktContract.getHistory(detailCtx?.tokenId);
             setRows(history);
             console.log(JSON.stringify(history));
         }
@@ -40,8 +37,8 @@ export default function Detail(props) {
 
     useEffect(() => {
         getHistory();
-        setToken(userCtx?.token);
-    }, [userCtx]);
+        setToken(detailCtx?.token);
+    }, [detailCtx]);
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);

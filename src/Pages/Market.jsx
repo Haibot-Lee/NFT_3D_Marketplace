@@ -18,14 +18,16 @@ import Card from "@mui/material/Card";
 import ModelCavas from "../Components/ModelCavas";
 import CardContent from "@mui/material/CardContent";
 import {format} from "date-fns";
+import DetailContext from "../Components/DetailContext";
 
 export default function Market(props) {
     const [allNfts, setAllNfts] = useState([]);
     const userCtx = useContext(UserContext);
+    const detailCtx = useContext(DetailContext);
     const navigate = useNavigate();
 
     const navDetail = (nft) => {
-        userCtx.setContext({
+        detailCtx.setContext({
             token: nft['uri'],
             tokenId: nft['_tokenId']
         });

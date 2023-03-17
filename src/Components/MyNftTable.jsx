@@ -1,7 +1,6 @@
 import React, {Suspense, useContext, useState} from 'react';
 import Stack from "@mui/material/Stack";
 import {
-    Box,
     Button, CardActionArea, CardActions, Checkbox,
     CircularProgress,
     Dialog,
@@ -13,7 +12,6 @@ import {
     Paper,
     TextField
 } from "@mui/material";
-import UserContext from "../Components/UserContext";
 import Divider from "@mui/material/Divider";
 import ModelCavas from "../Components/ModelCavas";
 import {useNavigate} from "react-router-dom";
@@ -23,14 +21,15 @@ import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {BigNumber, ethers} from "ethers";
 import Card from "@mui/material/Card";
+import DetailContext from "./DetailContext";
 
 
 export default function MyNftTable(props) {
-    const userCtx = useContext(UserContext);
+    const detailCtx = useContext(DetailContext);
     const navigate = useNavigate();
 
     const navDetail = (nft) => {
-        userCtx.setContext({
+        detailCtx.setContext({
             token: nft['uri'],
             tokenId: nft['_tokenId']
         });

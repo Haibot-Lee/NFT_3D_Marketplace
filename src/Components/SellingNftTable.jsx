@@ -12,15 +12,15 @@ import {Button, CardActionArea, CardActions} from '@mui/material';
 import Stack from "@mui/material/Stack";
 import {format} from "date-fns";
 import {useNavigate} from "react-router-dom";
-import UserContext from "./UserContext";
+import DetailContext from "./DetailContext";
 
 
 export default function SellingNftTable(props) {
     const navigate = useNavigate();
-    const userCtx = useContext(UserContext);
+    const detailCtx = useContext(DetailContext);
 
     const navDetail = (nft) => {
-        userCtx.setContext({
+        detailCtx.setContext({
             token: nft['uri'],
             tokenId: nft['_tokenId']
         });
