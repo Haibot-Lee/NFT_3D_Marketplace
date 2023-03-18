@@ -33,8 +33,9 @@ export default function MyNftTable(props) {
             token: nft['uri'],
             tokenId: nft['_tokenId']
         });
-        props.handleClose();
-        navigate('/detail');
+        // props.handleClose();
+        // navigate('/detail');
+        window.location = '/detail'
     }
 
     async function sellToken(nft) {

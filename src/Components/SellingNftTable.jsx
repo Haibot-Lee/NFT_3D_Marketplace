@@ -24,8 +24,9 @@ export default function SellingNftTable(props) {
             token: nft['uri'],
             tokenId: nft['_tokenId']
         });
-        props.handleClose();
-        navigate('/detail');
+        // props.handleClose();
+        // navigate('/detail');
+        window.location = '/detail'
     }
 
     const [open, setOpen] = useState(null);
@@ -60,7 +61,7 @@ export default function SellingNftTable(props) {
                                             model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft['uri']}`}/>
                             </Suspense>
                         </CardActionArea>
-                        <CardContent>
+                        <CardContent sx={{display: 'flex', justifyContent: 'center'}}>
                             <Typography color={"text.primary"}>
                                 {(nft[7] ? "Highest bid: " : "Price: ") + ethers.utils.formatUnits(nft[4], 'ether') + " MATIC"}
                             </Typography>

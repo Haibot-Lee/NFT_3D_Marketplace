@@ -10,32 +10,9 @@ import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} fr
 import {format} from "date-fns";
 import UserContext from "../Components/UserContext";
 
-function MarketModel({nftItem, x, y, z, scale, ry}) {
-    scale = scale ? scale : 1.5
-
-    var token = nftItem?.nft['uri'];
-
-    const loader = new GLTFLoader();
-    loader.load(platform, (d) => {
-        const entity = document.getElementById(`platform-${x}-${y}-${z}`);
-        entity.object3D.add(d.scene);
-    })
-
+function MyDialogContent({nftItem, handleClose}) {
     const userCtx = useContext(UserContext);
-    const [open, setOpen] = useState(false);
     const [bidPrice, setBidPrice] = useState(0);
-    const handleClickOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    const handleCollide = () => console.log('collided!');
-
-    useEffect(() => {
-        if (token) {
-            loader.load(`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`, (d) => {
-                const entity = document.getElementById(token);
-                entity.object3D.add(d.scene);
-            })
-        }
-    }, [token])
 
     async function buyNft(nft) {
         if (userCtx?.balance < ethers.utils.formatUnits(nft[4], 'ether')) {
@@ -84,6 +61,99 @@ function MarketModel({nftItem, x, y, z, scale, ry}) {
             });
     }
 
+    async function getBiddingItem(nft) {
+        var bidInfo = await window.mktContract.getAuction(nft["_tradeId"]);
+        console.log(bidInfo);
+        if (userCtx.address === bidInfo["highestBidder"]) {
+            var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+            console.log("Get bidding item");
+            await window.mktContract.auctionEnd(nft["_tradeId"], time, {value: nft[4]});
+            alert("Auction ended with" + ethers.utils.formatUnits(nft[4], 'ether') + "MATIC. Please check in your profile!");
+        } else {
+            alert("You are not the highest bidder, please change to the correct account or refresh to update account")
+        }
+    }
+
+    if (nftItem?.nft["auction"]) {
+        if (Date.now() > Number(nftItem.auction["biddingTime"]) * 1000) {
+            return (
+                <>
+                    <DialogTitle>Auction ended</DialogTitle>
+                    <DialogContent>
+                        {nftItem.auction["highestBidder"] === userCtx.address ? "You are the highest bidder!" : "You are not the highest bidder!"}
+                    </DialogContent>
+                    <DialogActions sx={{justifyContent: 'space-between'}}>
+                        <Button variant="outlined" color={"error"} onClick={handleClose}>Close</Button>
+                        <Button variant="outlined"
+                                disabled={nftItem.auction["highestBidder"] !== userCtx.address}
+                                onClick={() => getBiddingItem(nftItem.nft)}>pay for your bid</Button>
+                    </DialogActions>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <DialogTitle>Make a bid</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus required fullWidth
+                            margin="dense"
+                            label="Bidding Price"
+                            type="number"
+                            variant="outlined"
+                            val={bidPrice}
+                            onChange={(e) => setBidPrice(e.target.value)}
+                        />
+                    </DialogContent>
+                    <DialogActions sx={{justifyContent: 'space-between'}}>
+                        <Button variant="outlined" color={"error"} onClick={handleClose}>Cancel</Button>
+                        <Button variant="outlined" onClick={() => makeABid(nftItem.nft)}>Confirm</Button>
+                    </DialogActions>
+                </>
+            )
+        }
+    } else {
+        return (
+            <>
+                <DialogTitle>Buy this NFT?</DialogTitle>
+                <DialogContent>
+                    {'Pay ' + ethers.utils.formatUnits(nftItem.nft[4], 'ether') + ' MATIC for this NFT!'}
+                </DialogContent>
+                <DialogActions sx={{justifyContent: 'space-between'}}>
+                    <Button variant="outlined" color={"error"} onClick={handleClose}>Cancel</Button>
+                    <Button variant="outlined" onClick={() => buyNft(nftItem.nft)}>Confirm</Button>
+                </DialogActions>
+            </>
+        )
+
+    }
+}
+
+function MarketModel({nftItem, x, y, z, scale, ry}) {
+    scale = scale ? scale : 1.5
+
+    var token = nftItem?.nft['uri'];
+
+    const loader = new GLTFLoader();
+    loader.load(platform, (d) => {
+        const entity = document.getElementById(`platform-${x}-${y}-${z}`);
+        entity.object3D.add(d.scene);
+    })
+
+    const [open, setOpen] = useState(false);
+    const handleClickOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const handleCollide = () => console.log('collided!');
+
+    useEffect(() => {
+        if (token) {
+            loader.load(`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`, (d) => {
+                const entity = document.getElementById(token);
+                entity.object3D.add(d.scene);
+            })
+        }
+    }, [token])
+
     return (
         <>
             <a-entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.1} ${z}`}/>
@@ -115,27 +185,7 @@ function MarketModel({nftItem, x, y, z, scale, ry}) {
             }
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>
-                    {nftItem?.nft["auction"] ? "Make a bid" : "Buy this NFT?"}
-                </DialogTitle>
-                {nftItem?.nft["auction"] ?
-                    <DialogContent>
-                        <TextField
-                            autoFocus required fullWidth
-                            margin="dense"
-                            label="Bidding Price"
-                            type="number"
-                            variant="outlined"
-                            val={bidPrice}
-                            onChange={(e) => setBidPrice(e.target.value)}
-                        />
-                    </DialogContent> : ""}
-                <DialogActions>
-                    <Button variant="outlined" color={"error"} onClick={handleClose}>Cancel</Button>
-                    <Button variant="outlined" onClick={() => {
-                        nftItem?.nft["auction"] ? makeABid(nftItem.nft) : buyNft(nftItem.nft)
-                    }}>Confirm</Button>
-                </DialogActions>
+                <MyDialogContent nftItem={nftItem} handleClose={handleClose}/>
             </Dialog>
 
         </>

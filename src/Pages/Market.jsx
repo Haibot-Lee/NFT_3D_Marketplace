@@ -31,8 +31,9 @@ export default function Market(props) {
             token: nft['uri'],
             tokenId: nft['_tokenId']
         });
-        props.handleClose();
-        navigate('/detail');
+        // props.handleClose();
+        // navigate('/detail');
+        window.location = '/detail'
     }
 
     const [open, setOpen] = useState(null);
