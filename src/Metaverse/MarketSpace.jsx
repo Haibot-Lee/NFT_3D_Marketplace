@@ -103,7 +103,7 @@ export default function MarketSpace(props) {
                              ry={pos.ry}/>
             ))}
 
-            <a-camera position="0 2 -2">
+            <a-camera position="0 2 -2" wasd-controls="acceleration: 30">
                 <a-cursor/>
             </a-camera>
         </a-scene>
