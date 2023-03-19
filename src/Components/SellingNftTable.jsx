@@ -26,7 +26,7 @@ export default function SellingNftTable(props) {
         });
         // props.handleClose();
         // navigate('/detail');
-        window.location = '/detail'
+        window.location = process.env.PUBLIC_URL + '/detail'
     }
 
     const [open, setOpen] = useState(null);

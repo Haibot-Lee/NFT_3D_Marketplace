@@ -74,7 +74,7 @@ export default function App() {
             <UserContext.Provider value={{setContext: mergeUserCtx, clear: clearUserCtx, ...userCtx}}>
                 <DetailContext.Provider value={{setContext: mergeDetailCtx, clear: clearDetailCtx, ...detailCtx}}>
                     <ThemeProvider theme={darkModeTheme}>
-                        <BrowserRouter>
+                        <BrowserRouter basename={process.env.PUBLIC_URL}>
                             <Navbar/>
                             <Menu/>
                             <Toolbar/>

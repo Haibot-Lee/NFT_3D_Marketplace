@@ -35,7 +35,7 @@ export default function MyNftTable(props) {
         });
         // props.handleClose();
         // navigate('/detail');
-        window.location = '/detail'
+        window.location = process.env.PUBLIC_URL + '/detail'
     }
 
     async function sellToken(nft) {
