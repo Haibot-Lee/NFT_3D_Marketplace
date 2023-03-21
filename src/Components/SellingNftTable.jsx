@@ -40,13 +40,15 @@ export default function SellingNftTable(props) {
         console.log(nft);
         var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
         await window.mktContract.changePrice(nft[0], ethers.utils.parseUnits(price, 'ether'), time);
-        alert("Price changed!")
+        setOpen(false);
+        alert("Price changed!");
     }
 
     async function endAuction(nft) {
         console.log("Auction end and Refund!");
         var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
         await window.mktContract.refund(nft["_tradeId"], time);
+        setOpen(false);
         alert("Auction ended");
     }
 
@@ -80,7 +82,7 @@ export default function SellingNftTable(props) {
                 ))}
             </Stack>
             <Dialog open={open} onClose={handleCloseDialog}>
-                <DialogTitle>Make a bid</DialogTitle>
+                <DialogTitle>Change price</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus required fullWidth
