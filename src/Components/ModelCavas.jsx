@@ -1,11 +1,30 @@
-import React, {Suspense, useRef} from 'react'
-import {OrbitControls, useGLTF} from '@react-three/drei'
+import React, {Suspense, useEffect, useRef} from 'react'
+import {OrbitControls, useAnimations, useGLTF} from '@react-three/drei'
 import {Canvas} from "@react-three/fiber";
 
-export default function Model(props) {
+function Model(props) {
     const group = useRef()
     const gltf = useGLTF(props.model);
+    const {actions} = useAnimations(gltf.animations, group);
 
+    useEffect(() => {
+        if (gltf.animations.length > 0) {
+            actions['Armature|mixamo.com|Layer0'].play();
+        }
+    });
+
+    return (
+        <group ref={group} position={[0.025, -0.9, 0]} dispose={null}>
+            <group name="Scene">
+                <group name="Armature">
+                    <primitive object={gltf.scene}/>
+                </group>
+            </group>
+        </group>
+    )
+}
+
+export default function ModelCavas(props) {
     return (
         <Canvas
             camera={{position: [2, 0, 12], fov: 10}}
@@ -15,9 +34,7 @@ export default function Model(props) {
             <ambientLight intensity={0.1}/>
             <directionalLight intensity={1}/>
             <Suspense fallback={null}>
-                <group ref={group} position={[0.025, -0.9, 0]} dispose={null}>
-                    <primitive object={gltf.scene}/>
-                </group>
+                <Model model={props.model}/>
             </Suspense>
             <OrbitControls/>
         </Canvas>

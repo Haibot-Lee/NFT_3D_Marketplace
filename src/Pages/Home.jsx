@@ -1,10 +1,10 @@
 import {ethers} from "ethers";
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect, useContext, Suspense} from "react";
 import UserContext from '../Components/UserContext';
 import NftContract from "../contracts/NFT.json"
 import MarketContract from "../contracts/MarketPlace.json"
 
-import {Button} from '@mui/material';
+import {Button, Grid} from '@mui/material';
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material/styles";
@@ -69,7 +69,6 @@ export default function Home() {
     }
 
     //TODO: add guide for user to connect wallet, and how to use the website
-    //TODO: main site routes
     return (
         <Stack spacing={2}>
             {(address && address !== "") ?
@@ -86,6 +85,16 @@ export default function Home() {
                 Connect wallet
             </Button>
             <Button disabled={address === ""} onClick={() => logout()}>Log out</Button>
+            <Grid container>
+                <Grid item xs={6}>
+                    <Typography variant="h6" fontWeight="bold" color={theme.palette.warning.main}>
+                        Get Started
+                    </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    ...
+                </Grid>
+            </Grid>
         </Stack>
     );
 }
