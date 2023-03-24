@@ -87,41 +87,6 @@ contract MarketPlace {
         return res;
     }
 
-    function getWinTokens(address sender) public view returns (Trade[] memory){
-        uint itemCount = tradeId;
-        uint Count = 0;
-
-        for (uint256 i = 0; i < itemCount; i++) {
-            if (trades[i + 1].auction == true && auctions[i + 1].ended == false) {
-                if (auctions[i + 1].highestBidder == sender) {
-                    Count += 1;
-                }
-                if (auctions[i + 1].highestBidder == address(0) && auctions[i + 1].beneficiary == sender) {
-                    Count += 1;
-                }
-            }
-
-        }
-
-        Trade[] memory res = new Trade[](Count);
-        uint256 counter = 0;
-        for (uint256 i = 0; i < itemCount; i++) {
-            if (trades[i + 1].auction == true && auctions[i + 1].ended == false) {
-                if (auctions[i + 1].highestBidder == sender) {
-                    res[counter] = trades[i + 1];
-                    counter++;
-                }
-                if (auctions[i + 1].highestBidder == address(0) && auctions[i + 1].beneficiary == sender) {
-                    res[counter] = trades[i + 1];
-                    counter++;
-                }
-            }
-        }
-
-        return res;
-
-    }
-
     function getSellingTokens(address sender) public view returns (Trade[] memory) {
         uint itemCount = tradeId;
         uint Count = 0;
@@ -144,8 +109,11 @@ contract MarketPlace {
     }
 
     function changePrice(uint256 _tradeId, uint256 _price, string memory time) public {
+        //Check if the token owner is changing the price
         Trade memory trade = trades[_tradeId];
         require(msg.sender == trade.poster, "Not the owner");
+
+        //Update the price of trade record
         trades[_tradeId].price = _price;
         recordId += 1;
         history[recordId] = History({
@@ -156,9 +124,8 @@ contract MarketPlace {
         price : _price,
         amount : trade.amount,
         time : time,
-        des : "change price"
+        des : "Change price"
         });
-
     }
 
     function getMyTokens(address sender) public view returns (TradeItem[] memory){
@@ -217,8 +184,8 @@ contract MarketPlace {
     }
 
     function listToken(address token, uint256 _tokenId, string memory uri, string memory time) public returns (uint256){
+        //Create a new item in this marketplace
         itemId += 1;
-
         TradeItems[itemId] = TradeItem({
         _itemId : itemId,
         _tokenId : _tokenId,
@@ -230,6 +197,7 @@ contract MarketPlace {
         uri : uri
         });
 
+        //Update transactions on this token
         recordId += 1;
         history[recordId] = History({
         _recordId : recordId,
@@ -239,9 +207,8 @@ contract MarketPlace {
         price : 0,
         amount : 1,
         time : time,
-        des : "created"
+        des : "Created"
         });
-
 
         return itemId;
     }
@@ -270,15 +237,13 @@ contract MarketPlace {
         return auctions[id];
     }
 
-    function getInfo(uint256 id) public view returns (Trade memory){
-        return trades[id];
-    }
-
-    function publicToAll(uint256 _itemId, uint256 _price, bool _auction, uint256 _bidTime) public {
+    function publicToAll(uint256 _itemId, uint256 _price, bool _auction, uint256 _bidEndTime) public {
         TradeItem memory token = TradeItems[_itemId];
-        uint256 balance = IERC1155(TradeItems[_itemId].token).balanceOf(msg.sender, _itemId);
-        require(balance >= 1, "Not enough supply");
+        //Check if the token is published by the msg.sender
+        uint256 itemCnt = IERC1155(TradeItems[_itemId].token).balanceOf(msg.sender, _itemId);
+        require(itemCnt == 1, "No such token, or publish to marketplace already");
 
+        //Add one record of trade
         tradeId += 1;
         trades[tradeId] = Trade({
         _tradeId : tradeId,
@@ -291,29 +256,30 @@ contract MarketPlace {
         auction : _auction
         });
 
+        //If the trade type is auction, add one record of auction
         if (_auction == true) {
             auctions[tradeId] = Auction({
             _tradeId : tradeId,
             beneficiary : msg.sender,
             auctionStart : block.timestamp,
-            biddingTime : _bidTime,
+            biddingTime : _bidEndTime,
             highestBidder : address(0),
             highestBid : 0,
             ended : false
             });
-
         }
 
+        //Transfers current token from msg.sender to this marketplace.
         IERC1155(token.token).safeTransferFrom(msg.sender, address(this), token._tokenId, 1, "");
     }
 
 
     function buy(uint256 _tradeId, string memory time) public payable {
+        //Check if buyer is seller. User cannot buy their own NFT.
         Trade memory trade = trades[_tradeId];
-
-        require(trade.amount >= 1, "Not enough supply");
         require(trade.poster != msg.sender, "Seller not to be buyer");
 
+        //Update transactions on this token
         recordId += 1;
         history[recordId] = History({
         _recordId : recordId,
@@ -323,14 +289,16 @@ contract MarketPlace {
         price : trade.price,
         amount : 1,
         time : time,
-        des : "transaction"
+        des : "Buy"
         });
 
+        //Transfers current token from this marketplace to msg.sender.
         IERC1155(trade.token).safeTransferFrom(address(this), msg.sender, trade._tokenId, 1, "");
-        trades[_tradeId].amount = trades[_tradeId].amount - 1;
-
+        //Transfer currency with amount of msg.value to seller/trade.poster.
         payable(trade.poster).transfer(msg.value);
 
+        //Remove the trade item from the marketplace
+        trades[_tradeId].amount = trades[_tradeId].amount - 1;
         if (trades[_tradeId].amount == 0) {
             trades[_tradeId].poster = address(0);
         }
@@ -342,11 +310,13 @@ contract MarketPlace {
     }
 
     function bid(uint256 _tradeId, uint256 _now, string memory time, uint256 _price) public payable {
+        //Check if the auction is ended, and the price is higher than the highest bid.
         Auction memory auction = auctions[_tradeId];
         require(_now <= auction.biddingTime, "over time");
         require(_price > auction.highestBid, "Not enough price");
-        Trade memory trade = trades[_tradeId];
 
+        //Update transactions on this token.
+        Trade memory trade = trades[_tradeId];
         recordId += 1;
         history[recordId] = History({
         _recordId : recordId,
@@ -356,47 +326,51 @@ contract MarketPlace {
         price : _price,
         amount : 1,
         time : time,
-        des : "place bid"
+        des : "Bid"
         });
-
         trades[_tradeId].price = _price;
 
+        //Update the highest bidder and highest bid price.
         auctions[_tradeId].highestBidder = msg.sender;
         auctions[_tradeId].highestBid = _price;
-
     }
 
     function auctionEnd(uint256 _tradeId, string memory _time) public payable {
         Auction memory auction = auctions[_tradeId];
         Trade memory trade = trades[_tradeId];
-        //        require(block.timestamp >= auction.biddingTime, "auction not end");
         require(msg.sender == auction.highestBidder, "correct highestBidder");
         require(msg.value == auction.highestBid, "Not correct price");
 
-
+        //Transfers current token from this marketplace to msg.sender.
         IERC1155(trade.token).safeTransferFrom(address(this), auction.highestBidder, trade._tokenId, 1, "");
+        //Transfer currency with amount of msg.value to seller/trade.poster.
         payable(auction.beneficiary).transfer(msg.value);
 
+        //Update transactions on this token.
         recordId += 1;
         history[recordId] = History({
         _recordId : recordId,
         _tokenId : trade._tokenId,
         seller : trade.poster,
-        //        buyer : msg.sender,
         buyer : auction.highestBidder,
         price : trade.price,
         amount : 1,
         time : _time,
-        des : "transaction"
+        des : "Auction"
         });
         auctions[_tradeId].ended = true;
+
+        //Remove the trade item from the marketplace
         trades[_tradeId].amount = 0;
         trades[_tradeId].poster = address(0);
     }
 
     function refund(uint256 _tradeId, string memory _time) public {
         Trade memory trade = trades[_tradeId];
+        //Transfers current token from this marketplace to trade.poster.
         IERC1155(trade.token).safeTransferFrom(address(this), trade.poster, trade._tokenId, 1, "");
+
+        //Update transactions on this token.
         recordId += 1;
         history[recordId] = History({
         _recordId : recordId,
@@ -406,12 +380,13 @@ contract MarketPlace {
         price : trade.price,
         amount : 1,
         time : _time,
-        des : "refund"
+        des : "End auction and refund"
         });
         auctions[_tradeId].ended = true;
+
+        //Remove the trade item from the marketplace
         trades[_tradeId].amount = 0;
         trades[_tradeId].poster = address(0);
-
     }
 
     function pay() public payable {}

@@ -21,11 +21,16 @@ contract NFT is ERC1155 {
         _tokenURIs[tokenId] = _tokenURI;
     }
 
-    function mint(string memory uri) public {
+    function mint(string memory ipfsToken) public {
+        //Get the current token id, and then increment it.
         uint256 newId = _tokenIds.current();
-        _mint(msg.sender, newId, 1, "");
-        _setTokenURI(newId, uri);
         _tokenIds.increment();
+
+        //Create one token of token newId, and assign it to msg.sender.
+        _mint(msg.sender, newId, 1, "");
+        //Set the ipfsToken for the token newId.
+        _tokenURIs[newId] = ipfsToken;
+        //Grants or revokes permission to the marketplaceAddress to transfer the caller’s tokens.
         setApprovalForAll(contractAddress, true);
     }
 
