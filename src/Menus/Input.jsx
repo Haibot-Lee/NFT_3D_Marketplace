@@ -1,10 +1,8 @@
-import React, {useState, useContext, useRef, useEffect, Suspense} from 'react';
+import React, {useState, Suspense} from 'react';
 import {create} from 'ipfs-http-client';
-import * as IPFS from 'ipfs-core'
 import {format} from "date-fns";
 
 import {
-    Box,
     Button,
     CircularProgress,
     Dialog,
@@ -14,7 +12,6 @@ import {
 } from '@mui/material';
 import Stack from "@mui/material/Stack";
 import Typography from '@mui/material/Typography';
-import {useTheme} from "@mui/material/styles";
 import ModelCavas from '../Components/ModelCavas'
 
 
@@ -27,8 +24,6 @@ const ipfs = create({
 })
 
 export default function InputDialog(props) {
-    const theme = useTheme();
-
     const [isLoadinging, setIsLoadinging] = useState(false);
     const [token, setToken] = useState(null);
 

@@ -15,7 +15,7 @@ import {
 import Divider from "@mui/material/Divider";
 import ModelCavas from "../Components/ModelCavas";
 import {useNavigate} from "react-router-dom";
-import dayjs, {Dayjs} from 'dayjs';
+import dayjs from 'dayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
@@ -38,9 +38,10 @@ export default function MyNftTable(props) {
         // window.location = process.env.PUBLIC_URL + '/detail'
     }
 
-    async function sellToken(nft) {
+    async function publish(nft) {
         console.log("sell nft: " + nft)
-        if (checked) {//sell
+        if (checked) {
+            //sell
             await window.mktContract.publicToAll(Number(nft[0]), ethers.utils.parseUnits(price, 'ether'), false, 0)
                 .then(() => {
                     alert("Sell this NFT successfully!");
@@ -51,7 +52,8 @@ export default function MyNftTable(props) {
                     alert(error.reason)
                 });
 
-        } else {//bid
+        } else {
+            //bid
             await window.mktContract.publicToAll(Number(nft[0]), 0, true, timeString.unix())
                 .then(() => {
                     alert("Auction this NFT successfully!");
@@ -133,7 +135,7 @@ export default function MyNftTable(props) {
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => sellToken(open)}>Publish</Button>
+                    <Button onClick={() => publish(open)}>Publish</Button>
                 </DialogActions>
             </Dialog>
         </>

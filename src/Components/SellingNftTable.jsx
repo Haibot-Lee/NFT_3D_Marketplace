@@ -39,17 +39,29 @@ export default function SellingNftTable(props) {
     async function changePrice(nft) {
         console.log(nft);
         var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        await window.mktContract.changePrice(nft[0], ethers.utils.parseUnits(price, 'ether'), time);
-        setOpen(false);
-        alert("Price changed!");
+        await window.mktContract.changePrice(nft[0], ethers.utils.parseUnits(price, 'ether'), time)
+            .then(() => {
+                setOpen(false);
+                alert("Price changed!");
+            })
+            .catch((error) => {
+                setOpen(false);
+                alert(error.reason)
+            });
     }
 
     async function endAuction(nft) {
         console.log("Auction end and Refund!");
         var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        await window.mktContract.refund(nft["_tradeId"], time);
-        setOpen(false);
-        alert("Auction ended");
+        await window.mktContract.refund(nft["_tradeId"], time)
+            .then(() => {
+                setOpen(false);
+                alert("Auction ended");
+            })
+            .catch((error) => {
+                setOpen(false);
+                alert(error.reason)
+            });
     }
 
     return (

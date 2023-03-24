@@ -1,5 +1,5 @@
 import {ethers} from "ethers";
-import React, {useState, useEffect, useContext, Suspense} from "react";
+import React, {useContext} from "react";
 import UserContext from '../Components/UserContext';
 import NftContract from "../contracts/NFT.json"
 import MarketContract from "../contracts/MarketPlace.json"
@@ -61,7 +61,6 @@ export default function Home() {
         window.nftContract = null;
     }
 
-    //TODO: add guide for user to connect wallet, and how to use the website
     return (
         <Stack spacing={2}>
             {userCtx?.address ?

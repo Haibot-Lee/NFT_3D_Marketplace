@@ -93,14 +93,24 @@ export default function Market(props) {
     async function getBiddingItem(nft) {
         var bidInfo = await window.mktContract.getAuction(nft["_tradeId"]);
         console.log(bidInfo);
-        if (userCtx.address === bidInfo["highestBidder"]) {
-            var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-            console.log("Get bidding item");
-            await window.mktContract.auctionEnd(nft["_tradeId"], time, {value: nft[4]});
-            alert("Auction ended with" + ethers.utils.formatUnits(nft[4], 'ether') + "MATIC. Please check in your profile!");
-        } else {
-            alert("You are not the highest bidder, please change to the correct account or refresh to update account")
+        if (userCtx.address !== bidInfo["highestBidder"]) {
+            alert("You are not the highest bidder, please change to the correct account or refresh to update account");
+            return
         }
+
+        if (userCtx?.balance < ethers.utils.formatUnits(nft[4], 'ether')) {
+            alert("Not enough balance!")
+            return
+        }
+
+        var time = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        await window.mktContract.auctionEnd(nft["_tradeId"], time, {value: nft[4]})
+            .then(() => {
+                alert("Auction ended with" + ethers.utils.formatUnits(nft[4], 'ether') + "MATIC. Please check in your profile!");
+            })
+            .catch((error) => {
+                alert(error.reason)
+            });
     }
 
     async function getMarketTokens() {
