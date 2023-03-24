@@ -8,7 +8,7 @@ function Model(props) {
     const {actions} = useAnimations(gltf.animations, group);
 
     useEffect(() => {
-        if (gltf.animations.length > 0) {
+        if (gltf.animations.length > 0 && actions['Armature|mixamo.com|Layer0']) {
             actions['Armature|mixamo.com|Layer0'].play();
         }
     });
