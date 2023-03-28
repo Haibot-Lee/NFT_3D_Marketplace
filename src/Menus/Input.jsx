@@ -3,12 +3,13 @@ import {create} from 'ipfs-http-client';
 import {format} from "date-fns";
 
 import {
+    Box,
     Button,
     CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle
+    DialogTitle, Slider
 } from '@mui/material';
 import Stack from "@mui/material/Stack";
 import Typography from '@mui/material/Typography';
@@ -27,6 +28,8 @@ export default function InputDialog(props) {
     const [isLoadinging, setIsLoadinging] = useState(false);
     const [token, setToken] = useState(null);
 
+    const [royalty, setRoyalty] = useState(10);
+
     const uploadToIpfs = async (file) => {
         setIsLoadinging(true);
         const response = await ipfs.add(file);
@@ -43,8 +46,7 @@ export default function InputDialog(props) {
             var date = format(new Date(), "yyyy-MM-dd HH:mm:ss");
             await window.nftContract.mint(token);
             var tokenId = await window.nftContract.getNumber();
-            await window.mktContract.listToken(process.env.REACT_APP_NFT, Number(tokenId), token, date, 10);
-            console.log("minted");
+            await window.mktContract.listToken(process.env.REACT_APP_NFT, Number(tokenId), token, date, royalty);
             closeDialog();
             alert("NFT created successfully!");
             setIsLoadinging(false);
@@ -79,12 +81,29 @@ export default function InputDialog(props) {
                                     sx={{mt: 0}}>Preview: {token ? '' : 'Please select a model!'}</Typography>
                     }
                     {token ?
-                        <Suspense fallback={<CircularProgress/>}>
-                            <ModelCavas
-                                model={token ? `${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}` : ''}
-                                height={"70vh"} width={'30vw'}/>
-                        </Suspense> : ''
+                        <>
+                            <Suspense fallback={<CircularProgress/>}>
+                                <ModelCavas
+                                    model={token ? `${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}` : ''}
+                                    height={"70vh"} width={'30vw'}/>
+                            </Suspense>
+                            <Stack direction='row' spacing={2}>
+                                <Typography gutterBottom>
+                                    Royalty(%)
+                                </Typography>
+                                <Slider
+                                    defaultValue={royalty}
+                                    value={royalty}
+                                    onChange={(e) => setRoyalty(e.target.value === '' ? 0 : Number(e.target.value))}
+                                    valueLabelDisplay="auto"
+                                    color="success"
+                                    marks min={0} max={100} step={10}
+                                />
+                            </Stack>
+                        </>
+                        : ''
                     }
+
                 </Stack>
 
             </DialogContent>

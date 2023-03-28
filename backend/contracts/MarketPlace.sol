@@ -288,6 +288,21 @@ contract MarketPlace {
         Trade memory trade = trades[_tradeId];
         require(trade.poster != msg.sender, "Seller not to be buyer");
 
+        //Transfers current token from this marketplace to msg.sender.
+        IERC1155(trade.token).safeTransferFrom(address(this), msg.sender, trade._tokenId, 1, "");
+
+        uint totalItemCount = itemId;
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (TradeItems[i + 1]._tokenId == trade._tokenId) {
+                uint royalty = mulDiv(msg.value, TradeItems[i + 1].royaltyAmount, 100);
+                //Transfer currency to NFT creator (royalties payment).
+                payable(TradeItems[i + 1].creator).transfer(royalty);
+                //Transfer currency to seller/trade.poster.
+                payable(trade.poster).transfer(msg.value - royalty);
+                break;
+            }
+        }
+
         //Update transactions on this token
         recordId += 1;
         history[recordId] = History({
@@ -300,11 +315,6 @@ contract MarketPlace {
         time : time,
         des : "Buy"
         });
-
-        //Transfers current token from this marketplace to msg.sender.
-        IERC1155(trade.token).safeTransferFrom(address(this), msg.sender, trade._tokenId, 1, "");
-        //Transfer currency with amount of msg.value to seller/trade.poster.
-        payable(trade.poster).transfer(msg.value);
 
         //Remove the trade item from the marketplace
         trades[_tradeId].amount = trades[_tradeId].amount - 1;
@@ -352,8 +362,17 @@ contract MarketPlace {
 
         //Transfers current token from this marketplace to msg.sender.
         IERC1155(trade.token).safeTransferFrom(address(this), auction.highestBidder, trade._tokenId, 1, "");
-        //Transfer currency with amount of msg.value to seller/trade.poster.
-        payable(auction.beneficiary).transfer(msg.value);
+        uint totalItemCount = itemId;
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (TradeItems[i + 1]._tokenId == trade._tokenId) {
+                uint royalty = mulDiv(msg.value, TradeItems[i + 1].royaltyAmount, 100);
+                //Transfer currency to NFT creator (royalties payment).
+                payable(TradeItems[i + 1].creator).transfer(royalty);
+                //Transfer currency to seller/trade.poster.
+                payable(auction.beneficiary).transfer(msg.value - royalty);
+                break;
+            }
+        }
 
         //Update transactions on this token.
         recordId += 1;
