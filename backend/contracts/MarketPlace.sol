@@ -4,8 +4,10 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract MarketPlace {
+    using SafeMath for uint256;
 
     uint256 private itemId = 0;
     uint256 private recordId = 0;
@@ -22,6 +24,7 @@ contract MarketPlace {
         address creator;
         uint256 price;
         string uri;
+        uint256 royaltyAmount;
     }
 
     struct Trade {
@@ -183,7 +186,12 @@ contract MarketPlace {
         return itemId;
     }
 
-    function listToken(address token, uint256 _tokenId, string memory uri, string memory time) public returns (uint256){
+    function listToken(address token, uint256 _tokenId, string memory uri, string memory time, uint256 royalty) public returns (uint256){
+        if (royalty > 100) {
+            royalty = 100;
+        } else if (royalty < 0) {
+            royalty = 0;
+        }
         //Create a new item in this marketplace
         itemId += 1;
         TradeItems[itemId] = TradeItem({
@@ -194,7 +202,8 @@ contract MarketPlace {
         token : token,
         creator : msg.sender,
         price : 0,
-        uri : uri
+        uri : uri,
+        royaltyAmount : royalty
         });
 
         //Update transactions on this token
@@ -390,4 +399,9 @@ contract MarketPlace {
     }
 
     function pay() public payable {}
+
+    function mulDiv(uint x, uint y, uint z) public pure returns (uint){
+        return (x.mul(y)).div(z);
+    }
+
 }
