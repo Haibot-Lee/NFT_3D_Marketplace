@@ -169,12 +169,13 @@ function MarketModel({nftItem, x, y, z, scale, ry}) {
                             primitive={'a-cylinder'} color={"orange"}
                             position={{x: x, y: y - 0.2, z: z}} scale={'1.1 0.5 1.1'}/>
                     <Entity text={{
-                        value: (nftItem.nft["auction"] ?
-                            "For auction | End at: " + new Date(Number(nftItem.auction["biddingTime"] * 1000)).toLocaleString() +
-                            "\n\nHighest bid: " + ethers.utils.formatUnits(nftItem.nft[4], 'ether') + " MATIC"
-                            :
-                            "For sell\n\n" +
-                            "Price: " + ethers.utils.formatUnits(nftItem.nft[4], 'ether') + " MATIC"),
+                        value: ((nftItem.nft["auction"] ?
+                                "For auction | End at: " + new Date(Number(nftItem.auction["biddingTime"] * 1000)).toLocaleString() +
+                                "\n\nHighest bid: " + ethers.utils.formatUnits(nftItem.nft["price"], 'ether') + " MATIC"
+                                :
+                                "For sell\n\n" +
+                                "Price: " + ethers.utils.formatUnits(nftItem.nft["price"], 'ether') + " MATIC"))
+                            + "\nRoyalty: " + Number(nftItem.nft["royaltyAmount"]) + "%",
                         color: 'red',
                         align: 'center'
                     }}
