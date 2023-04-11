@@ -1,4 +1,5 @@
-// LU Si for the original contribution
+// Miss. LU Si for the original contribution. Reference:
+// LU, S. (2022). Blockchain System for NFT Application. Retrieved from https://fyp.comp.hkbu.edu.hk/fyp/sys/prd/std/arch_get_file.php?file=6513&sub=4333
 
 pragma solidity ^0.8.0;
 
@@ -36,6 +37,7 @@ contract MarketPlace {
         uint256 amount;
         string uri;
         bool auction;
+        uint256 royaltyAmount;
     }
 
     struct History {
@@ -262,7 +264,8 @@ contract MarketPlace {
         price : _price,
         amount : 1,
         uri : token.uri,
-        auction : _auction
+        auction : _auction,
+        royaltyAmount : token.royaltyAmount
         });
 
         //If the trade type is auction, add one record of auction

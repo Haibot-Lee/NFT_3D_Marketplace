@@ -152,7 +152,11 @@ export default function Market(props) {
                                                 <strong>
                                                     {(item.nft["auction"] ? "Highest bid: " : "Price: ")}
                                                 </strong>
-                                                {ethers.utils.formatUnits(item.nft[4], 'ether') + " MATIC"}
+                                                {ethers.utils.formatUnits(item.nft["price"], 'ether') + " MATIC"}
+                                            </Typography>
+                                            <Typography color={"text.primary"} sx={{pt: 1}}>
+                                                <strong>{"Royalty: "}</strong>
+                                                {Number(item.nft["royaltyAmount"]) + "%"}
                                             </Typography>
                                         </CardContent>
                                         <CardActions sx={{display: "flex", justifyContent: "center"}}>

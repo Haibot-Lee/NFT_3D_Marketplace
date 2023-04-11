@@ -1,7 +1,7 @@
 import React, {Suspense, useContext, useState} from 'react';
 import Stack from "@mui/material/Stack";
 import {
-    Button, CardActionArea, CardActions, Checkbox,
+    Button, CardActionArea, CardActions, Checkbox, Chip,
     CircularProgress,
     Dialog,
     DialogActions,
@@ -22,10 +22,14 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {BigNumber, ethers} from "ethers";
 import Card from "@mui/material/Card";
 import DetailContext from "./DetailContext";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import UserContext from "./UserContext";
 
 
 export default function MyNftTable(props) {
     const detailCtx = useContext(DetailContext);
+    const userCtx = useContext(UserContext);
     const navigate = useNavigate();
 
     const navDetail = (nft) => {
@@ -95,6 +99,15 @@ export default function MyNftTable(props) {
                                             model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${nft['uri']}`}/>
                             </Suspense>
                         </CardActionArea>
+                        <CardContent sx={{display: 'flex', justifyContent: 'center'}}>
+                            <Stack>
+                                <Chip size="small" color="warning"
+                                      label={nft["creator"] === userCtx?.address ? "Creator" : "Collector"}/>
+                                <Typography color={"text.primary"}>
+                                    {"Royalty: " + Number(nft["royaltyAmount"]) + "%"}
+                                </Typography>
+                            </Stack>
+                        </CardContent>
                         <CardActions sx={{display: "flex", justifyContent: "center"}}>
                             <Button variant="contained" size="small" onClick={() => setOpen(nft)}>
                                 Public

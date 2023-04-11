@@ -82,11 +82,13 @@ export default function Profile(props) {
     return (
         <>
             <Stack spacing={2} sx={{pt: 2}}>
-                <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
+                <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}
+                            sx={{pl: 1}}>
                     Private Model:
                 </Typography>
                 {myNftList.length === 0 ? <Divider/> : <MyNftTable myNftList={myNftList} handleClose={props.handleClose}/>}
-                <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}>
+                <Typography variant="h5" fontWeight={"bold"} color={theme.palette.text.primary} align={"left"}
+                            sx={{pl: 1}}>
                     Public Model:
                 </Typography>
                 <SellingNftTable sellingNfts={sellingNfts} handleClose={props.handleClose}/>

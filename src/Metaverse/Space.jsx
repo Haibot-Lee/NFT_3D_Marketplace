@@ -94,7 +94,7 @@ export default function Space(props) {
                          ry={pos.ry}/>
             ))}
 
-            <a-camera position="0 2 20">
+            <a-camera position="-5 2 10">
                 <a-cursor/>
             </a-camera>
         </a-scene>

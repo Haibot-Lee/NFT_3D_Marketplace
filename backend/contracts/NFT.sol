@@ -1,4 +1,5 @@
-// LU Si for the original contribution
+// Miss. LU Si for the original contribution. Reference:
+// LU, S. (2022). Blockchain System for NFT Application. Retrieved from https://fyp.comp.hkbu.edu.hk/fyp/sys/prd/std/arch_get_file.php?file=6513&sub=4333
 
 pragma solidity ^0.8.0;
 
