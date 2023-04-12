@@ -13,6 +13,9 @@ import TableRow from '@mui/material/TableRow';
 import {ethers} from "ethers";
 import DetailContext from "../Components/DetailContext";
 import {useParams} from "react-router-dom";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import {useTheme} from "@mui/material/styles";
 
 const columns = [
     {id: '_recordId', label: 'RecordId', format: (value) => Number(value)},
@@ -26,6 +29,7 @@ const columns = [
 
 export default function Detail(props) {
     const detailCtx = useContext(DetailContext);
+    const theme = useTheme();
     let params = useParams();
 
     const [token, setToken] = useState(null);
@@ -37,7 +41,7 @@ export default function Detail(props) {
     async function getModel() {
         setToken(null)
         const nft = await window.mktContract.getTokenByTokenId(params?.id);
-        setToken(nft["uri"]);
+        setToken(nft);
         console.log(JSON.stringify(nft));
     }
 
@@ -73,11 +77,20 @@ export default function Detail(props) {
                         <ModelCavas key={props.token}
                                     height={'90vh'}
                                     width={'50vw'}
-                                    model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>
+                                    model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token["uri"]}`}/>
                     </Suspense>}
 
             </Grid>
             <Grid item xs={6}>
+                {token &&
+                    <Stack sx={{p: 1}}>
+                        <Typography variant="h6" color={theme.palette.warning.light} align={"left"}>
+                            <strong>Creator: </strong>{token["creator"]}
+                        </Typography>
+                        <Typography variant="h6" color={theme.palette.warning.light} align={"left"}>
+                            <strong>Royalty: </strong>{Number(token["royaltyAmount"]) + "%"}
+                        </Typography>
+                    </Stack>}
                 <Paper sx={{overflow: 'hidden'}}>
                     <TableContainer height={'90vh'}>
                         <Table stickyHeader>
