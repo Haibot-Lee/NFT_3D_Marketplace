@@ -64,7 +64,7 @@ export default function InputDialog(props) {
     return (
         <Dialog open={props.open} onClose={closeDialog}>
             <DialogTitle>
-                <Typography variant="h5" fontWeight="bold" sx={{mt: 0}}>Upload your model</Typography>
+                <Typography variant="h5" fontWeight="bold" sx={{mt: 0}}>Mint your NFT</Typography>
             </DialogTitle>
             <DialogContent>
                 <Stack spacing={1}>
@@ -109,7 +109,7 @@ export default function InputDialog(props) {
             </DialogContent>
             <DialogActions sx={{display: 'flex', justifyContent: 'space-between'}}>
                 <Button variant="outlined" onClick={() => mintNFT()}
-                        disabled={!token || isLoadinging}>Upload</Button>
+                        disabled={!token || isLoadinging}>Mint</Button>
             </DialogActions>
         </Dialog>
     );

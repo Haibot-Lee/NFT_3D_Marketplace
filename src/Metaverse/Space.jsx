@@ -91,7 +91,7 @@ export default function Space(props) {
 
             {posList.map((pos, idx) => (
                 <MyModel token={myNftList[idx] ? myNftList[idx]['uri'] : ''} x={pos.x} y={pos.y} z={pos.z}
-                         ry={pos.ry}/>
+                         ry={pos.ry} scale={pos.scale}/>
             ))}
 
             <a-camera>

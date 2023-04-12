@@ -166,8 +166,8 @@ function MarketModel({nftItem, x, y, z, scale, ry}) {
                             scale={`${scale} ${scale} ${scale}`}
                             rotation={`0 ${ry} 0`}/>
                     <Entity events={{click: handleClickOpen, collided: [handleCollide]}}
-                            primitive={'a-cylinder'} color={"orange"}
-                            position={{x: x, y: y - 0.2, z: z}} scale={'1.1 0.5 1.1'}/>
+                            primitive={'a-cylinder'} opacity={0}
+                            position={{x: x, y: y + 1.8, z: z}} scale={`${0.55 * scale} ${1.9 * scale} ${0.55 * scale}`}/>
                     <Entity text={{
                         value: ((nftItem.nft["auction"] ?
                                 "For auction | End at: " + new Date(Number(nftItem.auction["biddingTime"] * 1000)).toLocaleString() +

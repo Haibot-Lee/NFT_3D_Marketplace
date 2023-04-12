@@ -54,10 +54,12 @@ const NumericFormatCustom = React.forwardRef(
 
 function MyModel({token, x, y, z, scale, ry}) {
 
-    const [sc, setSc] = useState(scale ? scale : 1.5);
+    const [ipfsToken, setIpfsToken] = useState(token);
+
     const [px, setPx] = useState(x);
     const [py, setPy] = useState(y);
     const [pz, setPz] = useState(z);
+    const [sc, setSc] = useState(scale ? scale : 1.5);
     const [pry, setPry] = useState(ry);
 
     const loader = new GLTFLoader();
@@ -78,12 +80,14 @@ function MyModel({token, x, y, z, scale, ry}) {
 
     function setModel(ipfs_token) {
         if (ipfs_token) {
+            setIpfsToken(ipfs_token);
             loader.load(`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${ipfs_token}`, (d) => {
                 const entity = document.getElementById(`${token}-${x}-${y}-${z}`);
                 entity.object3D.clear();
                 entity.object3D.add(d.scene);
             })
         } else {
+            setIpfsToken(null);
             const entity = document.getElementById(`${token}-${x}-${y}-${z}`);
             entity.object3D.clear();
         }
@@ -102,8 +106,8 @@ function MyModel({token, x, y, z, scale, ry}) {
         <>
             <Entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.3} ${z}`} scale={'0.3 0.5 0.3'}/>
             <Entity events={{click: handleClickOpen, collided: [handleCollide]}}
-                    primitive={'a-cylinder'} opacity={0} color={'orange'}
-                    position={{x: px, y: py+1.8, z: pz}} scale={'0.8 2.5 0.8'}/>
+                    primitive={'a-cylinder'} opacity={ipfsToken ? 0 : 0.2} color={'#651fff'}
+                    position={{x: px, y: py + 1.8, z: pz}} scale={`${0.55 * sc} ${1.8 * sc} ${0.55 * sc}`}/>
             <Entity id={`${token}-${x}-${y}-${z}`}
                     position={`${px} ${py + 0.4} ${pz}`} scale={`${sc} ${sc} ${sc}`}
                     rotation={`0 ${pry} 0`}/>
@@ -155,7 +159,7 @@ function MyModel({token, x, y, z, scale, ry}) {
                                     inputComponent: NumericFormatCustom,
                                 }}
                                 variant="standard"
-                                sx={{maxWidth:50}}
+                                sx={{maxWidth: 50}}
                             />
                             <TextField
                                 label="z"
@@ -166,7 +170,7 @@ function MyModel({token, x, y, z, scale, ry}) {
                                     inputComponent: NumericFormatCustom,
                                 }}
                                 variant="standard"
-                                sx={{maxWidth:50}}
+                                sx={{maxWidth: 50}}
                             />
                             <TextField
                                 label="y"
@@ -177,7 +181,7 @@ function MyModel({token, x, y, z, scale, ry}) {
                                     inputComponent: NumericFormatCustom,
                                 }}
                                 variant="standard"
-                                sx={{maxWidth:50}}
+                                sx={{maxWidth: 50}}
                             />
                         </Stack>
                         <TextField
