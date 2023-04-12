@@ -78,82 +78,79 @@ export default function ResponsiveAppBar() {
     }
 
     return (
-        <>
-            <AppBar position="fixed">
-                <Toolbar variant="dense" sx={{justifyContent: "center"}}>
-                    {isMobile &&
-                        <>
-                            <IconButton onClick={() => {
-                                navigate('space')
-                            }}><HomeIcon/>
-                            </IconButton>
-
-                            <IconButton onClick={() => {
-                                navigate('mkt-space')
-                            }}><StorefrontIcon/>
-                            </IconButton>
-
-                            <IconButton onClick={() => {
-                                setOpenInput(true)
-                            }}><OutboxIcon/></IconButton>
-
-                            <InputDialog open={openInput} handleClose={() => setOpenInput(false)}/>
-                        </>}
-                    <Box sx={{flexGrow: 1}}/>
-                    {isBrowser &&
-                        <>
-                            <Typography
-                                variant="h6"
-                                noWrap
-                                component="a"
-                                sx={{
-                                    mr: 2,
-                                    display: {xs: 'none', md: 'flex'},
-                                    fontFamily: 'monospace',
-                                    fontWeight: 700,
-                                    letterSpacing: '.3rem',
-                                    color: 'inherit',
-                                    textDecoration: 'none',
-                                }}
-                            >
-                                <strong>Current Account: </strong> {shortenAddr(userCtx.address)}
-                            </Typography>
-
-                            <Typography
-                                variant="h6"
-                                color={"text.secondary"}
-                                sx={{
-                                    ml: 2,
-                                    fontFamily: 'monospace'
-                                }}>
-                                Balance: {userCtx.balance} MATIC
-                            </Typography>
-                            <Box sx={{flexGrow: 1}}/>
-                        </>}
-
-                    {location.pathname === '/mkt-space' &&
-                        <Tooltip title="Market">
-                            <IconButton onClick={() => handleOpen('Market')}>
-                                <ShoppingCartIcon/>
-                            </IconButton>
-                        </Tooltip>}
-                    {location.pathname === '/space' &&
-                        <Tooltip title="Profile">
-                            <IconButton onClick={() => handleOpen('Profile')}>
-                                <AccountCircle/>
-                            </IconButton>
-                        </Tooltip>}
-
-                    <Tooltip title="Refresh">
-                        <IconButton onClick={() => init()}>
-                            <RefreshIcon/>
+        <AppBar position="fixed">
+            <Toolbar variant="dense" sx={{justifyContent: "center"}}>
+                {isMobile &&
+                    <>
+                        <IconButton onClick={() => {
+                            navigate('space')
+                        }}><HomeIcon/>
                         </IconButton>
-                    </Tooltip>
 
-                </Toolbar>
-            </AppBar>
+                        <IconButton onClick={() => {
+                            navigate('mkt-space')
+                        }}><StorefrontIcon/>
+                        </IconButton>
+
+                        <IconButton onClick={() => {
+                            setOpenInput(true)
+                        }}><OutboxIcon/></IconButton>
+
+                        <InputDialog open={openInput} handleClose={() => setOpenInput(false)}/>
+                    </>}
+                <Box sx={{flexGrow: 1}}/>
+                {isBrowser &&
+                    <>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            sx={{
+                                mr: 2,
+                                display: {xs: 'none', md: 'flex'},
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            <strong>Current Account: </strong> {shortenAddr(userCtx.address)}
+                        </Typography>
+
+                        <Typography
+                            variant="h6"
+                            color={"text.secondary"}
+                            sx={{
+                                ml: 2,
+                                fontFamily: 'monospace'
+                            }}>
+                            Balance: {userCtx.balance} MATIC
+                        </Typography>
+                        <Box sx={{flexGrow: 1}}/>
+                    </>}
+
+                {location.pathname === '/mkt-space' &&
+                    <Tooltip title="Market">
+                        <IconButton onClick={() => handleOpen('Market')}>
+                            <ShoppingCartIcon/>
+                        </IconButton>
+                    </Tooltip>}
+                {location.pathname === '/space' &&
+                    <Tooltip title="Profile">
+                        <IconButton onClick={() => handleOpen('Profile')}>
+                            <AccountCircle/>
+                        </IconButton>
+                    </Tooltip>}
+
+                <Tooltip title="Refresh">
+                    <IconButton onClick={() => init()}>
+                        <RefreshIcon/>
+                    </IconButton>
+                </Tooltip>
+            </Toolbar>
             <InSpaceDialog open={open} handleClose={handleClose} page={page}/>
-        </>
+        </AppBar>
     );
 }
 

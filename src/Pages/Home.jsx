@@ -8,9 +8,10 @@ import {Box, Button, Grid} from '@mui/material';
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material/styles";
-import web3Modal from "../Components/Web3Config"
-import p1 from "../p1.jpg"
-import {Add} from "@mui/icons-material";
+import web3Modal from "../Components/Web3Config";
+import p1 from "../p1.jpg";
+import {BrowserView, MobileView, isBrowser, isMobile} from 'react-device-detect';
+import InfoPan from "./InfoPan";
 
 export default function Home() {
     const userCtx = useContext(UserContext);
@@ -62,32 +63,6 @@ export default function Home() {
         window.nftContract = null;
     }
 
-    async function addNetwork() {
-        await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [
-                {
-                    chainName: 'Polygon Testnet',
-                    rpcUrls: ['https://polygon-mumbai.g.alchemy.com/v2/L8tYmA2PaCBL7CVlu0qHwhvuxlAHrKYz'],
-                    chainId: '0x13881',
-                    nativeCurrency: {
-                        "name": "MATIC",
-                        "symbol": "MATIC",
-                        "decimals": 18
-                    },
-                    blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
-                },
-            ],
-        }).catch((error) => {
-            if (error.code === 4902) {
-                console.log('This chain is added to MetaMask already!');
-            } else {
-                console.log('Failed to add this new network to MetaMask!');
-            }
-        });
-
-    }
-
     return (
         <Stack spacing={2}>
             {userCtx?.address ?
@@ -99,58 +74,28 @@ export default function Home() {
                         Balance: {userCtx.balance} MATIC
                     </Typography>
                 </> : ''}
-
-            <Button variant="contained" disabled={userCtx?.address} onClick={() => init()}>
-                Connect wallet
-            </Button>
-            <Button disabled={!userCtx?.address} onClick={() => logout()}>Log out</Button>
-            <Grid container>
-                <Grid item xs={8} sx={{pl: 2}}>
-                    <Typography align={"left"} variant="h6" fontWeight="bold" color={theme.palette.warning.main}>
-                        Get Started:
-                    </Typography>
-                    <Typography sx={{pb: 1}} align={"left"} variant="body1" fontWeight="bold"
-                                color={theme.palette.success.dark}>
-                        # You are recommended to Chrome browser to use this website.
-                    </Typography>
-                    <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                        1. Prepare you own wallet, and connect to the website. Get Metamask extension for your chrome
-                        browser&nbsp;
-                        <a type="button" target='_blank'
-                           href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn">HERE</a>.
-                    </Typography>
-                    <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                        2. Add a new network to your wallet. Please refer to the information below.
-                        Then connect to the website. Or click&nbsp;
-                        <a type="button" href="#" onClick={() => addNetwork()}>HERE</a>.
-                    </Typography>
-                    <Box sx={{m: 1, p: 1, border: 1, borderColor: 'white'}}>
-                        <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                            Network name: Polygon Testnet
-                        </Typography>
-                        <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                            New RPC URL: <br/>https://polygon-mumbai.g.alchemy.com/v2/L8tYmA2PaCBL7CVlu0qHwhvuxlAHrKYz
-                        </Typography>
-                        <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                            Chain ID: 80001
-                        </Typography>
-                        <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                            Currency Symbol: MATIC
-                        </Typography>
-                        <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                            Block Explorer URL: <br/>https://mumbai.polygonscan.com/
-                        </Typography>
-                    </Box>
-                    <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                        3. Get MATIC for your wallet from &nbsp;
-                        <a type="button" target='_blank' href="https://mumbaifaucet.com/">HERE</a>
-                        &nbsp; to make transactions.
-                    </Typography>
+            <Box sx={{display: 'flex', justifyContent: 'space-evenly'}}>
+                <Button variant="contained" disabled={userCtx?.address} onClick={() => init()}>
+                    Connect wallet
+                </Button>
+                <Button variant="outlined" color="error" disabled={!userCtx?.address} onClick={() => logout()}>Log out</Button>
+            </Box>
+            <BrowserView>
+                <Grid container>
+                    <Grid item xs={8} sx={{pl: 2}}>
+                        <InfoPan/>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <img src={p1} width="250vw"/>
+                    </Grid>
                 </Grid>
-                <Grid item xs={4}>
-                    <img src={p1} width="250vw"/>
-                </Grid>
-            </Grid>
+            </BrowserView>
+            <MobileView>
+                <Stack sx={{m: 1}}>
+                    <InfoPan/>
+                    {/*<Box><img src={p1} width="50%"/></Box>*/}
+                </Stack>
+            </MobileView>
         </Stack>
     );
 }

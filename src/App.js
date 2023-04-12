@@ -76,9 +76,8 @@ export default function App() {
                 <DetailContext.Provider value={{setContext: mergeDetailCtx, clear: clearDetailCtx, ...detailCtx}}>
                     <ThemeProvider theme={darkModeTheme}>
                         <BrowserRouter basename={process.env.PUBLIC_URL}>
-                            <Navbar/>
                             {isBrowser && <Menu/>}
-                            <Toolbar/>
+                            <Navbar/>
                             <Routes>
                                 <Route path="/" element={<Home/>}/>
                                 <Route path="/profile" element={<Profile/>}/>
