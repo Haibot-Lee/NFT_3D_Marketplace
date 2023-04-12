@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material/styles";
 import web3Modal from "../Components/Web3Config"
 import p1 from "../p1.jpg"
+import {Add} from "@mui/icons-material";
 
 export default function Home() {
     const userCtx = useContext(UserContext);
@@ -61,6 +62,32 @@ export default function Home() {
         window.nftContract = null;
     }
 
+    async function addNetwork() {
+        await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+                {
+                    chainName: 'Polygon Testnet',
+                    rpcUrls: ['https://polygon-mumbai.g.alchemy.com/v2/L8tYmA2PaCBL7CVlu0qHwhvuxlAHrKYz'],
+                    chainId: '0x13881',
+                    nativeCurrency: {
+                        "name": "MATIC",
+                        "symbol": "MATIC",
+                        "decimals": 18
+                    },
+                    blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
+                },
+            ],
+        }).catch((error) => {
+            if (error.code === 4902) {
+                console.log('This chain is added to MetaMask already!');
+            } else {
+                console.log('Failed to add this new network to MetaMask!');
+            }
+        });
+
+    }
+
     return (
         <Stack spacing={2}>
             {userCtx?.address ?
@@ -93,12 +120,13 @@ export default function Home() {
                            href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn">HERE</a>.
                     </Typography>
                     <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                        2. Add a new network to your wallet. please refer to the information below.
-                        Then connect to the website.
+                        2. Add a new network to your wallet. Please refer to the information below.
+                        Then connect to the website. Or click&nbsp;
+                        <a type="button" href="#" onClick={() => addNetwork()}>HERE</a>.
                     </Typography>
                     <Box sx={{m: 1, p: 1, border: 1, borderColor: 'white'}}>
                         <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                            Network name: Mumbai
+                            Network name: Polygon Testnet
                         </Typography>
                         <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
                             New RPC URL: <br/>https://polygon-mumbai.g.alchemy.com/v2/L8tYmA2PaCBL7CVlu0qHwhvuxlAHrKYz
