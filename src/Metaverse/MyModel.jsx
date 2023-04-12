@@ -16,6 +16,9 @@ import Slide from '@mui/material/Slide';
 import {TransitionProps} from '@mui/material/transitions';
 import ChangeModelTable from "./ChangeModelTable";
 import {useTheme} from "@mui/material/styles";
+import {DialogContent, DialogTitle, TextField} from "@mui/material";
+import {NumericFormat, NumericFormatProps} from "react-number-format";
+import Stack from "@mui/material/Stack";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -26,8 +29,36 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const NumericFormatCustom = React.forwardRef(
+    function NumericFormatCustom(props, ref) {
+        const {onChange, ...other} = props;
+
+        return (
+            <NumericFormat
+                {...other}
+                getInputRef={ref}
+                onValueChange={(values) => {
+                    onChange({
+                        target: {
+                            name: props.name,
+                            value: values.value
+                        }
+                    });
+                }}
+                thousandSeparator
+                valueIsNumericString
+            />
+        );
+    }
+);
+
 function MyModel({token, x, y, z, scale, ry}) {
-    scale = scale ? scale : 1.5
+
+    const [sc, setSc] = useState(scale ? scale : 1.5);
+    const [px, setPx] = useState(x);
+    const [py, setPy] = useState(y);
+    const [pz, setPz] = useState(z);
+    const [pry, setPry] = useState(ry);
 
     const loader = new GLTFLoader();
     loader.load(platform, (d) => {
@@ -37,8 +68,12 @@ function MyModel({token, x, y, z, scale, ry}) {
 
     const theme = useTheme();
     const [open, setOpen] = useState(false);
+    const [open2, setOpen2] = useState(false);
     const handleClickOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        setOpen2(true);
+    }
     const handleCollide = () => console.log('collided!');
 
     function setModel(ipfs_token) {
@@ -67,27 +102,26 @@ function MyModel({token, x, y, z, scale, ry}) {
         <>
             <Entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.3} ${z}`} scale={'0.3 0.5 0.3'}/>
             <Entity events={{click: handleClickOpen, collided: [handleCollide]}}
-                    primitive={'a-cylinder'} color={"orange"}
-                    position={{x: x, y: y, z: z}} scale={'0.8 0.5 0.8'}/>
+                    primitive={'a-cylinder'} opacity={0} color={'orange'}
+                    position={{x: px, y: py+1.8, z: pz}} scale={'0.8 2.5 0.8'}/>
             <Entity id={`${token}-${x}-${y}-${z}`}
-                    position={`${x} ${y + 0.4} ${z}`} scale={`${scale} ${scale} ${scale}`}
-                    rotation={`0 ${ry} 0`}/>
-            <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+                    position={`${px} ${py + 0.4} ${pz}`} scale={`${sc} ${sc} ${sc}`}
+                    rotation={`0 ${pry} 0`}/>
+
+            <Dialog fullScreen open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
                 <AppBar sx={{position: 'relative'}}>
                     <Toolbar>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            onClick={handleClose}
-                            aria-label="close"
-                        >
+                        <IconButton edge="start" color="inherit" onClick={() => setOpen(false)}>
                             <CloseIcon/>
                         </IconButton>
                         <Typography sx={{ml: 2, flex: 1}} variant="h5" fontWeight={"bold"}
                                     color={theme.palette.text.primary} align={"left"}>
-                            Change Display Models
+                            Change Display Model
                         </Typography>
-                        <Button color="inherit" variant="outlined" onClick={() => changeModel(null)}>
+                        <Button color="inherit" variant="outlined" onClick={handleClose}>
+                            Change Position
+                        </Button>
+                        <Button color="error" variant="outlined" onClick={() => changeModel(null)} sx={{ml: 1}}>
                             Clear Model
                         </Button>
                     </Toolbar>
@@ -95,7 +129,70 @@ function MyModel({token, x, y, z, scale, ry}) {
 
                 <ChangeModelTable changeModel={changeModel}/>
             </Dialog>
-
+            <Dialog open={open2} onClose={() => setOpen2(false)}>
+                <DialogTitle>
+                    Change Position
+                </DialogTitle>
+                <DialogContent>
+                    <Stack spacing={1}>
+                        <TextField
+                            label="Scale"
+                            value={sc}
+                            onChange={(e) => setSc(e.target.value)}
+                            name="numberformat"
+                            InputProps={{
+                                inputComponent: NumericFormatCustom,
+                            }}
+                            variant="standard"
+                        />
+                        <Stack direction={"row"} spacing={0.5}>
+                            <TextField
+                                label="x"
+                                value={px}
+                                onChange={(e) => setPx(e.target.value)}
+                                name="numberformat"
+                                InputProps={{
+                                    inputComponent: NumericFormatCustom,
+                                }}
+                                variant="standard"
+                                sx={{maxWidth:50}}
+                            />
+                            <TextField
+                                label="z"
+                                value={pz}
+                                onChange={(e) => setPz(e.target.value)}
+                                name="numberformat"
+                                InputProps={{
+                                    inputComponent: NumericFormatCustom,
+                                }}
+                                variant="standard"
+                                sx={{maxWidth:50}}
+                            />
+                            <TextField
+                                label="y"
+                                value={py}
+                                onChange={(e) => setPy(e.target.value)}
+                                name="numberformat"
+                                InputProps={{
+                                    inputComponent: NumericFormatCustom,
+                                }}
+                                variant="standard"
+                                sx={{maxWidth:50}}
+                            />
+                        </Stack>
+                        <TextField
+                            label="Rotation"
+                            value={pry}
+                            onChange={(e) => setPry(e.target.value)}
+                            name="numberformat"
+                            InputProps={{
+                                inputComponent: NumericFormatCustom,
+                            }}
+                            variant="standard"
+                        />
+                    </Stack>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

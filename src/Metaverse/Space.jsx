@@ -12,12 +12,12 @@ import MarketContract from "../contracts/MarketPlace.json";
 import NftContract from "../contracts/NFT.json";
 
 const posList = [
-    {x: -21, y: 0, z: -3.7, ry: 90},
-    {x: -21, y: 0, z: -9.8, ry: 90},
-    {x: -21, y: 0, z: -15.2, ry: 90},
-    {x: 20, y: 0, z: -3.7, ry: -90},
-    {x: 20, y: 0, z: -9.8, ry: -90},
-    {x: 20, y: 0, z: -15.2, ry: -90},
+    {x: -21, y: -1, z: 4.3, ry: 90},
+    {x: -21, y: -1, z: -1.8, ry: 90},
+    {x: -21, y: -1, z: -7.2, ry: 90},
+    {x: 20, y: -1, z: 4.3, ry: -90},
+    {x: 20, y: -1, z: -1.8, ry: -90},
+    {x: 20, y: -1, z: -7.2, ry: -90},
 ]
 export default function Space(props) {
     const userCtx = useContext(UserContext);
