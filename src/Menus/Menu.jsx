@@ -14,7 +14,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import OutboxIcon from '@mui/icons-material/Outbox';
 import HomeIcon from '@mui/icons-material/Home';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import {Tooltip} from "@mui/material";
 import InputDialog from "./Input";
 
@@ -68,11 +68,10 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
 
 const MenuList = [
     {text: 'Your Space', icon: <HomeIcon/>, to: 'space'},
-    {text: 'Market Space', icon: <ShoppingCartIcon/>, to: 'mkt-space'},
+    {text: 'Market Space', icon: <StorefrontIcon/>, to: 'mkt-space'},
 ];
 
 export default function Menu() {
-    const theme = useTheme();
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
@@ -108,12 +107,12 @@ export default function Menu() {
                         </ListItemButton>
                     </ListItem>
                 ))}
-                <ListItem key="Create" disablePadding sx={{display: 'block'}}>
+                <ListItem key="Mint" disablePadding sx={{display: 'block'}}>
                     <ListItemButton sx={{justifyContent: open ? 'initial' : 'center', px: 2.5}}
                                     onClick={() => {
                                         setOpenInput(true)
                                     }}>
-                        <Tooltip title="Create NFT" placement="right" arrow>
+                        <Tooltip title="Mint NFT" placement="right" arrow>
                             <ListItemIcon
                                 sx={{
                                     minWidth: 0,
@@ -121,7 +120,7 @@ export default function Menu() {
                                     justifyContent: 'center'
                                 }}><OutboxIcon/></ListItemIcon>
                         </Tooltip>
-                        <ListItemText primary="Create" sx={{opacity: open ? 1 : 0}}/>
+                        <ListItemText primary="Mint NFT" sx={{opacity: open ? 1 : 0}}/>
                     </ListItemButton>
                 </ListItem>
             </List>

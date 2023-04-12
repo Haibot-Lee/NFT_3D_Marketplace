@@ -14,6 +14,7 @@ import MktSpace from './Metaverse/MarketSpace';
 import UserContext from './Components/UserContext';
 import DetailContext from './Components/DetailContext'
 import Toolbar from "@mui/material/Toolbar";
+import {isBrowser} from 'react-device-detect';
 
 const useWillMount = (fn) => {
     const willMount = useRef(true);
@@ -76,7 +77,7 @@ export default function App() {
                     <ThemeProvider theme={darkModeTheme}>
                         <BrowserRouter basename={process.env.PUBLIC_URL}>
                             <Navbar/>
-                            <Menu/>
+                            {isBrowser && <Menu/>}
                             <Toolbar/>
                             <Routes>
                                 <Route path="/" element={<Home/>}/>
