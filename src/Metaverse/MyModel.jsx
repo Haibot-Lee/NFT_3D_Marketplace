@@ -1,5 +1,5 @@
 import 'aframe';
-import {Entity, Scene} from 'aframe-react';
+import {Entity} from 'aframe-react';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader'
 import Prototypes from 'prop-types'
 import platform from './assets/platform.glb'

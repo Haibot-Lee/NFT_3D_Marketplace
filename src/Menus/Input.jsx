@@ -80,7 +80,7 @@ export default function InputDialog(props) {
                         <Typography variant="h6" fontWeight="bold"
                                     sx={{mt: 0}}>Preview: {token ? '' : 'Please select a model!'}</Typography>
                     }
-                    {token ?
+                    {token &&
                         <>
                             <Suspense fallback={<CircularProgress/>}>
                                 <ModelCavas
@@ -100,9 +100,7 @@ export default function InputDialog(props) {
                                     marks min={0} max={100} step={10}
                                 />
                             </Stack>
-                        </>
-                        : ''
-                    }
+                        </>}
 
                 </Stack>
 

@@ -23,12 +23,12 @@ export default function InfoPan() {
                 },
             ],
         }).then((result) => {
-            alert('This chain is added to MetaMask already!');
+            alert('Polygon Testnet is added to MetaMask!');
         }).catch((error) => {
             if (error.code === 4902) {
                 alert('This chain is added to MetaMask already!');
             } else {
-                alert('Failed to add this new network to MetaMask!');
+                alert('Failed to add this new network to MetaMask!' + error);
             }
         });
 
@@ -50,7 +50,7 @@ export default function InfoPan() {
                    href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn">HERE</a>.
             </Typography>
             <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
-                2. Add a new network to your wallet. Please refer to the information below.
+                2. Add a test network to your wallet. Please refer to the information below.
                 Then connect to the website. Or click&nbsp;
                 <a type="button" href="#" onClick={() => addNetwork()}>HERE</a>.
             </Typography>

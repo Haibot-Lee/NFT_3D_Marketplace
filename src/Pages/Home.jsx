@@ -64,8 +64,8 @@ export default function Home() {
     }
 
     return (
-        <Stack spacing={2}>
-            {userCtx?.address ?
+        <Stack spacing={2} sx={{maxWidth: '100%'}}>
+            {userCtx?.address &&
                 <>
                     <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
                         User Address: {shortenAddr(userCtx?.address)}
@@ -73,12 +73,13 @@ export default function Home() {
                     <Typography variant="h6" fontWeight="bold" sx={{mt: 0}} color={theme.palette.text.primary}>
                         Balance: {userCtx.balance} MATIC
                     </Typography>
-                </> : ''}
+                </>}
             <Box sx={{display: 'flex', justifyContent: 'space-evenly'}}>
                 <Button variant="contained" disabled={userCtx?.address} onClick={() => init()}>
-                    Connect wallet
+                    Connect to your wallet
                 </Button>
-                <Button variant="outlined" color="error" disabled={!userCtx?.address} onClick={() => logout()}>Log out</Button>
+                <Button variant="outlined" color="error" disabled={!userCtx?.address} onClick={() => logout()}>
+                    Log out</Button>
             </Box>
             <BrowserView>
                 <Grid container>

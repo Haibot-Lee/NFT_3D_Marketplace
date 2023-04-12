@@ -20,7 +20,7 @@ import dayjs from 'dayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import {BigNumber, ethers} from "ethers";
+import {ethers} from "ethers";
 import SellingNftTable from "../Components/SellingNftTable";
 import MyNftTable from "../Components/MyNftTable";
 

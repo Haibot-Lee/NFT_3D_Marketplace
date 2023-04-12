@@ -1,4 +1,4 @@
-import React, {Suspense, useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import sky from './assets/bg.jpeg'
 import gallery from './assets/space.glb'

@@ -56,14 +56,13 @@ export default function Detail(props) {
     return (
         <Grid container sx={{pl: 1, pr: 1}}>
             <Grid item xs={6}>
-                {token ?
+                {token &&
                     <Suspense fallback={<CircularProgress/>}>
                         <ModelCavas key={props.token}
                                     height={'90vh'}
                                     width={'50vw'}
                                     model={`${process.env.REACT_APP_ACCESS_LINK}/ipfs/${token}`}/>
-                    </Suspense> : ''
-                }
+                    </Suspense>}
 
             </Grid>
             <Grid item xs={6}>

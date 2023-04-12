@@ -158,7 +158,7 @@ function MarketModel({nftItem, x, y, z, scale, ry}) {
         <>
             <a-entity id={`platform-${x}-${y}-${z}`} position={`${x} ${y + 0.1} ${z}`}/>
 
-            {token ?
+            {token &&
                 <>
                     <Entity id={token}
                             events={{click: handleClickOpen, collided: [handleCollide]}}
@@ -167,7 +167,8 @@ function MarketModel({nftItem, x, y, z, scale, ry}) {
                             rotation={`0 ${ry} 0`}/>
                     <Entity events={{click: handleClickOpen, collided: [handleCollide]}}
                             primitive={'a-cylinder'} opacity={0}
-                            position={{x: x, y: y + 1.8, z: z}} scale={`${0.55 * scale} ${1.9 * scale} ${0.55 * scale}`}/>
+                            position={{x: x, y: y + 1.8, z: z}}
+                            scale={`${0.55 * scale} ${1.9 * scale} ${0.55 * scale}`}/>
                     <Entity text={{
                         value: ((nftItem.nft["auction"] ?
                                 "For auction | End at: " + new Date(Number(nftItem.auction["biddingTime"] * 1000)).toLocaleString() +
@@ -182,8 +183,7 @@ function MarketModel({nftItem, x, y, z, scale, ry}) {
                             position={`${x - Math.sin((ry) * Math.PI / 180) * 1.6 - Math.cos((ry) * Math.PI / 180)} ${y + 4.5} ${z + Math.sin((ry) * Math.PI / 180) * 1.2 - Math.cos((ry) * Math.PI / 180) * 1.6}`}
                             scale={`${scale * 3} ${scale * 3} ${scale * 3}`}
                             rotation={`0 ${ry + 5} 0`}/>
-                </> : ''
-            }
+                </>}
 
             <Dialog open={open} onClose={handleClose}>
                 <MyDialogContent nftItem={nftItem} handleClose={handleClose}/>
