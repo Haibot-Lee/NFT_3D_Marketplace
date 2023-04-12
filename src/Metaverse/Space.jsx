@@ -87,14 +87,14 @@ export default function Space(props) {
             <a-sky color="#FFFFFF"
                    material={"src: #sky"}
                    rotation="0 0 0"/>
-            <a-entity id="gallery" position="0 0 0" rotation="0 90 0"></a-entity>
+            <a-entity id="gallery" position="0 -1 8" rotation="0 90 0"></a-entity>
 
             {posList.map((pos, idx) => (
                 <MyModel token={myNftList[idx] ? myNftList[idx]['uri'] : ''} x={pos.x} y={pos.y} z={pos.z}
                          ry={pos.ry}/>
             ))}
 
-            <a-camera position="-5 2 10">
+            <a-camera>
                 <a-cursor/>
             </a-camera>
         </a-scene>
