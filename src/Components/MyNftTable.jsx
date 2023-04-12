@@ -33,13 +33,12 @@ export default function MyNftTable(props) {
     const navigate = useNavigate();
 
     const navDetail = (nft) => {
-        detailCtx.setContext({
-            token: nft['uri'],
-            tokenId: nft['_tokenId']
-        });
+        // detailCtx.setContext({
+        //     token: nft['uri'],
+        //     tokenId: nft['_tokenId']
+        // });
         props.handleClose();
-        navigate('/detail');
-        // window.location = process.env.PUBLIC_URL + '/detail'
+        navigate(`/detail/${nft['_tokenId']}`);
     }
 
     async function publish(nft) {

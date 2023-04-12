@@ -122,14 +122,14 @@ contract MarketPlace {
         trades[_tradeId].price = _price;
         recordId += 1;
         history[recordId] = History({
-        _recordId : recordId,
-        _tokenId : trade._tokenId,
-        seller : trade.poster,
-        buyer : address(0),
-        price : _price,
-        amount : trade.amount,
-        time : time,
-        des : "Change price"
+            _recordId: recordId,
+            _tokenId: trade._tokenId,
+            seller: trade.poster,
+            buyer: address(0),
+            price: _price,
+            amount: trade.amount,
+            time: time,
+            des: "Change price"
         });
     }
 
@@ -197,28 +197,28 @@ contract MarketPlace {
         //Create a new item in this marketplace
         itemId += 1;
         TradeItems[itemId] = TradeItem({
-        _itemId : itemId,
-        _tokenId : _tokenId,
-        initialSupply : 1,
-        publicSupply : 0,
-        token : token,
-        creator : msg.sender,
-        price : 0,
-        uri : uri,
-        royaltyAmount : royalty
+            _itemId: itemId,
+            _tokenId: _tokenId,
+            initialSupply: 1,
+            publicSupply: 0,
+            token: token,
+            creator: msg.sender,
+            price: 0,
+            uri: uri,
+            royaltyAmount: royalty
         });
 
         //Update transactions on this token
         recordId += 1;
         history[recordId] = History({
-        _recordId : recordId,
-        _tokenId : itemId,
-        seller : msg.sender,
-        buyer : address(0),
-        price : 0,
-        amount : 1,
-        time : time,
-        des : "Created"
+            _recordId: recordId,
+            _tokenId: itemId,
+            seller: msg.sender,
+            buyer: address(0),
+            price: 0,
+            amount: 1,
+            time: time,
+            des: "Created"
         });
 
         return itemId;
@@ -244,6 +244,17 @@ contract MarketPlace {
         return res;
     }
 
+    function getTokenByTokenId(uint256 id) public view returns (TradeItem memory){
+        uint totalItemCount = itemId;
+
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (TradeItems[i + 1]._tokenId == id) {
+                return TradeItems[i + 1];
+            }
+        }
+        return TradeItem(0, 0, 0, 0, address(0), address(0), 0, "", 0);
+    }
+
     function getAuction(uint256 id) public view returns (Auction memory){
         return auctions[id];
     }
@@ -257,27 +268,27 @@ contract MarketPlace {
         //Add one record of trade
         tradeId += 1;
         trades[tradeId] = Trade({
-        _tradeId : tradeId,
-        _tokenId : token._tokenId,
-        poster : msg.sender,
-        token : token.token,
-        price : _price,
-        amount : 1,
-        uri : token.uri,
-        auction : _auction,
-        royaltyAmount : token.royaltyAmount
+            _tradeId: tradeId,
+            _tokenId: token._tokenId,
+            poster: msg.sender,
+            token: token.token,
+            price: _price,
+            amount: 1,
+            uri: token.uri,
+            auction: _auction,
+            royaltyAmount: token.royaltyAmount
         });
 
         //If the trade type is auction, add one record of auction
         if (_auction == true) {
             auctions[tradeId] = Auction({
-            _tradeId : tradeId,
-            beneficiary : msg.sender,
-            auctionStart : block.timestamp,
-            biddingTime : _bidEndTime,
-            highestBidder : address(0),
-            highestBid : 0,
-            ended : false
+                _tradeId: tradeId,
+                beneficiary: msg.sender,
+                auctionStart: block.timestamp,
+                biddingTime: _bidEndTime,
+                highestBidder: address(0),
+                highestBid: 0,
+                ended: false
             });
         }
 
@@ -309,14 +320,14 @@ contract MarketPlace {
         //Update transactions on this token
         recordId += 1;
         history[recordId] = History({
-        _recordId : recordId,
-        _tokenId : trade._tokenId,
-        seller : trade.poster,
-        buyer : msg.sender,
-        price : trade.price,
-        amount : 1,
-        time : time,
-        des : "Buy"
+            _recordId: recordId,
+            _tokenId: trade._tokenId,
+            seller: trade.poster,
+            buyer: msg.sender,
+            price: trade.price,
+            amount: 1,
+            time: time,
+            des: "Buy"
         });
 
         //Remove the trade item from the marketplace
@@ -341,14 +352,14 @@ contract MarketPlace {
         Trade memory trade = trades[_tradeId];
         recordId += 1;
         history[recordId] = History({
-        _recordId : recordId,
-        _tokenId : trade._tokenId,
-        seller : msg.sender,
-        buyer : address(0),
-        price : _price,
-        amount : 1,
-        time : time,
-        des : "Bid"
+            _recordId: recordId,
+            _tokenId: trade._tokenId,
+            seller: msg.sender,
+            buyer: address(0),
+            price: _price,
+            amount: 1,
+            time: time,
+            des: "Bid"
         });
         trades[_tradeId].price = _price;
 
@@ -380,14 +391,14 @@ contract MarketPlace {
         //Update transactions on this token.
         recordId += 1;
         history[recordId] = History({
-        _recordId : recordId,
-        _tokenId : trade._tokenId,
-        seller : trade.poster,
-        buyer : auction.highestBidder,
-        price : trade.price,
-        amount : 1,
-        time : _time,
-        des : "Auction"
+            _recordId: recordId,
+            _tokenId: trade._tokenId,
+            seller: trade.poster,
+            buyer: auction.highestBidder,
+            price: trade.price,
+            amount: 1,
+            time: _time,
+            des: "Auction"
         });
         auctions[_tradeId].ended = true;
 
@@ -404,14 +415,14 @@ contract MarketPlace {
         //Update transactions on this token.
         recordId += 1;
         history[recordId] = History({
-        _recordId : recordId,
-        _tokenId : trade._tokenId,
-        seller : address(0),
-        buyer : msg.sender,
-        price : trade.price,
-        amount : 1,
-        time : _time,
-        des : "End auction and refund"
+            _recordId: recordId,
+            _tokenId: trade._tokenId,
+            seller: address(0),
+            buyer: msg.sender,
+            price: trade.price,
+            amount: 1,
+            time: _time,
+            des: "End auction and refund"
         });
         auctions[_tradeId].ended = true;
 

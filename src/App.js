@@ -84,7 +84,7 @@ export default function App() {
                                 <Route path="/market" element={<Market/>}/>
                                 <Route path="/space" element={<Space/>}/>
                                 <Route path="/mkt-space" element={<MktSpace/>}/>
-                                <Route path="/detail" element={<Detail/>}/>
+                                <Route path="/detail/:id" element={<Detail/>}/>
                             </Routes>
                         </BrowserRouter>
                     </ThemeProvider>

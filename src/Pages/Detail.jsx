@@ -1,4 +1,4 @@
-import React, {Suspense, useContext, useEffect} from 'react';
+import React, {Suspense, useContext, useEffect, useState} from 'react';
 
 import {CircularProgress, Grid} from "@mui/material";
 import ModelCavas from "../Components/ModelCavas"
@@ -12,6 +12,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {ethers} from "ethers";
 import DetailContext from "../Components/DetailContext";
+import {useParams} from "react-router-dom";
 
 const columns = [
     {id: '_recordId', label: 'RecordId', format: (value) => Number(value)},
@@ -25,31 +26,42 @@ const columns = [
 
 export default function Detail(props) {
     const detailCtx = useContext(DetailContext);
-    const [token, setToken] = React.useState(detailCtx?.token);
+    let params = useParams();
+
+    const [token, setToken] = useState(null);
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rows, setRows] = useState([]);
+
+    async function getModel() {
+        setToken(null)
+        const nft = await window.mktContract.getTokenByTokenId(params?.id);
+        setToken(nft["uri"]);
+        console.log(JSON.stringify(nft));
+    }
 
     async function getHistory() {
-        if (detailCtx?.tokenId) {
-            const history = await window.mktContract.getHistory(detailCtx?.tokenId);
-            setRows(history);
-            console.log(JSON.stringify(history));
-        }
+        setRows([])
+        const history = await window.mktContract.getHistory(params?.id);
+        setRows(history);
+        console.log(JSON.stringify(history));
     }
 
     useEffect(() => {
-        getHistory();
-        setToken(detailCtx?.token);
-    }, [detailCtx]);
-
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [rows, setRows] = React.useState([]);
+        if (params?.id) {
+            getModel();
+            getHistory();
+            console.log("Update Detail Token");
+        }
+    }, [params]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
+        setRowsPerPage(event.target.value);
         setPage(0);
     };
 
@@ -102,7 +114,7 @@ export default function Detail(props) {
                         </Table>
                     </TableContainer>
                     <TablePagination
-                        rowsPerPageOptions={[10, 25, 100]}
+                        rowsPerPageOptions={[10, 20, 30]}
                         component="div"
                         count={rows.length}
                         rowsPerPage={rowsPerPage}
