@@ -15,7 +15,6 @@ import {ethers} from "ethers";
 import MarketContract from "../contracts/MarketPlace.json";
 import NftContract from "../contracts/NFT.json";
 import UserContext from "../Components/UserContext";
-import {useNavigate} from "react-router-dom";
 import {Button} from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(
