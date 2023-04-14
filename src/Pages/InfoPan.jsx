@@ -2,6 +2,7 @@ import Typography from "@mui/material/Typography";
 import {Box} from "@mui/material";
 import React from "react";
 import {useTheme} from "@mui/material/styles";
+import {isChrome, isEdge, isFirefox} from 'react-device-detect';
 
 export default function InfoPan() {
     const theme = useTheme();
@@ -34,6 +35,18 @@ export default function InfoPan() {
 
     }
 
+    const getExtUrl=()=>{
+        if (isChrome){
+            window.open("https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn","target")
+        }else if(isEdge){
+            window.open("https://microsoftedge.microsoft.com/addons/detail/metamask/ejbalbakoplchlghecdalmeeeajnimhm","target")
+        }else if (isFirefox){
+            window.open("https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/","target")
+        }else{
+            window.open("https://metamask.io/download/","target")
+        }
+    }
+
     return (
         <>
             <Typography align={"left"} variant="h6" fontWeight="bold" color={theme.palette.warning.main}>
@@ -46,8 +59,7 @@ export default function InfoPan() {
             <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
                 1. Prepare you own wallet, and connect to the website. Get Metamask extension for your chrome
                 browser&nbsp;
-                <a type="button" target='_blank'
-                   href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn">HERE</a>.
+                <a type="button" href="javascript:void(0)" onClick={getExtUrl}>HERE</a>.
             </Typography>
             <Typography align={"left"} variant="body1" fontWeight="bold" color={theme.palette.text.primary}>
                 2. Add a test network to your wallet. Please refer to the information below.
