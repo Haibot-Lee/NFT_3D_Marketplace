@@ -43,6 +43,11 @@ export default function ResponsiveAppBar() {
     }
 
     async function init() {
+        if (!window?.ethereum?.isConnected()) {
+            alert("Please follow the guideline and install Metamask first!");
+            return;
+        }
+
         // // connect wallet
         const instance = await web3Modal.connect();
         const provider = new ethers.providers.Web3Provider(instance);

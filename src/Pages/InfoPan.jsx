@@ -35,15 +35,15 @@ export default function InfoPan() {
 
     }
 
-    const getExtUrl=()=>{
-        if (isChrome){
-            window.open("https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn","target")
-        }else if(isEdge){
-            window.open("https://microsoftedge.microsoft.com/addons/detail/metamask/ejbalbakoplchlghecdalmeeeajnimhm","target")
-        }else if (isFirefox){
-            window.open("https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/","target")
-        }else{
-            window.open("https://metamask.io/download/","target")
+    const getExtUrl = () => {
+        if (isChrome) {
+            window.open("https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn", "target")
+        } else if (isEdge) {
+            window.open("https://microsoftedge.microsoft.com/addons/detail/metamask/ejbalbakoplchlghecdalmeeeajnimhm", "target")
+        } else if (isFirefox) {
+            window.open("https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/", "target")
+        } else {
+            window.open("https://metamask.io/download/", "target")
         }
     }
 

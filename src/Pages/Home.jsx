@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material/styles";
 import web3Modal from "../Components/Web3Config";
 import p1 from "../p1.jpg";
-import {BrowserView, MobileView, isBrowser, isMobile} from 'react-device-detect';
+import {BrowserView, MobileView} from 'react-device-detect';
 import InfoPan from "./InfoPan";
 
 export default function Home() {
@@ -20,6 +20,11 @@ export default function Home() {
     const shortenAddr = (addr) => addr.slice(0, 4) + "..." + addr.slice(-4);
 
     async function init() {
+        if (!window?.ethereum?.isConnected()) {
+            alert("Please follow the guideline and install Metamask first!");
+            return;
+        }
+
         // // connect wallet
         const instance = await web3Modal.connect();
         const provider = new ethers.providers.Web3Provider(instance);
