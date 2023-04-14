@@ -20,9 +20,11 @@ export default function Home() {
     const shortenAddr = (addr) => addr.slice(0, 4) + "..." + addr.slice(-4);
 
     async function init() {
-        if (!window.ethereum.isConnected()) {
+        if (!window?.ethereum?.isConnected()) {
             alert("Please follow the guideline and install Metamask first!");
+            return;
         }
+
         // // connect wallet
         const instance = await web3Modal.connect();
         const provider = new ethers.providers.Web3Provider(instance);

@@ -32,6 +32,11 @@ export default function InSpaceDialog(props) {
     const theme = useTheme();
 
     async function init() {
+        if (!window?.ethereum?.isConnected()) {
+            alert("Please follow the guideline and install Metamask first!");
+            return;
+        }
+
         // // connect wallet
         const instance = await web3Modal.connect();
         const provider = new ethers.providers.Web3Provider(instance);
@@ -67,7 +72,7 @@ export default function InSpaceDialog(props) {
     }
 
     useEffect(() => {
-        init();
+        if (window?.ethereum?.isConnected()) init();
     }, [])
 
     return (
